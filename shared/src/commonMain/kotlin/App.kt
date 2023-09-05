@@ -4,11 +4,9 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import web.AccompanistWebView
+import web.WebView
 import web.rememberWebViewState
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun App() {
     WebViewSample()
@@ -23,7 +21,7 @@ fun WebViewSample() {
                 "${it.pageTitle ?: ""} ${it.loadingState} ${it.lastLoadedUrl ?: ""}"
             }
             Text(text)
-            AccompanistWebView(
+            WebView(
                 state = webViewState,
                 modifier = Modifier.weight(1f)
             )

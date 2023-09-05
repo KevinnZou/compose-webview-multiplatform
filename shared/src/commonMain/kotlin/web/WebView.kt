@@ -34,7 +34,7 @@ import androidx.compose.ui.Modifier
  * @sample com.google.accompanist.sample.webview.BasicWebViewSample
  */
 @Composable
-fun AccompanistWebView(
+fun WebView(
     state: WebViewState,
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
