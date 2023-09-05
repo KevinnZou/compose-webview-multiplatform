@@ -1,4 +1,4 @@
-rootProject.name = "MyApplication"
+rootProject.name = "compose-webview-multiplatform"
 
 include(":androidApp")
 include(":shared")
@@ -33,5 +33,6 @@ dependencyResolutionManagement {
         mavenCentral()
         google()
         maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
+        maven { url = uri("https://jitpack.io") }
     }
 }
