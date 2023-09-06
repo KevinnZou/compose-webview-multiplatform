@@ -9,7 +9,7 @@ kotlin {
     sourceSets {
         val androidMain by getting {
             dependencies {
-                implementation(project(":shared"))
+                implementation(project(":webview"))
             }
         }
     }

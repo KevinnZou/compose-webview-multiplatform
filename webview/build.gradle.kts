@@ -15,7 +15,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "compose-webview-multiplatform"
+            baseName = "webview"
             isStatic = true
         }
         iosTarget.setUpiOSObserver()

@@ -1,6 +1,6 @@
 import UIKit
 import SwiftUI
-import shared
+import webview
 
 struct ComposeView: UIViewControllerRepresentable {
     func makeUIViewController(context: Context) -> UIViewController {

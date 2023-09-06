@@ -1,7 +1,7 @@
 rootProject.name = "compose-webview-multiplatform"
 
 include(":androidApp")
-include(":shared")
+include(":webview")
 include(":desktopApp")
 includeBuild("convention-plugins")
 
