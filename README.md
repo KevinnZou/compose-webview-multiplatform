@@ -19,3 +19,14 @@ WebView(state)
 ```
 This will display a WebView in your Compose layout that shows the URL provided.
 
+## Download
+
+```groovy
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "io.github.kevinnzou:compose-webview-multiplatform:0.1.0"
+}
+```

@@ -91,11 +91,3 @@ fun org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget.setUpiOSObserver()
         }
     }
 }
-//
-//publishing {
-//    publications {
-//        this.filterIsInstance<MavenPublication>().forEach {
-//            it.artifactId = "compose-webview-multiplatform"
-//        }
-//    }
-//}
