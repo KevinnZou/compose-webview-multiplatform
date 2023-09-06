@@ -8,12 +8,12 @@ import web.WebView
 import web.rememberWebViewState
 
 @Composable
-fun App() {
+internal fun App() {
     WebViewSample()
 }
 
 @Composable
-fun WebViewSample() {
+internal fun WebViewSample() {
     MaterialTheme {
         val webViewState = rememberWebViewState("https://developer.android.com/")
         Column(Modifier.fillMaxSize()) {
