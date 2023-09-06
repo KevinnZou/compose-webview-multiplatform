@@ -3,6 +3,7 @@ rootProject.name = "compose-webview-multiplatform"
 include(":androidApp")
 include(":shared")
 include(":desktopApp")
+includeBuild("convention-plugins")
 
 pluginManagement {
     repositories {

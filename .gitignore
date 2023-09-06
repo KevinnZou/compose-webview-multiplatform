@@ -13,3 +13,5 @@ iosApp/iosApp.xcworkspace/*
 iosApp/iosApp.xcodeproj/*
 !iosApp/iosApp.xcodeproj/project.pbxproj
 shared/shared.podspec
+/convention-plugins/
+keySec.gpg

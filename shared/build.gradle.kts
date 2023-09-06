@@ -2,8 +2,8 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
+    id("convention.publication")
 }
-
 kotlin {
     androidTarget()
 
@@ -15,7 +15,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "shared"
+            baseName = "compose-webview-multiplatform"
             isStatic = true
         }
         iosTarget.setUpiOSObserver()
@@ -91,3 +91,11 @@ fun org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget.setUpiOSObserver()
         }
     }
 }
+//
+//publishing {
+//    publications {
+//        this.filterIsInstance<MavenPublication>().forEach {
+//            it.artifactId = "compose-webview-multiplatform"
+//        }
+//    }
+//}
