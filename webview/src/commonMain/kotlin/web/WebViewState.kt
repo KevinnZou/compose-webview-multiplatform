@@ -10,8 +10,9 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 
 /**
  * Created By Kevin Zou On 2023/9/5
+ * A state holder to hold the state for the WebView. In most cases this will be remembered
+ * using the rememberWebViewState(uri) function.
  */
-
 class WebViewState(webContent: WebContent) {
     var lastLoadedUrl: String? by mutableStateOf(null)
         internal set
@@ -77,5 +78,26 @@ fun rememberWebViewState(
         this.content = WebContent.Url(
             url = url,
             additionalHttpHeaders = additionalHttpHeaders
+        )
+    }
+
+/**
+ * Creates a WebView state that is remembered across Compositions.
+ *
+ * @param data The uri to load in the WebView
+ */
+@Composable
+public fun rememberWebViewStateWithHTMLData(
+    data: String,
+    baseUrl: String? = null,
+    encoding: String = "utf-8",
+    mimeType: String? = null,
+    historyUrl: String? = null
+): WebViewState =
+    remember {
+        WebViewState(WebContent.Data(data, baseUrl, encoding, mimeType, historyUrl))
+    }.apply {
+        this.content = WebContent.Data(
+            data, baseUrl, encoding, mimeType, historyUrl
         )
     }
