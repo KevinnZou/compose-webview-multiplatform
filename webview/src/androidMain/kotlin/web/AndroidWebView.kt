@@ -21,8 +21,8 @@ class AndroidWebView(private val webView: WebView) : IWebView {
         encoding: String?,
         historyUrl: String?
     ) {
-        if (baseUrl == null) return
-        webView.loadDataWithBaseURL(html, baseUrl, mimeType, encoding, historyUrl)
+        if (html == null) return
+        webView.loadDataWithBaseURL(baseUrl, html, mimeType, encoding, historyUrl)
     }
 
     override fun postUrl(url: String, postData: ByteArray) {

@@ -3,6 +3,7 @@ package web
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.interop.UIKitView
+import co.touchlab.kermit.Logger
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.readValue
 import platform.CoreGraphics.CGRectZero
@@ -26,6 +27,7 @@ actual fun ActualWebView(
         state = state,
         modifier = modifier,
         captureBackPresses = captureBackPresses,
+        navigator = navigator,
         onCreated = onCreated,
         onDispose = onDispose,
     )
@@ -38,6 +40,7 @@ fun IOSWebView(
     state: WebViewState,
     modifier: Modifier,
     captureBackPresses: Boolean,
+    navigator: WebViewNavigator,
     onCreated: () -> Unit,
     onDispose: () -> Unit,
 ) {
@@ -53,7 +56,7 @@ fun IOSWebView(
                 onCreated()
                 userInteractionEnabled = captureBackPresses
                 allowsBackForwardNavigationGestures = captureBackPresses
-                navigationDelegate = object : NSObject(), WKNavigationDelegateProtocol {
+                val navigationDelegate = object : NSObject(), WKNavigationDelegateProtocol {
                     override fun webView(
                         webView: WKWebView,
                         didStartProvisionalNavigation: WKNavigation?
@@ -61,7 +64,9 @@ fun IOSWebView(
                         state.loadingState = LoadingState.Loading(0f)
                         state.lastLoadedUrl = webView.URL.toString()
                         state.errorsForCurrentRequest.clear()
-                        println("didStartProvisionalNavigation")
+                        Logger.i {
+                            "didStartProvisionalNavigation"
+                        }
                     }
 
                     override fun webView(
@@ -70,7 +75,7 @@ fun IOSWebView(
                     ) {
                         state.loadingState =
                             LoadingState.Loading(webView.estimatedProgress.toFloat())
-                        println("didCommitNavigation")
+                        Logger.i { "didCommitNavigation" }
                     }
 
                     override fun webView(
@@ -80,7 +85,9 @@ fun IOSWebView(
                         state.pageTitle = webView.title
                         state.lastLoadedUrl = webView.URL.toString()
                         state.loadingState = LoadingState.Finished
-                        println("didFinishNavigation")
+                        navigator.canGoBack = webView.canGoBack
+                        navigator.canGoForward = webView.canGoForward
+                        Logger.i { "didFinishNavigation" }
                     }
 
                     override fun webView(
@@ -94,9 +101,12 @@ fun IOSWebView(
                                 withError.localizedDescription
                             )
                         )
-                        println("didFailNavigation")
+                        Logger.i {
+                            "didFailNavigation"
+                        }
                     }
                 }
+                this.navigationDelegate = navigationDelegate
             }.also { state.webView = IOSWebView(it) }
         },
         modifier = modifier,

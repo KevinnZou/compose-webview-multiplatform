@@ -1,5 +1,6 @@
 package web
 
+import co.touchlab.kermit.Logger
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.allocArrayOf
@@ -23,6 +24,7 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
     override fun canGoForward() = wkWebView.canGoForward
 
     override fun loadUrl(url: String, additionalHttpHeaders: Map<String, String>) {
+        Logger.i { "Load url: $url" }
         wkWebView.loadRequest(
             request = NSURLRequest(
                 uRL = NSURL(string = url),
@@ -37,12 +39,17 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
         encoding: String?,
         historyUrl: String?
     ) {
-        if (html == null || baseUrl == null) {
+        if (html == null) {
+            Logger.e {
+                "LoadHtml: html is null"
+            }
             return
         }
+        val header = "<header><meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'></header>"
+        val concat = header + html
         wkWebView.loadHTMLString(
-            string = html,
-            baseURL = NSURL(string = baseUrl),
+            string = concat,
+            baseURL = baseUrl?.let { NSURL(string = it) },
         )
     }
 

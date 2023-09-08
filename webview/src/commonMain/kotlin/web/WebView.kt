@@ -31,7 +31,7 @@ import androidx.compose.ui.Modifier
  * @param client Provides access to WebViewClient via subclassing
  * @param chromeClient Provides access to WebChromeClient via subclassing
  * @param factory An optional WebView factory for using a custom subclass of WebView
- * @sample com.google.accompanist.sample.webview.BasicWebViewSample
+ * @sample sample.BasicWebViewSample
  */
 @Composable
 fun WebView(
@@ -60,8 +60,8 @@ fun WebView(
 
                     is WebContent.Data -> {
                         wv.loadHtml(
-                            content.baseUrl,
                             content.data,
+                            content.baseUrl,
                             content.mimeType,
                             content.encoding,
                             content.historyUrl
