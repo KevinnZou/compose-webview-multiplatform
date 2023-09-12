@@ -4,12 +4,15 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import sample.BasicWebViewSample
 import web.WebView
 import web.rememberWebViewState
 
 @Composable
 internal fun App() {
-    WebViewSample()
+//    WebViewSample()
+    BasicWebViewSample()
+//    BasicWebViewWithHTMLSample()
 }
 
 @Composable
@@ -23,7 +26,7 @@ internal fun WebViewSample() {
             Text(text)
             WebView(
                 state = webViewState,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.fillMaxSize()
             )
         }
 

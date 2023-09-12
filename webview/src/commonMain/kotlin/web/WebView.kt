@@ -55,6 +55,7 @@ fun WebView(
             snapshotFlow { state.content }.collect { content ->
                 when (content) {
                     is WebContent.Url -> {
+                        state.lastLoadedUrl = content.url
                         wv.loadUrl(content.url, content.additionalHttpHeaders)
                     }
 

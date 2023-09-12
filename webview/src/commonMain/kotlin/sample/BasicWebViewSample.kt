@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
@@ -59,9 +60,6 @@ internal fun BasicWebViewSample() {
                     }
                 }
             )
-            Logger.i {
-                "Last Url: $textFieldValue"
-            }
 
             Row {
                 Box(modifier = Modifier.weight(1f)) {
@@ -96,9 +94,6 @@ internal fun BasicWebViewSample() {
             }
 
             val loadingState = state.loadingState
-            Logger.i {
-                loadingState.toString()
-            }
             if (loadingState is LoadingState.Loading) {
                 LinearProgressIndicator(
                     progress = loadingState.progress,
@@ -109,7 +104,7 @@ internal fun BasicWebViewSample() {
             WebView(
                 state = state,
                 modifier = Modifier
-                    .weight(1f),
+                    .fillMaxSize(),
                 navigator = navigator,
             )
         }
