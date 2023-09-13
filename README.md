@@ -31,6 +31,6 @@ repositories {
 }
 
 dependencies {
-    implementation "io.github.kevinnzou:compose-webview-multiplatform:0.4.0"
+    implementation "io.github.kevinnzou:compose-webview-multiplatform:1.0.0"
 }
 ```
