@@ -1,18 +1,14 @@
 package web
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.interop.UIKitView
-import co.touchlab.kermit.Logger
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.readValue
 import platform.CoreGraphics.CGRectZero
-import platform.Foundation.NSError
-import platform.WebKit.WKNavigation
-import platform.WebKit.WKNavigationDelegateProtocol
 import platform.WebKit.WKWebView
 import platform.WebKit.WKWebViewConfiguration
-import platform.darwin.NSObject
 
 @Composable
 actual fun ActualWebView(
@@ -34,7 +30,6 @@ actual fun ActualWebView(
 }
 
 @OptIn(ExperimentalForeignApi::class)
-@Suppress("CONFLICTING_OVERLOADS")
 @Composable
 fun IOSWebView(
     state: WebViewState,
@@ -44,6 +39,12 @@ fun IOSWebView(
     onCreated: () -> Unit,
     onDispose: () -> Unit,
 ) {
+    val observer = remember {
+        WKWebViewObserver(
+            state = state,
+            navigator = navigator
+        )
+    }
     UIKitView(
         factory = {
             val config = WKWebViewConfiguration().apply {
@@ -56,64 +57,34 @@ fun IOSWebView(
                 onCreated()
                 userInteractionEnabled = captureBackPresses
                 allowsBackForwardNavigationGestures = captureBackPresses
-                val navigationDelegate = object : NSObject(), WKNavigationDelegateProtocol {
-                    override fun webView(
-                        webView: WKWebView,
-                        didStartProvisionalNavigation: WKNavigation?
-                    ) {
-                        state.loadingState = LoadingState.Loading(0f)
-                        state.lastLoadedUrl = webView.URL.toString()
-                        state.errorsForCurrentRequest.clear()
-                        Logger.i {
-                            "didStartProvisionalNavigation"
-                        }
-                    }
-
-                    override fun webView(
-                        webView: WKWebView,
-                        didCommitNavigation: WKNavigation?
-                    ) {
-                        state.loadingState =
-                            LoadingState.Loading(webView.estimatedProgress.toFloat())
-                        Logger.i { "didCommitNavigation" }
-                    }
-
-                    override fun webView(
-                        webView: WKWebView,
-                        didFinishNavigation: WKNavigation?
-                    ) {
-                        state.pageTitle = webView.title
-                        state.lastLoadedUrl = webView.URL.toString()
-                        state.loadingState = LoadingState.Finished
-                        navigator.canGoBack = webView.canGoBack
-                        navigator.canGoForward = webView.canGoForward
-                        Logger.i { "didFinishNavigation" }
-                    }
-
-                    override fun webView(
-                        webView: WKWebView,
-                        didFailProvisionalNavigation: WKNavigation?,
-                        withError: NSError
-                    ) {
-                        state.errorsForCurrentRequest.add(
-                            WebViewError(
-                                withError.code.toInt(),
-                                withError.localizedDescription
-                            )
-                        )
-                        Logger.i {
-                            "didFailNavigation"
-                        }
-                    }
-                }
-                this.navigationDelegate = navigationDelegate
+                this.addObservers(
+                    observer = observer,
+                    properties = listOf(
+                        "estimatedProgress",
+                        "title",
+                        "URL",
+                        "canGoBack",
+                        "canGoForward"
+                    )
+                )
+                this.navigationDelegate = WKNavigationDelegate(state, navigator)
             }.also { state.webView = IOSWebView(it) }
         },
         modifier = modifier,
         onRelease = {
             state.webView = null
+            it.removeObservers(
+                observer = observer,
+                properties = listOf(
+                    "estimatedProgress",
+                    "title",
+                    "URL",
+                    "canGoBack",
+                    "canGoForward"
+                )
+            )
+            it.navigationDelegate = null
             onDispose()
         }
     )
 }
-
