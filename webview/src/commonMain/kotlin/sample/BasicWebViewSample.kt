@@ -39,7 +39,7 @@ import web.rememberWebViewState
  */
 @Composable
 internal fun BasicWebViewSample() {
-    val initialUrl = "https://developer.android.com/"
+    val initialUrl = "https://github.com/KevinnZou/compose-webview-multiplatform"
     val state = rememberWebViewState(url = initialUrl)
     val navigator = rememberWebViewNavigator()
     var textFieldValue by remember(state.lastLoadedUrl) {
