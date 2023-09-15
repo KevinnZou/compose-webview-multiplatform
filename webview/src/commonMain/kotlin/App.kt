@@ -18,7 +18,7 @@ internal fun App() {
 @Composable
 internal fun WebViewSample() {
     MaterialTheme {
-        val webViewState = rememberWebViewState("https://developer.android.com/")
+        val webViewState = rememberWebViewState("https://github.com/KevinnZou/compose-webview-multiplatform")
         Column(Modifier.fillMaxSize()) {
             val text = webViewState.let {
                 "${it.pageTitle ?: ""} ${it.loadingState} ${it.lastLoadedUrl ?: ""}"
