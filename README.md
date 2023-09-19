@@ -297,12 +297,39 @@ For a full example, please refers to [BasicWebViewSample](https://github.com/Kev
 
 [![Maven Central](https://img.shields.io/maven-central/v/io.github.kevinnzou/compose-webview-multiplatform.svg)](https://search.maven.org/artifact/io.github.kevinnzou/compose-webview-multiplatform)
 
-```groovy
+You can add this library to your project using Gradle.
+
+### Multiplatform
+
+To add to a multiplatform project, add the dependency to the common source-set:
+
+```kotlin
 repositories {
     mavenCentral()
 }
 
+kotlin {
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation("io.github.kevinnzou:compose-webview-multiplatform:1.1.0")
+            }
+        }
+    }
+}
+```
+
+### Single Platform
+
+For an Android only project, you directly can use my [another library](https://github.com/KevinnZou/compose-webview).
+Add the dependency to app level `build.gradle.kts`:
+
+```kotlin
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
-    implementation "io.github.kevinnzou:compose-webview-multiplatform:1.1.0"
+    implementation "com.github.KevinnZou:compose-webview:0.33.2"
 }
 ```
