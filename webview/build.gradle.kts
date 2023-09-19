@@ -1,3 +1,7 @@
+@file:Suppress("UNUSED_VARIABLE", "OPT_IN_USAGE")
+
+import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
@@ -16,7 +20,13 @@ val platform = when {
 val jdkVersion = "17"
 
 kotlin {
-    androidTarget()
+//    explicitApi = ExplicitApiMode.Strict
+
+    targetHierarchy.default()
+
+    androidTarget() {
+        publishLibraryVariants("release")
+    }
 
     jvm("desktop")
 
@@ -53,7 +63,7 @@ kotlin {
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
-        val iosMain by creating {
+        val iosMain by getting {
             dependsOn(commonMain)
             iosX64Main.dependsOn(this)
             iosArm64Main.dependsOn(this)
@@ -65,7 +75,6 @@ kotlin {
                 implementation("org.openjfx:javafx-base:$jdkVersion:${platform}")
                 implementation("org.openjfx:javafx-graphics:$jdkVersion:${platform}")
                 implementation("org.openjfx:javafx-controls:$jdkVersion:${platform}")
-//                implementation("org.openjfx:javafx-fxml:$jdkVersion:${platform}")
                 implementation("org.openjfx:javafx-media:$jdkVersion:${platform}")
                 implementation("org.openjfx:javafx-web:$jdkVersion:${platform}")
                 implementation("org.openjfx:javafx-swing:$jdkVersion:${platform}")
@@ -77,7 +86,7 @@ kotlin {
 
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
-    namespace = "com.myapplication.common"
+    namespace = "com.multiplatform.webview"
 
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     sourceSets["main"].res.srcDirs("src/androidMain/res")
