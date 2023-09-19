@@ -8,7 +8,7 @@ This library can be considered as the Multiplatform version of [Accompanist Web 
 It provides the basic WebView functionalities for JetBrains Compose Multiplatform, which supports loading URLs, HTML, and post data. Currently, it supports the platforms of Android, iOS, and Desktop.
 
 The Android implementation of this library relies on the web module from the [Accompanist Library](https://github.com/google/accompanist/tree/main/web). However, it has been deprecated in version 0.33.1-alpha. 
-Thus I created a fork of it and used it as the base for this lirbary. If you just want to use the WebView in Jetpack Compose, please visit this repo: https://github.com/KevinnZou/compose-webview.
+Thus I created a fork of it and used it as the base for this library. If you just want to use the WebView in Jetpack Compose, please visit this repo: https://github.com/KevinnZou/compose-webview.
 
 The iOS implementation of this library relies on [WKWebView](https://developer.apple.com/documentation/webkit/wkwebview).
 
@@ -285,7 +285,7 @@ internal fun WebViewSample() {
     }
 }
 ```
-For a full example, please refer to [BasicWebViewSample](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/webview/src/commonMain/kotlin/sample/BasicWebViewSample.kt)
+For a full example, please refers to [BasicWebViewSample](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/webview/src/commonMain/kotlin/sample/BasicWebViewSample.kt)
 
 ## Download
 
@@ -297,6 +297,6 @@ repositories {
 }
 
 dependencies {
-    implementation "io.github.kevinnzou:compose-webview-multiplatform:1.0.0"
+    implementation "io.github.kevinnzou:compose-webview-multiplatform:1.1.0"
 }
 ```
