@@ -48,6 +48,8 @@ class WebViewState(webContent: WebContent) {
      */
     val errorsForCurrentRequest: SnapshotStateList<WebViewError> = mutableStateListOf()
 
+    val webSettings: WebSettings = WebSettings()
+
     // We need access to this in the state saver. An internal DisposableEffect or AndroidView
     // onDestroy is called after the state saver and so can't be used.
     internal var webView by mutableStateOf<IWebView?>(null)

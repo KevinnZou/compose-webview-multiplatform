@@ -53,6 +53,7 @@ fun DesktopWebView(
                     val webView = WebView().apply {
                         isVisible = true
                         engine.addLoadListener(state, navigator)
+                        engine.isJavaScriptEnabled = state.webSettings.isJavaScriptEnabled
                     }
                     onCreated()
                     val root = StackPane()
