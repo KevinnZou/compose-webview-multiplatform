@@ -1,23 +1,22 @@
 package com.multiplatform.webview.web
 
 import co.touchlab.kermit.Logger
-import javafx.application.Platform
-import javafx.scene.web.WebView
+import org.cef.browser.CefBrowser
+import org.cef.network.CefPostData
+import org.cef.network.CefPostDataElement
+import org.cef.network.CefRequest
 
 /**
  * Created By Kevin Zou On 2023/9/12
  */
-class DesktopWebView(private val webView: WebView) : IWebView {
-    private val engine = webView.engine
+class DesktopWebView(private val webView: CefBrowser) : IWebView {
 
-    override fun canGoBack() = engine.canGoBack()
+    override fun canGoBack() = webView.canGoBack()
 
-    override fun canGoForward() = engine.canGoForward()
+    override fun canGoForward() = webView.canGoForward()
 
     override fun loadUrl(url: String, additionalHttpHeaders: Map<String, String>) {
-        Platform.runLater {
-            engine.load(url)
-        }
+        webView.loadURL(url)
     }
 
     override fun loadHtml(
@@ -27,36 +26,33 @@ class DesktopWebView(private val webView: WebView) : IWebView {
         encoding: String?,
         historyUrl: String?
     ) {
-        Platform.runLater {
-            engine.loadContent(html)
+        webView.loadURL("data:text/html;charset=utf-8,$html")
+    }
+
+    override fun postUrl(url: String, postData: ByteArray) {
+        val request = CefRequest.create().apply {
+            this.url = url
+            this.postData = CefPostData.create().apply {
+                this.addElement(CefPostDataElement.create().apply {
+                    this.setToBytes(postData.size, postData)
+                })
+            }
         }
+        webView.loadRequest(request)
     }
 
-    override fun postUrl(url: String, postData: ByteArray) = Platform.runLater {
-        engine.loadContent(postData.toString(), "text/html")
-    }
+    override fun goBack() = webView.goBack()
 
-    override fun goBack() = Platform.runLater {
-        engine.goBack()
-    }
+    override fun goForward() = webView.goForward()
 
-    override fun goForward() = Platform.runLater {
-        engine.goForward()
-    }
+    override fun reload() = webView.reload()
 
-    override fun reload() = Platform.runLater {
-        engine.reload()
-    }
+    override fun stopLoading() = webView.stopLoad()
 
-    override fun stopLoading() = Platform.runLater {
-        engine.stopLoading()
-    }
-
-    override fun evaluateJavaScript(script: String, callback: ((String) -> Unit)?) = Platform.runLater {
+    override fun evaluateJavaScript(script: String, callback: ((String) -> Unit)?) {
         Logger.i {
             "evaluateJavaScript: $script"
         }
-        val res = engine.executeScript(script)
-        callback?.invoke(res.toString())
+        // ToDo("implement for jcef")
     }
 }

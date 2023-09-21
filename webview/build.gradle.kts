@@ -9,16 +9,6 @@ plugins {
     id("convention.publication")
 }
 
-val os = org.gradle.internal.os.OperatingSystem.current()
-
-val platform = when {
-    os.isWindows -> "win"
-    os.isMacOsX -> "mac"
-    else -> "linux"
-}
-
-val jdkVersion = "17"
-
 kotlin {
 //    explicitApi = ExplicitApiMode.Strict
 
@@ -72,13 +62,8 @@ kotlin {
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.common)
-                implementation("org.openjfx:javafx-base:$jdkVersion:${platform}")
-                implementation("org.openjfx:javafx-graphics:$jdkVersion:${platform}")
-                implementation("org.openjfx:javafx-controls:$jdkVersion:${platform}")
-                implementation("org.openjfx:javafx-media:$jdkVersion:${platform}")
-                implementation("org.openjfx:javafx-web:$jdkVersion:${platform}")
-                implementation("org.openjfx:javafx-swing:$jdkVersion:${platform}")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.7.2")
+                implementation("me.friwi:jcefmaven:110.0.25.1")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:1.7.2")
             }
         }
     }

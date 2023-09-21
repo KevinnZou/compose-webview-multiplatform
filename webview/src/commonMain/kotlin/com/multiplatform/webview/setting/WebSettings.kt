@@ -14,7 +14,7 @@ class WebSettings {
     /**
      * Desktop platform specific settings
      */
-    val desktopWebSettings = PlatformWebSettings.DesktopWebSettings
+    val desktopWebSettings = PlatformWebSettings.DesktopWebSettings()
 
     /**
      * iOS platform specific settings
