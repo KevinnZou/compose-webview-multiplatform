@@ -1,6 +1,4 @@
-package com.multiplatform.webview.web
-
-import com.multiplatform.webview.setting.PlatformWebSettings
+package com.multiplatform.webview.setting
 
 /**
  * Created By Kevin Zou On 2023/9/20

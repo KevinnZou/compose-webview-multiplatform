@@ -142,7 +142,7 @@ Column {
 
 ## WebView Navigator
 This library provides a *WebViewNavigator* class to control over the navigation of a WebView from outside the composable. E.g.for performing a back navigation in response to the user clicking the "up" button in a TopAppBar.
-It can be used to load a new URL, reload the current URL, and go back and forward in the history.
+It can be used to load a new URL, evaluate the JavaScript, and go back and forward in the history.
 
 ```kotlin
 class WebViewNavigator(private val coroutineScope: CoroutineScope) {
@@ -175,6 +175,8 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
         postData: ByteArray
     ) {
     }
+
+    fun evaluateJavaScript(script: String, callback: ((String) -> Unit)? = null)
 
     /**
      * Navigates the webview back to the previous page.
@@ -312,7 +314,7 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("io.github.kevinnzou:compose-webview-multiplatform:1.1.0")
+                implementation("io.github.kevinnzou:compose-webview-multiplatform:1.2.0")
             }
         }
     }
@@ -326,10 +328,10 @@ Add the dependency to app level `build.gradle.kts`:
 
 ```kotlin
 repositories {
-    maven { url 'https://jitpack.io' }
+    maven("https://jitpack.io")
 }
 
 dependencies {
-    implementation "com.github.KevinnZou:compose-webview:0.33.2"
+    implementation ("com.github.KevinnZou:compose-webview:0.33.2")
 }
 ```

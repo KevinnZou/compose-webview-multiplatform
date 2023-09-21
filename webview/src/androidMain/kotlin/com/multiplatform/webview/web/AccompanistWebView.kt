@@ -159,11 +159,20 @@ fun AccompanistWebView(
                 webViewClient = client
                 settings.apply {
                     javaScriptEnabled = state.webSettings.isJavaScriptEnabled
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                        safeBrowsingEnabled = state.webSettings.androidWebSettings.safeBrowsingEnabled
-                    }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                        isAlgorithmicDarkeningAllowed = state.webSettings.androidWebSettings.isAlgorithmicDarkeningAllowed
+                    state.webSettings.androidWebSettings.let {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            safeBrowsingEnabled = it.safeBrowsingEnabled
+                        }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            isAlgorithmicDarkeningAllowed = it.isAlgorithmicDarkeningAllowed
+                        }
+                        setSupportZoom(it.supportZoom)
+                        allowFileAccess = it.allowFileAccess
+                        textZoom = it.textZoom
+                        useWideViewPort = it.useWideViewPort
+                        standardFontFamily = it.standardFontFamily
+                        defaultFontSize = it.defaultFontSize
+                        loadsImagesAutomatically = it.loadsImagesAutomatically
                     }
                 }
             }.also { state.webView = AndroidWebView(it) }
