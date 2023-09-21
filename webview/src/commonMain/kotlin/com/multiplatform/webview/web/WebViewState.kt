@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import com.multiplatform.webview.setting.WebSettings
 
 /**
  * Created By Kevin Zou On 2023/9/5
