@@ -20,7 +20,7 @@ interface IWebView {
     fun loadHtml(
         html: String? = null,
         baseUrl: String? = null,
-        mimeType: String? = null,
+        mimeType: String? = "text/html",
         encoding: String? = "utf-8",
         historyUrl: String? = null
     )
@@ -49,4 +49,6 @@ interface IWebView {
      * Stops the current page load (if one is loading).
      */
     fun stopLoading()
+
+    fun evaluateJavaScript(script: String, callback: ((String) -> Unit)? = null)
 }

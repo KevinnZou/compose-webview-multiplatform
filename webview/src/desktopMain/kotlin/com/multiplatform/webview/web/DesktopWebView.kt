@@ -1,5 +1,6 @@
 package com.multiplatform.webview.web
 
+import co.touchlab.kermit.Logger
 import javafx.application.Platform
 import javafx.scene.web.WebView
 
@@ -49,5 +50,13 @@ class DesktopWebView(private val webView: WebView) : IWebView {
 
     override fun stopLoading() = Platform.runLater {
         engine.stopLoading()
+    }
+
+    override fun evaluateJavaScript(script: String, callback: ((String) -> Unit)?) = Platform.runLater {
+        Logger.i {
+            "evaluateJavaScript: $script"
+        }
+        val res = engine.executeScript(script)
+        callback?.invoke(res.toString())
     }
 }

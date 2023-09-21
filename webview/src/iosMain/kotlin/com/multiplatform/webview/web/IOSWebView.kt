@@ -49,7 +49,7 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
         val concat = header + html
         wkWebView.loadHTMLString(
             string = concat,
-            baseURL = baseUrl?.let { NSURL(string = it) },
+            baseURL = baseUrl?.let { NSURL.URLWithString(it) },
         )
     }
 
@@ -81,6 +81,18 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
 
     override fun stopLoading() {
         wkWebView.stopLoading()
+    }
+
+    override fun evaluateJavaScript(script: String, callback: ((String) -> Unit)?) {
+        wkWebView.evaluateJavaScript(script) { result, error ->
+            if (error != null) {
+                Logger.e { "evaluateJavaScript error: $error" }
+                callback?.invoke(error.localizedDescription())
+            } else {
+                Logger.i { "evaluateJavaScript result: $result" }
+                callback?.invoke(result?.toString() ?: "")
+            }
+        }
     }
 
 }

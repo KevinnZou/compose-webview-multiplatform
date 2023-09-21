@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -66,6 +67,11 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
                 return result
             }
         }
+
+        data class EvaluateJavaScript(
+            val script: String,
+            val callback: ((String) -> Unit)?
+        ) : NavigationEvent
     }
 
     private val navigationEvents: MutableSharedFlow<NavigationEvent> = MutableSharedFlow(replay = 1)
@@ -93,6 +99,13 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
 
                     is NavigationEvent.PostUrl -> {
                         postUrl(event.url, event.postData)
+                    }
+
+                    is NavigationEvent.EvaluateJavaScript -> {
+                        Logger.i {
+                            "Received NavigationEvent.EvaluateJavaScript: ${event.script}"
+                        }
+                        evaluateJavaScript(event.script, event.callback)
                     }
                 }
             }
@@ -150,6 +163,17 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
                 NavigationEvent.PostUrl(
                     url,
                     postData
+                )
+            )
+        }
+    }
+
+    fun evaluateJavaScript(script: String, callback: ((String) -> Unit)? = null) {
+        coroutineScope.launch {
+            navigationEvents.emit(
+                NavigationEvent.EvaluateJavaScript(
+                    script,
+                    callback
                 )
             )
         }

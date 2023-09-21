@@ -2,6 +2,7 @@ package com.multiplatform.webview.web
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Build
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -156,6 +157,15 @@ fun AccompanistWebView(
 
                 webChromeClient = chromeClient
                 webViewClient = client
+                settings.apply {
+                    javaScriptEnabled = state.webSettings.isJavaScriptEnabled
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        safeBrowsingEnabled = state.webSettings.androidWebSettings.safeBrowsingEnabled
+                    }
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        isAlgorithmicDarkeningAllowed = state.webSettings.androidWebSettings.isAlgorithmicDarkeningAllowed
+                    }
+                }
             }.also { state.webView = AndroidWebView(it) }
         },
         modifier = modifier,

@@ -1,6 +1,10 @@
 package com.multiplatform.webview.web
 
+import android.os.Build
 import android.webkit.WebView
+import androidx.annotation.RequiresApi
+import co.touchlab.kermit.Logger
+import kotlin.io.encoding.Base64
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -43,6 +47,14 @@ class AndroidWebView(private val webView: WebView) : IWebView {
 
     override fun stopLoading() {
         webView.stopLoading()
+    }
+
+    override fun evaluateJavaScript(script: String, callback: ((String) -> Unit)?) {
+        val androidScript = "javascript:$script"
+        Logger.i {
+            "evaluateJavaScript: $androidScript"
+        }
+        webView.evaluateJavascript(androidScript, callback)
     }
 
 }

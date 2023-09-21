@@ -12,6 +12,7 @@ import javafx.scene.Scene
 import javafx.scene.layout.StackPane
 import javafx.scene.web.WebView
 
+
 @Composable
 actual fun ActualWebView(
     state: WebViewState,
@@ -53,12 +54,13 @@ fun DesktopWebView(
                     val webView = WebView().apply {
                         isVisible = true
                         engine.addLoadListener(state, navigator)
+                        engine.isJavaScriptEnabled = state.webSettings.isJavaScriptEnabled
                     }
-                    onCreated()
                     val root = StackPane()
                     root.children.add(webView)
                     this.scene = Scene(root)
                     state.webView = DesktopWebView(webView)
+                    onCreated()
                 }
             }
         },
