@@ -53,6 +53,6 @@ class DesktopWebView(private val webView: CefBrowser) : IWebView {
         Logger.i {
             "evaluateJavaScript: $script"
         }
-        // ToDo("implement for jcef")
+        webView.executeJavaScript(script, "", 0)
     }
 }
