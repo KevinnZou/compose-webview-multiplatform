@@ -40,6 +40,9 @@ import com.multiplatform.webview.web.rememberWebViewState
 internal fun BasicWebViewSample() {
     val initialUrl = "https://github.com/KevinnZou/compose-webview-multiplatform"
     val state = rememberWebViewState(url = initialUrl)
+    state.webSettings.apply {
+        customUserAgentString = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1) AppleWebKit/625.20 (KHTML, like Gecko) Version/14.3.43 Safari/625.20"
+    }
     val navigator = rememberWebViewNavigator()
     var textFieldValue by remember(state.lastLoadedUrl) {
         mutableStateOf(state.lastLoadedUrl)

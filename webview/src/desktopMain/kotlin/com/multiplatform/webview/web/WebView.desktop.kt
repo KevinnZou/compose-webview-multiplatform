@@ -56,7 +56,8 @@ fun DesktopWebView(
         client?.createBrowser(
             url,
             state.webSettings.desktopWebSettings.offScreenRendering,
-            state.webSettings.desktopWebSettings.transparent
+            state.webSettings.desktopWebSettings.transparent,
+            createModifiedRequestContext(state.webSettings)
         )
     }
 
@@ -71,8 +72,7 @@ fun DesktopWebView(
                 }
                 onCreated()
                 browser.uiComponent
-                        engine.userAgent = state.webSettings.customUserAgentString
-                    },
+            },
             modifier = modifier,
         )
     }
