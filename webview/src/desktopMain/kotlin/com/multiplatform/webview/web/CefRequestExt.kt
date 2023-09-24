@@ -10,7 +10,7 @@ import org.cef.handler.CefResourceRequestHandlerAdapter
 import org.cef.misc.BoolRef
 import org.cef.network.CefRequest
 
-fun createModifiedRequestContext(
+internal fun createModifiedRequestContext(
     settings: WebSettings
 ): CefRequestContext {
     val resourceRequestHandler = object : CefResourceRequestHandlerAdapter() {
@@ -42,6 +42,6 @@ fun createModifiedRequestContext(
         })
 }
 
-fun CefRequest.setUserAgentString(userAgent: String) {
+internal fun CefRequest.setUserAgentString(userAgent: String) {
     setHeaderByName("User-Agent", userAgent, true)
 }
