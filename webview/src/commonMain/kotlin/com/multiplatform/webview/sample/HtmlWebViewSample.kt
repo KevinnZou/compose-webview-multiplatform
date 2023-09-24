@@ -1,6 +1,6 @@
 package com.multiplatform.webview.sample
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.multiplatform.webview.web.WebView
@@ -28,13 +27,7 @@ internal fun BasicWebViewWithHTMLSample() {
             <title>Compose WebView Multiplatform</title>
             <style>
                 body {
-                    background-color: #e0e8f0; 
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    flex-direction: column;
-                    height: 100vh; 
-                    margin: 0;
+                    background-color: black;
                 }
                 h1, h2 {
                     text-align: center; 
@@ -66,13 +59,7 @@ internal fun BasicWebViewWithHTMLSample() {
     val webViewNavigator = rememberWebViewNavigator()
     var jsRes by mutableStateOf("Evaluate JavaScript")
     MaterialTheme {
-        Box(Modifier.fillMaxSize()) {
-            WebView(
-                state = webViewState,
-                modifier = Modifier.fillMaxSize(),
-                captureBackPresses = false,
-                navigator = webViewNavigator,
-            )
+        Column(Modifier.fillMaxSize()) {
             Button(
                 onClick = {
                     webViewNavigator.evaluateJavaScript(
@@ -84,10 +71,16 @@ internal fun BasicWebViewWithHTMLSample() {
                         jsRes = it
                     }
                 },
-                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 50.dp)
+                modifier = Modifier.padding(bottom = 50.dp)
             ) {
                 Text(jsRes)
             }
+            WebView(
+                state = webViewState,
+                modifier = Modifier.fillMaxSize(),
+                captureBackPresses = false,
+                navigator = webViewNavigator,
+            )
         }
     }
 

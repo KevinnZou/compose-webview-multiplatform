@@ -95,3 +95,7 @@ internal fun CefBrowser.addLoadListener(state: WebViewState, navigator: WebViewN
 
     })
 }
+
+internal fun CefBrowser.loadHtml(html: String) {
+    this.loadURL("data:text/html,$html")
+}

@@ -26,7 +26,9 @@ class DesktopWebView(private val webView: CefBrowser) : IWebView {
         encoding: String?,
         historyUrl: String?
     ) {
-        webView.loadURL("data:text/html;charset=utf-8,$html")
+        if (html != null) {
+            webView.loadHtml(html)
+        }
     }
 
     override fun postUrl(url: String, postData: ByteArray) {
