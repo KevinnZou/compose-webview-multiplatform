@@ -71,7 +71,8 @@ fun DesktopWebView(
                 }
                 onCreated()
                 browser.uiComponent
-            },
+                        engine.userAgent = state.webSettings.customUserAgentString
+                    },
             modifier = modifier,
         )
     }

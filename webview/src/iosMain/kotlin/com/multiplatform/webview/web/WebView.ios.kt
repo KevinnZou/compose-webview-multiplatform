@@ -57,6 +57,7 @@ fun IOSWebView(
                 onCreated()
                 userInteractionEnabled = captureBackPresses
                 allowsBackForwardNavigationGestures = captureBackPresses
+                customUserAgent = state.webSettings.customUserAgentString
                 this.addObservers(
                     observer = observer,
                     properties = listOf(
