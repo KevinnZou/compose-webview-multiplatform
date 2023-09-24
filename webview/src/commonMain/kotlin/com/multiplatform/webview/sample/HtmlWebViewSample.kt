@@ -27,7 +27,7 @@ internal fun BasicWebViewWithHTMLSample() {
             <title>Compose WebView Multiplatform</title>
             <style>
                 body {
-                    background-color: black; 
+                    background-color: e0e8f0; 
                     display: flex;
                     justify-content: center;
                     align-items: center;
