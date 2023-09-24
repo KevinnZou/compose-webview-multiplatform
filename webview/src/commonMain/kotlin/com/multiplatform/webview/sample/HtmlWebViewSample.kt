@@ -1,6 +1,6 @@
 package com.multiplatform.webview.sample
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.multiplatform.webview.web.WebView
@@ -37,7 +38,7 @@ internal fun BasicWebViewWithHTMLSample() {
                 }
                 h1, h2 {
                     text-align: center; 
-                    color: white; 
+                    color: ffffff; 
                 }
             </style>
         </head>
@@ -65,7 +66,13 @@ internal fun BasicWebViewWithHTMLSample() {
     val webViewNavigator = rememberWebViewNavigator()
     var jsRes by mutableStateOf("Evaluate JavaScript")
     MaterialTheme {
-        Column(Modifier.fillMaxSize()) {
+        Box(Modifier.fillMaxSize()) {
+            WebView(
+                state = webViewState,
+                modifier = Modifier.fillMaxSize(),
+                captureBackPresses = false,
+                navigator = webViewNavigator,
+            )
             Button(
                 onClick = {
                     webViewNavigator.evaluateJavaScript(
@@ -77,16 +84,10 @@ internal fun BasicWebViewWithHTMLSample() {
                         jsRes = it
                     }
                 },
-                modifier = Modifier.padding(bottom = 50.dp)
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 50.dp)
             ) {
                 Text(jsRes)
             }
-            WebView(
-                state = webViewState,
-                modifier = Modifier.fillMaxSize(),
-                captureBackPresses = false,
-                navigator = webViewNavigator,
-            )
         }
     }
 

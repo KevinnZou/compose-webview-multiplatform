@@ -1,6 +1,11 @@
 package com.multiplatform.webview.web
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import kotlinx.coroutines.Dispatchers
@@ -41,11 +46,13 @@ fun DesktopWebView(
             runCatching { Cef.newClient() }.getOrNull()
         }
     }
-    val browser: CefBrowser? = remember(client, state.webSettings.desktopWebSettings) { client?.createBrowser(
-        state.content.getUrl(),
-        state.webSettings.desktopWebSettings.offScreenRendering,
-        state.webSettings.desktopWebSettings.transparent
-    ) }
+    val browser: CefBrowser? = remember(client, state.webSettings.desktopWebSettings) {
+        client?.createBrowser(
+            state.content.getUrl(),
+            state.webSettings.desktopWebSettings.offScreenRendering,
+            state.webSettings.desktopWebSettings.transparent
+        )
+    }
 
     browser?.let {
         state.webView = DesktopWebView(it)

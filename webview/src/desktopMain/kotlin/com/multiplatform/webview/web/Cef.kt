@@ -111,6 +111,7 @@ data object Cef {
 
                 return dispose()
             }
+
             State.Initialized -> {
                 state.value = State.Disposed
                 cefAppInstance?.dispose()
@@ -255,7 +256,8 @@ data object Cef {
                     this.cache_path = _settings.cachePath
                     this.browser_subprocess_path = _settings.browserSubProcessPath
                     this.command_line_args_disabled = _settings.commandLineArgsDisabled
-                    this.cookieable_schemes_exclude_defaults = _settings.cookieableSchemesExcludeDefaults
+                    this.cookieable_schemes_exclude_defaults =
+                        _settings.cookieableSchemesExcludeDefaults
                     this.cookieable_schemes_list = _settings.cookieableSchemesList
                     this.javascript_flags = _settings.javascriptFlags
                     this.locale = _settings.locale
@@ -476,16 +478,17 @@ data object Cef {
             }
 
             companion object {
-                fun fromJCefSeverity(severity: CefSettings.LogSeverity): LogSeverity = when (severity) {
-                    CefSettings.LogSeverity.LOGSEVERITY_DEFAULT -> Default
-                    CefSettings.LogSeverity.LOGSEVERITY_VERBOSE -> Verbose
-                    CefSettings.LogSeverity.LOGSEVERITY_INFO -> Info
-                    CefSettings.LogSeverity.LOGSEVERITY_WARNING -> Warning
-                    CefSettings.LogSeverity.LOGSEVERITY_ERROR -> Error
-                    CefSettings.LogSeverity.LOGSEVERITY_FATAL -> Fatal
-                    CefSettings.LogSeverity.LOGSEVERITY_DISABLE -> Disable
-                    else -> Default
-                }
+                fun fromJCefSeverity(severity: CefSettings.LogSeverity): LogSeverity =
+                    when (severity) {
+                        CefSettings.LogSeverity.LOGSEVERITY_DEFAULT -> Default
+                        CefSettings.LogSeverity.LOGSEVERITY_VERBOSE -> Verbose
+                        CefSettings.LogSeverity.LOGSEVERITY_INFO -> Info
+                        CefSettings.LogSeverity.LOGSEVERITY_WARNING -> Warning
+                        CefSettings.LogSeverity.LOGSEVERITY_ERROR -> Error
+                        CefSettings.LogSeverity.LOGSEVERITY_FATAL -> Fatal
+                        CefSettings.LogSeverity.LOGSEVERITY_DISABLE -> Disable
+                        else -> Default
+                    }
             }
         }
     }

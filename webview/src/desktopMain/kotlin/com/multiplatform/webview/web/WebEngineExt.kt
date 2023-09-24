@@ -30,7 +30,7 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
             return false
         }
 
-        override fun onStatusMessage(browser: CefBrowser?, value: String?) { }
+        override fun onStatusMessage(browser: CefBrowser?, value: String?) {}
 
         override fun onConsoleMessage(
             browser: CefBrowser?,
@@ -64,7 +64,11 @@ internal fun CefBrowser.addLoadListener(state: WebViewState, navigator: WebViewN
             navigator.canGoForward = canGoForward
         }
 
-        override fun onLoadStart(browser: CefBrowser?, frame: CefFrame?, transitionType: CefRequest.TransitionType?) {
+        override fun onLoadStart(
+            browser: CefBrowser?,
+            frame: CefFrame?,
+            transitionType: CefRequest.TransitionType?
+        ) {
             Logger.i { "Load Start" }
             state.loadingState = LoadingState.Loading(0F)
         }

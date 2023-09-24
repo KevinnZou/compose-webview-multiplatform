@@ -1,14 +1,14 @@
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.multiplatform.webview.MainWebView
 import com.multiplatform.webview.web.Cef
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.time.Duration.Companion.seconds
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {

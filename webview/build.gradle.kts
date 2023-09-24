@@ -1,7 +1,5 @@
 @file:Suppress("UNUSED_VARIABLE", "OPT_IN_USAGE")
 
-import org.jetbrains.kotlin.gradle.dsl.ExplicitApiMode
-
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
