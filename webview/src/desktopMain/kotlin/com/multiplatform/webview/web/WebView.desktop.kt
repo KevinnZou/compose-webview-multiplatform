@@ -47,8 +47,14 @@ fun DesktopWebView(
         }
     }
     val browser: CefBrowser? = remember(client, state.webSettings.desktopWebSettings) {
+        val url = when (val current = state.content) {
+            is WebContent.Url -> current.url
+            is WebContent.Data -> current.data.toDataUri()
+            else -> null
+        }
+
         client?.createBrowser(
-            state.content.getUrl(),
+            url,
             state.webSettings.desktopWebSettings.offScreenRendering,
             state.webSettings.desktopWebSettings.transparent
         )

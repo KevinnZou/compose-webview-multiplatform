@@ -50,12 +50,6 @@ sealed class WebContent {
         }
     }
 
-    internal fun getUrl(): String? = when (this) {
-        is Url -> this.url
-        is Data -> "data:text/html,${this.data}"
-        else -> null
-    }
-
     object NavigatorOnly : WebContent()
 }
 
