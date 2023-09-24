@@ -1,95 +1,118 @@
 package com.multiplatform.webview.web
 
 import co.touchlab.kermit.Logger
-import javafx.concurrent.Worker.State.CANCELLED
-import javafx.concurrent.Worker.State.FAILED
-import javafx.concurrent.Worker.State.READY
-import javafx.concurrent.Worker.State.RUNNING
-import javafx.concurrent.Worker.State.SCHEDULED
-import javafx.concurrent.Worker.State.SUCCEEDED
-import javafx.scene.web.WebEngine
+import org.cef.CefSettings
+import org.cef.browser.CefBrowser
+import org.cef.browser.CefFrame
+import org.cef.handler.CefDisplayHandler
+import org.cef.handler.CefLoadHandler
+import org.cef.network.CefRequest
 
 /**
  * Created By Kevin Zou On 2023/9/12
  */
-internal fun WebEngine.getCurrentUrl(): String? {
-    if (history.entries.size <= 0) return null
-    return history.entries[history.currentIndex].url
+internal fun CefBrowser.getCurrentUrl(): String? {
+    return this.url
 }
 
-internal fun WebEngine.stopLoading() {
-    loadWorker.cancel()
+internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
+    this.client.addDisplayHandler(object : CefDisplayHandler {
+        override fun onAddressChange(browser: CefBrowser?, frame: CefFrame?, url: String?) {
+            state.lastLoadedUrl = getCurrentUrl()
+        }
+
+        override fun onTitleChange(browser: CefBrowser?, title: String?) {
+            Logger.i { "titleProperty: $title" }
+            state.pageTitle = title
+        }
+
+        override fun onTooltip(browser: CefBrowser?, text: String?): Boolean {
+            return false
+        }
+
+        override fun onStatusMessage(browser: CefBrowser?, value: String?) {}
+
+        override fun onConsoleMessage(
+            browser: CefBrowser?,
+            level: CefSettings.LogSeverity?,
+            message: String?,
+            source: String?,
+            line: Int
+        ): Boolean {
+            return false
+        }
+
+        override fun onCursorChange(browser: CefBrowser?, cursorType: Int): Boolean {
+            return false
+        }
+
+    })
 }
 
-internal fun WebEngine.goForward() {
-    if (canGoForward()) {
-        history.go(1)
-    }
-}
-
-internal fun WebEngine.goBack() {
-    if (canGoBack()) {
-        history.go(-1)
-    }
-}
-
-internal fun WebEngine.canGoBack(): Boolean {
-    return history.maxSize > 0 && history.currentIndex != 0
-}
-
-internal fun WebEngine.canGoForward(): Boolean {
-    return history.maxSize > 0 && history.currentIndex != history.maxSize - 1
-}
-
-internal fun WebEngine.addLoadListener(state: WebViewState, navigator: WebViewNavigator) {
-    titleProperty().addListener { _, _, newValue ->
-        Logger.i { "titleProperty: $newValue" }
-        state.pageTitle = newValue
-    }
-
-    loadWorker.stateProperty().addListener { _, _, newValue ->
-        when (newValue) {
-
-            READY, SCHEDULED -> {
-                Logger.i { "READY or SCHEDULED" }
+internal fun CefBrowser.addLoadListener(state: WebViewState, navigator: WebViewNavigator) {
+    this.client.addLoadHandler(object : CefLoadHandler {
+        override fun onLoadingStateChange(
+            browser: CefBrowser?,
+            isLoading: Boolean,
+            canGoBack: Boolean,
+            canGoForward: Boolean
+        ) {
+            if (state.loadingState == LoadingState.Finished) {
                 state.loadingState = LoadingState.Initializing
-                state.errorsForCurrentRequest.clear()
             }
+            navigator.canGoBack = canGoBack
+            navigator.canGoForward = canGoForward
+        }
 
-            RUNNING -> {
-                state.loadingState = LoadingState.Loading(0f)
-            }
+        override fun onLoadStart(
+            browser: CefBrowser?,
+            frame: CefFrame?,
+            transitionType: CefRequest.TransitionType?
+        ) {
+            Logger.i { "Load Start" }
+            state.loadingState = LoadingState.Loading(0F)
+        }
 
-            SUCCEEDED -> {
-                Logger.i { "SUCCEEDED ${getCurrentUrl()}" }
-                navigator.canGoBack = canGoBack()
-                navigator.canGoForward = canGoForward()
-                state.loadingState = LoadingState.Finished
-                state.lastLoadedUrl = getCurrentUrl()
-            }
+        override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
+            Logger.i { "Load End" }
+            state.loadingState = LoadingState.Finished
+            navigator.canGoBack = canGoBack()
+            navigator.canGoBack = canGoForward()
+            state.lastLoadedUrl = getCurrentUrl()
+        }
 
-            FAILED, CANCELLED -> {
-                state.loadingState = LoadingState.Finished
-                state.errorsForCurrentRequest.add(
-                    WebViewError(
-                        code = 404,
-                        description = "Failed to load url: ${getCurrentUrl()}"
-                    )
+        override fun onLoadError(
+            browser: CefBrowser?,
+            frame: CefFrame?,
+            errorCode: CefLoadHandler.ErrorCode?,
+            errorText: String?,
+            failedUrl: String?
+        ) {
+            state.loadingState = LoadingState.Finished
+            state.errorsForCurrentRequest.add(
+                WebViewError(
+                    code = errorCode?.code ?: 404,
+                    description = "Failed to load url: ${failedUrl}\n$errorText"
                 )
-            }
+            )
         }
-    }
 
-    loadWorker.progressProperty().addListener { _, _, newValue ->
-        if (newValue.toFloat() < 0f) return@addListener
-        state.loadingState = LoadingState.Loading(newValue.toFloat())
-    }
+    })
+}
 
-    history.currentIndexProperty().addListener { _, _, _ ->
-        val currentUrl = getCurrentUrl()
-        Logger.i { "currentUrl: $currentUrl" }
-        if (currentUrl != null) {
-            state.lastLoadedUrl = currentUrl
+// can be used for more workarounds as well
+internal fun String.applyWorkaroundsForHtmlString(): String {
+    val removeHexCharHtml =
+        "#(([0-9a-fA-F]{2}){3}|([0-9a-fA-F]){3})".toRegex().replace(this) { matchResult ->
+            matchResult.value.substring(1)
         }
-    }
+    return removeHexCharHtml
+}
+
+internal fun String.toDataUri(): String {
+    return "data:text/html,${this.applyWorkaroundsForHtmlString()}"
+}
+
+internal fun CefBrowser.loadHtml(html: String) {
+    this.loadURL(html.toDataUri())
 }

@@ -18,7 +18,7 @@ Thus I created a fork of it and used it as the base for this library. If you jus
 
 The iOS implementation of this library relies on [WKWebView](https://developer.apple.com/documentation/webkit/wkwebview).
 
-The Desktop implementation of this library relies on [JavaFX WebView](https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebView.html).
+The Desktop implementation of this library relies on [JavaFX WebView](https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebView.html) for version <= 1.2.0.
 
 
 ## Basic Usage
@@ -35,38 +35,32 @@ This will display a WebView in your Compose layout that shows the URL provided.
 ## WebView State
 This library provides a *WebViewState* class as a state holder to hold the state for the WebView. 
 ```kotlin
-public class WebViewState(webContent: WebContent) {
-    public var lastLoadedUrl: String? by mutableStateOf(null)
+class WebViewState(webContent: WebContent) {
+    var lastLoadedUrl: String? by mutableStateOf(null)
         internal set
 
     /**
      *  The content being loaded by the WebView
      */
-    public var content: WebContent by mutableStateOf(webContent)
+    var content: WebContent by mutableStateOf(webContent)
 
     /**
      * Whether the WebView is currently [LoadingState.Loading] data in its main frame (along with
      * progress) or the data loading has [LoadingState.Finished]. See [LoadingState]
      */
-    public var loadingState: LoadingState by mutableStateOf(LoadingState.Initializing)
+    var loadingState: LoadingState by mutableStateOf(LoadingState.Initializing)
         internal set
 
     /**
      * Whether the webview is currently loading data in its main frame
      */
-    public val isLoading: Boolean
-        get() = loadingState !is Finished
+    val isLoading: Boolean
+        get() = loadingState !is LoadingState.Finished
 
     /**
      * The title received from the loaded content of the current page
      */
-    public var pageTitle: String? by mutableStateOf(null)
-        internal set
-
-    /**
-     * the favicon received from the loaded content of the current page
-     */
-    public var pageIcon: Bitmap? by mutableStateOf(null)
+    var pageTitle: String? by mutableStateOf(null)
         internal set
 
     /**
@@ -74,22 +68,20 @@ public class WebViewState(webContent: WebContent) {
      * Errors could be from any resource (iframe, image, etc.), not just for the main page.
      * For more fine grained control use the OnError callback of the WebView.
      */
-    public val errorsForCurrentRequest: SnapshotStateList<WebViewError> = mutableStateListOf()
+    val errorsForCurrentRequest: SnapshotStateList<WebViewError> = mutableStateListOf()
 
     /**
-     * The saved view state from when the view was destroyed last. To restore state,
-     * use the navigator and only call loadUrl if the bundle is null.
-     * See WebViewSaveStateSample.
+     * Custom Settings for WebView.
      */
-    public var viewState: Bundle? = null
-        internal set
+    val webSettings: WebSettings by mutableStateOf(WebSettings())
 
     // We need access to this in the state saver. An internal DisposableEffect or AndroidView
     // onDestroy is called after the state saver and so can't be used.
-    internal var webView by mutableStateOf<WebView?>(null)
+    internal var webView by mutableStateOf<IWebView?>(null)
 }
 ```
 It can be created using the *rememberWebViewState* function, which can be remembered across Compositions.
+
 ```kotlin
 val state = rememberWebViewState("https://github.com/KevinnZou/compose-webview-multiplatform")
 
@@ -101,7 +93,7 @@ val state = rememberWebViewState("https://github.com/KevinnZou/compose-webview-m
  *                              Note that these headers are used for all subsequent requests of the WebView.
  */
 @Composable
-public fun rememberWebViewState(
+fun rememberWebViewState(
     url: String,
     additionalHttpHeaders: Map<String, String> = emptyMap()
 ): WebViewState =
@@ -200,11 +192,12 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
 }
 ```
 It can be created using the *rememberWebViewNavigator* function, which can be remembered across Compositions.
+
 ```kotlin
 val navigator = rememberWebViewNavigator()
 
 @Composable
-public fun rememberWebViewNavigator(
+fun rememberWebViewNavigator(
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ): WebViewNavigator = remember(coroutineScope) { WebViewNavigator(coroutineScope) }
 ```

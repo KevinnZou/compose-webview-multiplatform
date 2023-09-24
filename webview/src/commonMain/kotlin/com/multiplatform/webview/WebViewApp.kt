@@ -20,7 +20,8 @@ internal fun WebViewApp() {
 @Composable
 internal fun WebViewSample() {
     MaterialTheme {
-        val webViewState = rememberWebViewState("https://github.com/KevinnZou/compose-webview-multiplatform")
+        val webViewState =
+            rememberWebViewState("https://github.com/KevinnZou/compose-webview-multiplatform")
         webViewState.webSettings.apply {
             isJavaScriptEnabled = true
             androidWebSettings.apply {

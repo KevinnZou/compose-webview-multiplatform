@@ -172,7 +172,10 @@ sealed class PlatformWebSettings {
         var safeBrowsingEnabled: Boolean = true
     ) : PlatformWebSettings()
 
-    data object DesktopWebSettings : PlatformWebSettings()
+    data class DesktopWebSettings(
+        var offScreenRendering: Boolean = false,
+        var transparent: Boolean = false,
+    ) : PlatformWebSettings()
 
     data object IOSWebSettings : PlatformWebSettings()
 }
