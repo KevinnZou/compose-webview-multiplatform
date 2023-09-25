@@ -381,7 +381,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("io.github.kevinnzou:compose-webview-multiplatform:1.3.0")
+                // use api since the desktop app need to access the Cef to initialize it.
+                api("io.github.kevinnzou:compose-webview-multiplatform:1.3.0")
             }
         }
     }

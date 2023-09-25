@@ -1,5 +1,5 @@
 # Desktop Setup
-Starting from version 1.3.0, we switched from JavaFX to the CEF Browser for better performance and user experience.
+Starting from version 1.3.0, we switched from JavaFX to the [Java CEF Browser](https://github.com/chromiumembedded/java-cef) for better performance and user experience.
 After importing the library, some configurations need to be done before running the desktop app.
 
 ## Initialization
