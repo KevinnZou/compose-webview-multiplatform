@@ -5,6 +5,8 @@ package com.multiplatform.webview.setting
  */
 class WebSettings {
     var isJavaScriptEnabled = true
+    
+    var customUserAgentString: String? = null
 
     /**
      * Android platform specific settings
