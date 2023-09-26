@@ -13,13 +13,14 @@
 This library can be considered as the Multiplatform version of [Accompanist Web library](https://github.com/google/accompanist/tree/main/web). 
 It provides the basic WebView functionalities for JetBrains Compose Multiplatform, which supports loading URLs, HTML, and post data. Currently, it supports the platforms of Android, iOS, and Desktop.
 
-The Android implementation of this library relies on the web module from the [Accompanist Library](https://github.com/google/accompanist/tree/main/web). However, it has been deprecated in version 0.33.1-alpha. 
-Thus I created a fork of it and used it as the base for this library. If you just want to use the WebView in Jetpack Compose, please visit this repo: https://github.com/KevinnZou/compose-webview.
+* The Android implementation of this library relies on the web module from the [Accompanist Library](https://github.com/google/accompanist/tree/main/web).
+    - **Note:** it has been deprecated in version 0.33.1-alpha. Thus I created a fork of it and used it as the base for this library. If you just want to use the WebView in Jetpack Compose, please visit this repo: https://github.com/KevinnZou/compose-webview.
 
-The iOS implementation of this library relies on [WKWebView](https://developer.apple.com/documentation/webkit/wkwebview).
+* The iOS implementation of this library relies on [WKWebView](https://developer.apple.com/documentation/webkit/wkwebview).
 
-The Desktop implementation of this library relies on [JavaFX WebView](https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebView.html).
-
+* The Desktop implementation of this library relies on [JavaFX WebView](https://docs.oracle.com/javase/8/javafx/api/javafx/scene/web/WebView.html) for version <= 1.2.0.
+    - Thanks to @DATL4G, starting from version 1.3.0, we switched to [Java CEF Browser](https://github.com/chromiumembedded/java-cef) for better performance.
+    - **Note:** After switching to JCEF, developers need to configure it for the desktop app. Please see the [README.desktop.md](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/README.desktop.md) for more details.
 
 ## Basic Usage
 To use this widget there are two key APIs that are needed: *WebView*, which provides the layout, and *rememberWebViewState(url)* which provides some remembered state including the URL to display.
@@ -35,38 +36,32 @@ This will display a WebView in your Compose layout that shows the URL provided.
 ## WebView State
 This library provides a *WebViewState* class as a state holder to hold the state for the WebView. 
 ```kotlin
-public class WebViewState(webContent: WebContent) {
-    public var lastLoadedUrl: String? by mutableStateOf(null)
+class WebViewState(webContent: WebContent) {
+    var lastLoadedUrl: String? by mutableStateOf(null)
         internal set
 
     /**
      *  The content being loaded by the WebView
      */
-    public var content: WebContent by mutableStateOf(webContent)
+    var content: WebContent by mutableStateOf(webContent)
 
     /**
      * Whether the WebView is currently [LoadingState.Loading] data in its main frame (along with
      * progress) or the data loading has [LoadingState.Finished]. See [LoadingState]
      */
-    public var loadingState: LoadingState by mutableStateOf(LoadingState.Initializing)
+    var loadingState: LoadingState by mutableStateOf(LoadingState.Initializing)
         internal set
 
     /**
      * Whether the webview is currently loading data in its main frame
      */
-    public val isLoading: Boolean
-        get() = loadingState !is Finished
+    val isLoading: Boolean
+        get() = loadingState !is LoadingState.Finished
 
     /**
      * The title received from the loaded content of the current page
      */
-    public var pageTitle: String? by mutableStateOf(null)
-        internal set
-
-    /**
-     * the favicon received from the loaded content of the current page
-     */
-    public var pageIcon: Bitmap? by mutableStateOf(null)
+    var pageTitle: String? by mutableStateOf(null)
         internal set
 
     /**
@@ -74,22 +69,20 @@ public class WebViewState(webContent: WebContent) {
      * Errors could be from any resource (iframe, image, etc.), not just for the main page.
      * For more fine grained control use the OnError callback of the WebView.
      */
-    public val errorsForCurrentRequest: SnapshotStateList<WebViewError> = mutableStateListOf()
+    val errorsForCurrentRequest: SnapshotStateList<WebViewError> = mutableStateListOf()
 
     /**
-     * The saved view state from when the view was destroyed last. To restore state,
-     * use the navigator and only call loadUrl if the bundle is null.
-     * See WebViewSaveStateSample.
+     * Custom Settings for WebView.
      */
-    public var viewState: Bundle? = null
-        internal set
+    val webSettings: WebSettings by mutableStateOf(WebSettings())
 
     // We need access to this in the state saver. An internal DisposableEffect or AndroidView
     // onDestroy is called after the state saver and so can't be used.
-    internal var webView by mutableStateOf<WebView?>(null)
+    internal var webView by mutableStateOf<IWebView?>(null)
 }
 ```
 It can be created using the *rememberWebViewState* function, which can be remembered across Compositions.
+
 ```kotlin
 val state = rememberWebViewState("https://github.com/KevinnZou/compose-webview-multiplatform")
 
@@ -101,7 +94,7 @@ val state = rememberWebViewState("https://github.com/KevinnZou/compose-webview-m
  *                              Note that these headers are used for all subsequent requests of the WebView.
  */
 @Composable
-public fun rememberWebViewState(
+fun rememberWebViewState(
     url: String,
     additionalHttpHeaders: Map<String, String> = emptyMap()
 ): WebViewState =
@@ -200,11 +193,12 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
 }
 ```
 It can be created using the *rememberWebViewNavigator* function, which can be remembered across Compositions.
+
 ```kotlin
 val navigator = rememberWebViewNavigator()
 
 @Composable
-public fun rememberWebViewNavigator(
+fun rememberWebViewNavigator(
     coroutineScope: CoroutineScope = rememberCoroutineScope()
 ): WebViewNavigator = remember(coroutineScope) { WebViewNavigator(coroutineScope) }
 ```
@@ -241,6 +235,79 @@ Column {
         state = state,
         navigator = navigator
     )
+}
+```
+
+## WebSettings
+Starting from version 1.3.0, this library allows users to customize web settings. 
+There are some common web settings that can be shared across different platforms, such as isJavaScriptEnabled and userAgent.
+```kotlin
+class WebSettings {
+    var isJavaScriptEnabled = true
+
+    var customUserAgentString: String? = null
+
+    /**
+     * Android platform specific settings
+     */
+    val androidWebSettings = PlatformWebSettings.AndroidWebSettings()
+
+    /**
+     * Desktop platform specific settings
+     */
+    val desktopWebSettings = PlatformWebSettings.DesktopWebSettings()
+
+    /**
+     * iOS platform specific settings
+     */
+    val iOSWebSettings = PlatformWebSettings.IOSWebSettings
+
+}
+```
+For platform specific settings, this library provides the PlatformWebSettings. 
+These settings will only be applied to the respective platforms and do not affect other platforms.
+```kotlin
+sealed class PlatformWebSettings {
+    data class AndroidWebSettings(
+        /**
+         * whether the WebView should support zooming using its on-screen zoom
+         * controls and gestures. The particular zoom mechanisms that should be used
+         * can be set with {@link #setBuiltInZoomControls}. This setting does not
+         * affect zooming performed using the {@link WebView#zoomIn()} and
+         * {@link WebView#zoomOut()} methods. The default is {@code true}.
+         *
+         * @param support whether the WebView should support zoom
+         */
+        var supportZoom: Boolean = true,
+
+        /**
+         * whether Safe Browsing is enabled. Safe Browsing allows WebView to
+         * protect against malware and phishing attacks by verifying the links.
+         */
+        var safeBrowsingEnabled: Boolean = true,
+
+        // .....
+    ) : PlatformWebSettings()
+
+    data class DesktopWebSettings(
+        var offScreenRendering: Boolean = false,
+        var transparent: Boolean = false,
+    ) : PlatformWebSettings()
+
+    data object IOSWebSettings : PlatformWebSettings()
+}
+```
+Developers can configure custom settings in the shared code in the following way:
+```kotlin
+val webViewState = rememberWebViewStateWithHTMLData(
+    data = html
+)
+webViewState.webSettings.apply {
+    isJavaScriptEnabled = true
+    androidWebSettings.apply {
+        isAlgorithmicDarkeningAllowed = true
+        safeBrowsingEnabled = true
+    }
 }
 ```
 
@@ -314,7 +381,8 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation("io.github.kevinnzou:compose-webview-multiplatform:1.2.0")
+                // use api since the desktop app need to access the Cef to initialize it.
+                api("io.github.kevinnzou:compose-webview-multiplatform:1.3.0")
             }
         }
     }

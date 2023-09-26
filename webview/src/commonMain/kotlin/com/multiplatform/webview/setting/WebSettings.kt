@@ -5,6 +5,8 @@ package com.multiplatform.webview.setting
  */
 class WebSettings {
     var isJavaScriptEnabled = true
+    
+    var customUserAgentString: String? = null
 
     /**
      * Android platform specific settings
@@ -14,7 +16,7 @@ class WebSettings {
     /**
      * Desktop platform specific settings
      */
-    val desktopWebSettings = PlatformWebSettings.DesktopWebSettings
+    val desktopWebSettings = PlatformWebSettings.DesktopWebSettings()
 
     /**
      * iOS platform specific settings

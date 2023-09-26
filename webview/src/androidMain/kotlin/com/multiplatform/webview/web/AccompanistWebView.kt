@@ -159,6 +159,7 @@ fun AccompanistWebView(
                 webViewClient = client
                 settings.apply {
                     javaScriptEnabled = state.webSettings.isJavaScriptEnabled
+                    userAgentString = state.webSettings.customUserAgentString
                     state.webSettings.androidWebSettings.let {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             safeBrowsingEnabled = it.safeBrowsingEnabled
