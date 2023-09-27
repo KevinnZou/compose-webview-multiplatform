@@ -7,6 +7,7 @@ import com.multiplatform.webview.web.Cef
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
+import kotlin.math.max
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
@@ -20,7 +21,7 @@ fun main() = application {
                     installDir = File("jcef-bundle")
                 }, initProgress = {
                     onDownloading {
-                        downloading = it
+                        downloading = max(it, 0F)
                     }
                     onInitialized {
                         initialized = true
