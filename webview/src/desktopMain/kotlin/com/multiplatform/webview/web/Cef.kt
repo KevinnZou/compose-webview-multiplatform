@@ -31,32 +31,37 @@ data object Cef {
 
     suspend fun init(
         builder: Builder,
+        initProgress: InitProgress? = null,
         onError: (Throwable) -> Unit = { },
-        onRestartRequired: () -> Unit = { }
+        onRestartRequired: () -> Unit = { },
     ) = init(
         appBuilder = builder.build(),
         installDir = builder.installDir,
+        initProgress = initProgress,
         onError = onError,
         onRestartRequired = onRestartRequired
     )
 
     suspend fun init(
         builder: Builder.() -> Unit,
+        initProgress: InitProgress.Builder.() -> Unit,
         onError: (Throwable) -> Unit = { },
         onRestartRequired: () -> Unit = { }
     ) = init(
         builder = Builder().apply(builder),
+        initProgress = InitProgress.Builder().apply(initProgress).build(),
         onError = onError,
-        onRestartRequired = onRestartRequired
+        onRestartRequired = onRestartRequired,
     )
 
     suspend fun init(
         appBuilder: CefAppBuilder,
         installDir: File,
+        initProgress: InitProgress? = null,
         onError: (Throwable) -> Unit = { },
         onRestartRequired: () -> Unit = { }
     ) {
-        val builder = getInitBuilder(appBuilder) ?: return
+        val builder = getInitBuilder(appBuilder, initProgress) ?: return
         val isInstallOk = CefInstallationChecker.checkInstallation(installDir)
 
         if (isInstallOk) {
@@ -73,8 +78,15 @@ data object Cef {
                 onError.invoke(error)
             }
 
-            setInitResult(Result.failure(CefException.ApplicationRestartRequired))
-            onRestartRequired.invoke()
+            val result = runCatching {
+                builder.build()
+            }
+
+            setInitResult(result)
+            if (result.isFailure) {
+                setInitResult(Result.failure(CefException.ApplicationRestartRequired))
+                onRestartRequired.invoke()
+            }
         }
     }
 
@@ -120,7 +132,7 @@ data object Cef {
         }
     }
 
-    private fun getInitBuilder(builder: CefAppBuilder): CefAppBuilder? {
+    private fun getInitBuilder(builder: CefAppBuilder, initProgress: InitProgress?): CefAppBuilder? {
         val currentState = state.value
 
         when (currentState) {
@@ -134,7 +146,20 @@ data object Cef {
         }
 
         return builder.apply {
-            setProgressHandler(::dispatchProgress)
+            setProgressHandler { state, percent ->
+                dispatchProgress(state, percent)
+
+                when (state) {
+                    null -> { /** Could be null in Java, just for safety reasons */ }
+                    EnumProgress.LOCATING -> initProgress?.locating()
+                    EnumProgress.DOWNLOADING -> initProgress?.downloading(percent)
+                    EnumProgress.EXTRACTING -> initProgress?.extracting()
+                    EnumProgress.INSTALL -> initProgress?.install()
+                    EnumProgress.INITIALIZING -> initProgress?.initializing()
+                    EnumProgress.INITIALIZED -> initProgress?.initialized()
+                    else -> { /** Just for safety reasons */ }
+                }
+            }
         }
     }
 
