@@ -15,6 +15,10 @@ LaunchedEffect(Unit) {
 Then, run your app once and it will download the JCEF Bundle to the install directory. 
 After that, just restart your app and it will work properly.
 
+> **Note**
+> Make sure to exclude the `installDir` from upstreaming by adding it to the `.gitignore`.
+> The downloaded files are platform-specific and therefore differ to each user.
+
 Please use the following example as a reference.
 ```kotlin
 fun main() = application {
