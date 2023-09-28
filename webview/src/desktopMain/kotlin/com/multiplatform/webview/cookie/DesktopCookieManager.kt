@@ -20,7 +20,7 @@ object DesktopCookieManager : CookieManager {
             desktopCookieManager = CefCookieManager.getGlobalManager()
         }
         val currentTime = System.currentTimeMillis()
-        Logger.i { "DesktopCookieManager setCookie: $url, $cookie" }
+        Logger.i(tag = "DesktopCookieManager") { "DesktopCookieManager setCookie: $url, $cookie" }
         desktopCookieManager!!.setCookie(
             url, CefCookie(
                 cookie.name,
@@ -41,7 +41,7 @@ object DesktopCookieManager : CookieManager {
         if (desktopCookieManager == null) {
             desktopCookieManager = CefCookieManager.getGlobalManager()
         }
-        Logger.i { "DesktopCookieManager getCookies: $url" }
+        Logger.i(tag = "DesktopCookieManager") { "DesktopCookieManager getCookies: $url" }
         val cookieList = mutableListOf<Cookie>()
         CefCookieManager.getGlobalManager().visitUrlCookies(
             url, true

@@ -61,7 +61,7 @@ object IOSCookieManager : CookieManager {
             cookies?.forEach { cookie ->
                 cookieStore.deleteCookie(cookie as NSHTTPCookie) {}
             }
-            Logger.i { ("IOSCookieManager removeAllCookies: $cookies") }
+            Logger.i(tag = "iOSCookieManager") { ("IOSCookieManager removeAllCookies: $cookies") }
             it.resume(Unit, {})
         }
     }
@@ -85,7 +85,7 @@ object IOSCookieManager : CookieManager {
             iCookie!!,
             completionHandler = {
                 it.resume(Unit, {})
-                Logger.i { ("IOSCookieManager setCookie: $cookie") }
+                Logger.i(tag = "iOSCookieManager") { ("IOSCookieManager setCookie: $cookie") }
             })
     }
 }
