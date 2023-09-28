@@ -13,11 +13,11 @@ object AndroidCookieManager : CookieManager {
 
     private val androidCookieManager = android.webkit.CookieManager.getInstance()
 
-    override fun setCookie(url: String, cookie: Cookie) {
+    override suspend fun setCookie(url: String, cookie: Cookie) {
         androidCookieManager.setCookie(url, cookie.toString())
     }
 
-    override fun getCookies(url: String): List<Cookie> {
+    override suspend fun getCookies(url: String): List<Cookie> {
         val cookieList = mutableListOf<Cookie>()
 
         var cookies: List<String> = ArrayList()
@@ -124,10 +124,11 @@ object AndroidCookieManager : CookieManager {
         return cookieList
     }
 
-    override fun removeAllCookies() {
-        return androidCookieManager.removeAllCookies {
+    override suspend fun removeAllCookies() {
+        androidCookieManager.removeAllCookies {
             Log.i("AndroidCookieManager", "removeAllCookies: $it")
         }
+        androidCookieManager.flush()
     }
 }
 
@@ -139,4 +140,4 @@ actual fun getCookieExpirationDate(expiresDate: Long): String {
 }
 
 @Suppress("FunctionName") // Builder Function
-actual fun ActualCookieManager(): CookieManager = AndroidCookieManager
+actual fun WebViewCookieManager(): CookieManager = AndroidCookieManager
