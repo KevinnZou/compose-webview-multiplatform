@@ -16,19 +16,19 @@ data class Cookie(
      * The cookie domain.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
-    val domain: String?,
+    val domain: String? = null,
 
     /**
      * The cookie expiration date in milliseconds.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
-    val path: String?,
+    val path: String? = null,
 
     /**
      * The cookie expiration date in milliseconds.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
-    val expiresDate: Long?,
+    val expiresDate: Long? = null,
 
     /**
      * Whether the cookie is only valid for the current session.
@@ -39,25 +39,25 @@ data class Cookie(
      * The cookie same site policy.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
-    val sameSite: HTTPCookieSameSitePolicy?,
+    val sameSite: HTTPCookieSameSitePolicy? = null,
 
     /**
      * Whether the cookie is secure.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
-    val isSecure: Boolean?,
+    val isSecure: Boolean? = null,
 
     /**
      * Whether the cookie is HTTP only.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
-    val isHttpOnly: Boolean?,
+    val isHttpOnly: Boolean? = null,
 
     /**
      * The cookie maximum age in seconds.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
-    val maxAge: Long?
+    val maxAge: Long? = null
 ) {
 
     enum class HTTPCookieSameSitePolicy {
