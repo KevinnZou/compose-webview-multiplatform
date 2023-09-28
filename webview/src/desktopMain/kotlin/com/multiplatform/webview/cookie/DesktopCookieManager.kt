@@ -10,6 +10,8 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 object DesktopCookieManager : CookieManager, CefCookieVisitor {
     /**
@@ -26,9 +28,8 @@ object DesktopCookieManager : CookieManager, CefCookieVisitor {
         desktopCookieManager?.visitAllCookies(this)
     }
 
-    override suspend fun setCookie(url: String, cookie: Cookie) {
+    override suspend fun setCookie(url: String, cookie: Cookie) = suspendCoroutine { continuation ->
         applyManager()
-        Logger.i(tag = "DesktopCookieManager") { "DesktopCookieManager setCookie: $url, $cookie" }
 
         val currentTime = System.currentTimeMillis()
         val cefCookie = CefCookie(
@@ -46,16 +47,17 @@ object DesktopCookieManager : CookieManager, CefCookieVisitor {
         if (desktopCookieManager?.setCookie(url, cefCookie) == true) {
             visit(cefCookie, 1, 1, BoolRef())
         }
+        desktopCookieManager?.flushStore {
+            continuation.resume(Unit)
+        } ?: continuation.resume(Unit)
     }
 
-    override suspend fun getCookies(url: String): List<Cookie> {
+    override suspend fun getCookies(url: String): List<Cookie> = suspendCoroutine { continuation ->
         applyManager()
 
         Logger.i(tag = "DesktopCookieManager") { "DesktopCookieManager getCookies: $url" }
         val cookieList = mutableSetOf<Cookie>()
-        desktopCookieManager?.visitUrlCookies(
-            url, true
-        ) { cookie, _, _, _ ->
+        desktopCookieManager?.visitUrlCookies(url, true) { cookie, _, _, _ ->
             cookieList.add(
                 Cookie(
                     name = cookie.name,
@@ -88,14 +90,17 @@ object DesktopCookieManager : CookieManager, CefCookieVisitor {
             )
         }.forEach(cookieList::add)
 
-        return cookieList.toList()
+        continuation.resume(cookieList.toList())
     }
 
-    override suspend fun removeAllCookies() {
+    override suspend fun removeAllCookies() = suspendCoroutine { continuation ->
         applyManager()
 
         cookies.clear()
         desktopCookieManager?.deleteCookies("", "")
+        desktopCookieManager?.flushStore {
+            continuation.resume(Unit)
+        } ?: continuation.resume(Unit)
     }
 
     override fun visit(cookie: CefCookie?, count: Int, total: Int, delete: BoolRef?): Boolean {
