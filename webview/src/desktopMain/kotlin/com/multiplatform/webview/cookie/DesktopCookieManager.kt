@@ -1,49 +1,59 @@
 package com.multiplatform.webview.cookie
 
 import co.touchlab.kermit.Logger
+import org.cef.callback.CefCookieVisitor
+import org.cef.misc.BoolRef
 import org.cef.network.CefCookie
 import org.cef.network.CefCookieManager
+import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
-object DesktopCookieManager : CookieManager {
+object DesktopCookieManager : CookieManager, CefCookieVisitor {
     /**
      * CefCookieManager.getGlobalManager() is not available until CEF is initialized.
      * Thus, we can only initialize it lazily.
      */
     private var desktopCookieManager: CefCookieManager? = null
+    private val cookies: MutableSet<CefCookie> = mutableSetOf()
 
-    override suspend fun setCookie(url: String, cookie: Cookie) {
+    private fun applyManager() {
         if (desktopCookieManager == null) {
             desktopCookieManager = CefCookieManager.getGlobalManager()
         }
-        val currentTime = System.currentTimeMillis()
+        desktopCookieManager?.visitAllCookies(this)
+    }
+
+    override suspend fun setCookie(url: String, cookie: Cookie) {
+        applyManager()
         Logger.i(tag = "DesktopCookieManager") { "DesktopCookieManager setCookie: $url, $cookie" }
-        desktopCookieManager!!.setCookie(
-            url, CefCookie(
-                cookie.name,
-                cookie.value,
-                cookie.domain,
-                cookie.path,
-                cookie.isSecure ?: false,
-                cookie.isHttpOnly ?: false,
-                Date(currentTime),
-                Date(currentTime),
-                Date(cookie.expiresDate ?: currentTime).before(Date(currentTime)),
-                Date(cookie.expiresDate ?: System.currentTimeMillis())
-            )
+
+        val currentTime = System.currentTimeMillis()
+        val cefCookie = CefCookie(
+            cookie.name,
+            cookie.value,
+            cookie.domain,
+            cookie.path,
+            cookie.isSecure ?: false,
+            cookie.isHttpOnly ?: false,
+            Date(currentTime),
+            Date(currentTime),
+            Date(cookie.expiresDate ?: currentTime).before(Date(currentTime)),
+            Date(cookie.expiresDate ?: System.currentTimeMillis())
         )
+        if (desktopCookieManager?.setCookie(url, cefCookie) == true) {
+            visit(cefCookie, 1, 1, BoolRef())
+        }
     }
 
     override suspend fun getCookies(url: String): List<Cookie> {
-        if (desktopCookieManager == null) {
-            desktopCookieManager = CefCookieManager.getGlobalManager()
-        }
+        applyManager()
+
         Logger.i(tag = "DesktopCookieManager") { "DesktopCookieManager getCookies: $url" }
-        val cookieList = mutableListOf<Cookie>()
-        CefCookieManager.getGlobalManager().visitUrlCookies(
+        val cookieList = mutableSetOf<Cookie>()
+        desktopCookieManager?.visitUrlCookies(
             url, true
         ) { cookie, _, _, _ ->
             cookieList.add(
@@ -62,11 +72,36 @@ object DesktopCookieManager : CookieManager {
             true
         }
 
-        return cookieList
+        cookies.filter {
+            it.domain == URL(url).host
+        }.map {
+            Cookie(
+                name = it.name,
+                value = it.value,
+                domain = it.domain,
+                path = it.path,
+                expiresDate = it.expires?.time,
+                sameSite = null,
+                isSecure = it.secure,
+                isHttpOnly = it.httponly,
+                maxAge = null
+            )
+        }.forEach(cookieList::add)
+
+        return cookieList.toList()
     }
 
     override suspend fun removeAllCookies() {
-        CefCookieManager.getGlobalManager().deleteCookies("", "")
+        applyManager()
+
+        cookies.clear()
+        desktopCookieManager?.deleteCookies("", "")
+    }
+
+    override fun visit(cookie: CefCookie?, count: Int, total: Int, delete: BoolRef?): Boolean {
+        cookie?.let(cookies::add)
+
+        return true
     }
 }
 
