@@ -132,7 +132,10 @@ data object Cef {
         }
     }
 
-    private fun getInitBuilder(builder: CefAppBuilder, initProgress: InitProgress?): CefAppBuilder? {
+    private fun getInitBuilder(
+        builder: CefAppBuilder,
+        initProgress: InitProgress?
+    ): CefAppBuilder? {
         val currentState = state.value
 
         when (currentState) {
@@ -150,14 +153,19 @@ data object Cef {
                 dispatchProgress(state, percent)
 
                 when (state) {
-                    null -> { /** Could be null in Java, just for safety reasons */ }
+                    null -> {
+                        /** Could be null in Java, just for safety reasons */
+                    }
+
                     EnumProgress.LOCATING -> initProgress?.locating()
                     EnumProgress.DOWNLOADING -> initProgress?.downloading(percent)
                     EnumProgress.EXTRACTING -> initProgress?.extracting()
                     EnumProgress.INSTALL -> initProgress?.install()
                     EnumProgress.INITIALIZING -> initProgress?.initializing()
                     EnumProgress.INITIALIZED -> initProgress?.initialized()
-                    else -> { /** Just for safety reasons */ }
+                    else -> {
+                        /** Just for safety reasons */
+                    }
                 }
             }
         }

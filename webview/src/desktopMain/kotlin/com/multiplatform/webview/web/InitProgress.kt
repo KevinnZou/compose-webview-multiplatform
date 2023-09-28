@@ -2,17 +2,17 @@ package com.multiplatform.webview.web
 
 interface InitProgress {
 
-    fun locating() { }
+    fun locating() {}
 
-    fun downloading(progress: Float) { }
+    fun downloading(progress: Float) {}
 
-    fun extracting() { }
+    fun extracting() {}
 
-    fun install() { }
+    fun install() {}
 
-    fun initializing() { }
+    fun initializing() {}
 
-    fun initialized() { }
+    fun initialized() {}
 
     class Builder {
         private var locatingCallback: () -> Unit = { }
