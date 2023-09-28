@@ -57,8 +57,10 @@ internal fun CefBrowser.addLoadListener(state: WebViewState, navigator: WebViewN
             canGoBack: Boolean,
             canGoForward: Boolean
         ) {
-            if (state.loadingState == LoadingState.Finished) {
+            if (isLoading) {
                 state.loadingState = LoadingState.Initializing
+            } else {
+                state.loadingState = LoadingState.Finished
             }
             navigator.canGoBack = canGoBack
             navigator.canGoForward = canGoForward
