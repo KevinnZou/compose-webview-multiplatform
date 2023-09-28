@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +29,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
+import com.multiplatform.webview.cookie.Cookie
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewNavigator
@@ -41,7 +44,8 @@ internal fun BasicWebViewSample() {
     val initialUrl = "https://github.com/KevinnZou/compose-webview-multiplatform"
     val state = rememberWebViewState(url = initialUrl)
     state.webSettings.apply {
-        customUserAgentString = "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1) AppleWebKit/625.20 (KHTML, like Gecko) Version/14.3.43 Safari/625.20"
+        customUserAgentString =
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1) AppleWebKit/625.20 (KHTML, like Gecko) Version/14.3.43 Safari/625.20"
     }
     val navigator = rememberWebViewNavigator()
     var textFieldValue by remember(state.lastLoadedUrl) {
@@ -101,6 +105,27 @@ internal fun BasicWebViewSample() {
                     progress = loadingState.progress,
                     modifier = Modifier.fillMaxWidth()
                 )
+            }
+
+            LaunchedEffect(state.loadingState) {
+                if (state.loadingState is LoadingState.Finished) {
+                    state.cookieManager.setCookie(
+                        "https://github.com",
+                        Cookie(
+                            name = "test",
+                            value = "value",
+                            domain = "github.com",
+                            expiresDate = 1896863778
+                        )
+                    )
+                    Logger.i {
+                        "cookie: ${state.cookieManager.getCookies("https://github.com")}"
+                    }
+                    state.cookieManager.removeAllCookies()
+                    Logger.i {
+                        "cookie: ${state.cookieManager.getCookies("https://github.com")}"
+                    }
+                }
             }
 
             WebView(
