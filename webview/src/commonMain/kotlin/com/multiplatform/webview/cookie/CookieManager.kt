@@ -9,10 +9,10 @@ package com.multiplatform.webview.cookie
  * since expect/actual classes will be marked as beta in coming kotlin releases.
  * */
 interface CookieManager {
-    fun setCookie(url: String, cookie: Cookie)
-    fun getCookies(url: String): List<Cookie>
-    fun removeAllCookies()
+    suspend fun setCookie(url: String, cookie: Cookie)
+    suspend fun getCookies(url: String): List<Cookie>
+    suspend fun removeAllCookies()
 }
 
 @Suppress("FunctionName") // Builder Function
-expect fun ActualCookieManager(): CookieManager
+expect fun WebViewCookieManager(): CookieManager
