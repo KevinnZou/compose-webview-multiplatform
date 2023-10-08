@@ -50,5 +50,10 @@ interface IWebView {
      */
     fun stopLoading()
 
+    /**
+     * Evaluates the given JavaScript in the context of the currently displayed page.
+     * and returns the result of the evaluation.
+     * Note: The callback will not be called from desktop platform because it is not supported by CEF currently.
+     */
     fun evaluateJavaScript(script: String, callback: ((String) -> Unit)? = null)
 }

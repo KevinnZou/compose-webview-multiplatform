@@ -15,3 +15,4 @@ iosApp/iosApp.xcodeproj/*
 webview/webview.podspec
 /convention-plugins/
 keySec.gpg
+desktopApp/jcef-bundle
