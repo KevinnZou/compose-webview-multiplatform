@@ -169,7 +169,12 @@ sealed class PlatformWebSettings {
          * whether Safe Browsing is enabled. Safe Browsing allows WebView to
          * protect against malware and phishing attacks by verifying the links.
          */
-        var safeBrowsingEnabled: Boolean = true
+        var safeBrowsingEnabled: Boolean = true,
+
+        /**
+         * Whether the DOM storage API is enabled. The default value is {@code false}.
+         */
+        var domStorageEnabled: Boolean = false,
     ) : PlatformWebSettings()
 
     data class DesktopWebSettings(
