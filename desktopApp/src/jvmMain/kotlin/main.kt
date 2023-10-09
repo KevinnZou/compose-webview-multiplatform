@@ -24,6 +24,9 @@ fun main() = application {
             withContext(Dispatchers.IO) {
                 Cef.init(builder = {
                     installDir = File("jcef-bundle")
+                    settings {
+                        cachePath = File("cache").absolutePath
+                    }
                 }, initProgress = {
                     onDownloading {
                         downloading = max(it, 0F)

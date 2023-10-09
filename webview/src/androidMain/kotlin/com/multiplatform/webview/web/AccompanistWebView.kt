@@ -174,6 +174,7 @@ fun AccompanistWebView(
                         standardFontFamily = it.standardFontFamily
                         defaultFontSize = it.defaultFontSize
                         loadsImagesAutomatically = it.loadsImagesAutomatically
+                        domStorageEnabled = it.domStorageEnabled
                     }
                 }
             }.also { state.webView = AndroidWebView(it) }

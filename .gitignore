@@ -16,3 +16,6 @@ webview/webview.podspec
 /convention-plugins/
 keySec.gpg
 desktopApp/jcef-bundle
+desktopApp/cache
+desktopApp/DawnCache
+desktopApp/GPUCache
