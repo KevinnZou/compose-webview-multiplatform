@@ -9,11 +9,22 @@ This can (should) be called in the app init process and only needs to be called 
 LaunchedEffect(Unit) {
     Cef.init(builder = {
             installDir = File("jcef-bundle")
-    })
+    },{})
 }
 ```
+
 Then, run your app once and it will download the JCEF Bundle to the install directory. 
 After that, just restart your app and it will work properly.
+
+## Disposal
+When the app is closing, you need to dispose of the CEF Module.
+```kotlin
+DisposableEffect(Unit) {
+    onDispose {
+        Cef.dispose()
+    }
+}
+```
 
 > **Note**
 > Make sure to exclude the `installDir` from upstreaming by adding it to the `.gitignore`.
@@ -24,21 +35,45 @@ Please use the following example as a reference.
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
         var restartRequired by remember { mutableStateOf(false) }
+        var downloading by remember { mutableStateOf(0F) }
+        var initialized by remember { mutableStateOf(false) }
 
         LaunchedEffect(Unit) {
-            Cef.init(builder = {
-                installDir = File("jcef-bundle")
-            }, onError = {
-                it.printStackTrace()
-            }) {
-                restartRequired = true
+            withContext(Dispatchers.IO) {
+                Cef.init(builder = {
+                    installDir = File("jcef-bundle")
+                    settings {
+                        cachePath = File("cache").absolutePath
+                    }
+                }, initProgress = {
+                    onDownloading {
+                        downloading = max(it, 0F)
+                    }
+                    onInitialized {
+                        initialized = true
+                    }
+                }, onError = {
+                    it.printStackTrace()
+                }, onRestartRequired = {
+                    restartRequired = true
+                })
             }
         }
 
         if (restartRequired) {
             Text(text = "Restart required.")
         } else {
-            MainWebView()
+            if (initialized) {
+                MainWebView()
+            } else {
+                Text(text = "Downloading $downloading%")
+            }
+        }
+
+        DisposableEffect(Unit) {
+            onDispose {
+                Cef.dispose()
+            }
         }
     }
 }
