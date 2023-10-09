@@ -66,6 +66,19 @@ object IOSCookieManager : CookieManager {
         }
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    override suspend fun removeCookies(url: String) = suspendCancellableCoroutine {
+        cookieStore.getAllCookies { cookies ->
+            cookies?.filter { cookie ->
+                cookie is NSHTTPCookie && url.contains(cookie.domain)
+            }?.forEach { cookie ->
+                cookieStore.deleteCookie(cookie as NSHTTPCookie) {}
+            }
+            it.resume(Unit, {})
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     override suspend fun setCookie(url: String, cookie: Cookie) = suspendCancellableCoroutine {
         val iCookie = NSHTTPCookie.cookieWithProperties(mapOf(
             NSHTTPCookieName to cookie.name,

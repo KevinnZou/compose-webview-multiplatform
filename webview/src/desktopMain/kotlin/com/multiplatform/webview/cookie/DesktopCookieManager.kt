@@ -103,6 +103,18 @@ object DesktopCookieManager : CookieManager, CefCookieVisitor {
         } ?: continuation.resume(Unit)
     }
 
+    override suspend fun removeCookies(url: String) = suspendCoroutine { continuation ->
+        applyManager()
+
+        cookies.removeIf {
+            it.domain == URL(url).host
+        }
+        desktopCookieManager?.deleteCookies(url, "")
+        desktopCookieManager?.flushStore {
+            continuation.resume(Unit)
+        } ?: continuation.resume(Unit)
+    }
+
     override fun visit(cookie: CefCookie?, count: Int, total: Int, delete: BoolRef?): Boolean {
         cookie?.let(cookies::add)
 
