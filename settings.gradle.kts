@@ -1,8 +1,9 @@
 rootProject.name = "compose-webview-multiplatform"
 
-include(":androidApp")
+include(":sample:androidApp")
 include(":webview")
-include(":desktopApp")
+include(":sample:desktopApp")
+include(":sample:shared")
 //includeBuild("convention-plugins")
 
 pluginManagement {
@@ -37,3 +38,4 @@ dependencyResolutionManagement {
         maven { url = uri("https://jitpack.io") }
     }
 }
+include(":shared")
