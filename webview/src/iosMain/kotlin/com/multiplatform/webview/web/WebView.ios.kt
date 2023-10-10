@@ -54,7 +54,6 @@ fun IOSWebView(
                 frame = CGRectZero.readValue(),
                 configuration = config
             ).apply {
-                onCreated()
                 userInteractionEnabled = captureBackPresses
                 allowsBackForwardNavigationGestures = captureBackPresses
                 customUserAgent = state.webSettings.customUserAgentString
@@ -69,6 +68,7 @@ fun IOSWebView(
                     )
                 )
                 this.navigationDelegate = WKNavigationDelegate(state, navigator)
+                onCreated()
             }.also { state.webView = IOSWebView(it) }
         },
         modifier = modifier,

@@ -36,7 +36,7 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.2")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
                 implementation("co.touchlab:kermit:2.0.0-RC5")
             }
         }
@@ -44,8 +44,9 @@ kotlin {
             dependencies {
                 api("androidx.activity:activity-compose:1.7.2")
                 api("androidx.appcompat:appcompat:1.6.1")
-                api("androidx.core:core-ktx:1.10.1")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.2")
+                api("androidx.core:core-ktx:1.12.0")
+                api("androidx.webkit:webkit:1.8.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
             }
         }
         val iosX64Main by getting

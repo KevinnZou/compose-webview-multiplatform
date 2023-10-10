@@ -1,9 +1,6 @@
 package com.multiplatform.webview.web
 
 import co.touchlab.kermit.Logger
-import com.multiplatform.webview.web.LoadingState
-import com.multiplatform.webview.web.WebViewNavigator
-import com.multiplatform.webview.web.WebViewState
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.ExperimentalForeignApi
 import observer.ObserverProtocol

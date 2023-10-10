@@ -4,11 +4,11 @@ import com.multiplatform.webview.setting.WebSettings
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.browser.CefRequestContext
-import org.cef.handler.CefRequestContextHandlerAdapter
-import org.cef.handler.CefResourceRequestHandler
-import org.cef.handler.CefResourceRequestHandlerAdapter
+import org.cef.handler.*
 import org.cef.misc.BoolRef
+import org.cef.network.CefCookie
 import org.cef.network.CefRequest
+import org.cef.network.CefResponse
 
 internal fun createModifiedRequestContext(
     settings: WebSettings
@@ -39,7 +39,8 @@ internal fun createModifiedRequestContext(
             ): CefResourceRequestHandler {
                 return resourceRequestHandler
             }
-        })
+        }
+    )
 }
 
 internal fun CefRequest.setUserAgentString(userAgent: String) {
