@@ -1,6 +1,9 @@
 name: Publish Wiki
 on:
   push:
+    branches:
+      - main
+      - feature/wiki_improvement
     paths-ignore:
       - sample
 
