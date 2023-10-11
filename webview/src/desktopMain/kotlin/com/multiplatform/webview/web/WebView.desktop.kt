@@ -52,7 +52,7 @@ fun DesktopWebView(
         val url = when (val current = state.content) {
             is WebContent.Url -> current.url
             is WebContent.Data -> current.data.toDataUri()
-            else -> null
+            else -> KCEFBrowser.BLANK_URI
         }
 
         val rendering = if (state.webSettings.desktopWebSettings.offScreenRendering) {
