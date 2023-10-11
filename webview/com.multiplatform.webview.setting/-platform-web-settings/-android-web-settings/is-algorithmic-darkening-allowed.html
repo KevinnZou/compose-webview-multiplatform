@@ -1,0 +1,140 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>isAlgorithmicDarkeningAllowed</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../index.html">
+                            compose-webview-multiplatform
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector common-like" data-active="" data-filter=":webview:dokkaHtmlPartial/commonMain">common</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="member" id="content" pageids="webview::com.multiplatform.webview.setting/PlatformWebSettings.AndroidWebSettings/isAlgorithmicDarkeningAllowed/#/PointingToDeclaration//1162471692">
+  <div class="breadcrumbs"><a href="../../../index.html">webview</a><span class="delimiter">/</span><a href="../../index.html">com.multiplatform.webview.setting</a><span class="delimiter">/</span><a href="../index.html">PlatformWebSettings</a><span class="delimiter">/</span><a href="index.html">AndroidWebSettings</a><span class="delimiter">/</span><span class="current">isAlgorithmicDarkeningAllowed</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>is</span><wbr><span>Algorithmic</span><wbr><span>Darkening</span><wbr><span><span>Allowed</span></span></h1>
+  </div>
+  <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="is-algorithmic-darkening-allowed.html">isAlgorithmicDarkeningAllowed</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><p class="paragraph">Control whether algorithmic darkening is allowed.</p><p class="note">
+<b>Note:</b> This API and the behaviour described only apply to apps with
+{@code targetSdkVersion} ≥ {@link android.os.Build.VERSION_CODES#TIRAMISU}.</p><p>
+WebView always sets the media query {@code prefers-color-scheme} according to the app's
+theme attribute {@link android.R.styleable#Theme_isLightTheme isLightTheme}, i.e.
+{@code prefers-color-scheme} is {@code light} if isLightTheme is true or not specified,
+otherwise it is {@code dark}. This means that the web content's light or dark style will
+be applied automatically to match the app's theme if the content supports it.</p><p>
+Algorithmic darkening is disallowed by default.
+</p><p>
+If the app's theme is dark and it allows algorithmic darkening, WebView will attempt to
+darken web content using an algorithm, if the content doesn't define its own dark styles
+and doesn't explicitly disable darkening.</p><p>
+If Android is applying Force Dark to WebView then WebView will ignore the value of
+this setting and behave as if it were set to true.</p><p>
+The deprecated {@link #setForceDark} and related API are no-ops in apps with
+{@code targetSdkVersion} ≥ {@link android.os.Build.VERSION_CODES#TIRAMISU},
+but they still apply to apps with
+{@code targetSdkVersion} &lt; {@link android.os.Build.VERSION_CODES#TIRAMISU}.</p><p>
+The below table summarizes how APIs work with different apps.</p><table border="2" width="85%" align="center" cellpadding="5">
+    <thead>
+        <tr>
+            <th>App</th>
+            <th>Web content which uses {@code prefers-color-scheme}</th>
+            <th>Web content which does not use {@code prefers-color-scheme}</th>
+        </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>App with {@code isLightTheme} True or not set</td>
+        <td>Renders with the light theme defined by the content author.</td>
+        <td>Renders with the default styling defined by the content author.</td>
+    </tr>
+    <tr>
+        <td>App with Android forceDark in effect</td>
+        <td>Renders with the dark theme defined by the content author.</td>
+        <td>Renders with the styling modified to dark colors by an algorithm
+            if allowed by the content author.</td>
+    </tr>
+    <tr>
+        <td>App with {@code isLightTheme} False,
+           {@code targetSdkVersion} &lt; {@link android.os.Build.VERSION_CODES#TIRAMISU},
+            and has {@code FORCE_DARK_AUTO}</td>
+        <td>Renders with the dark theme defined by the content author.</td>
+        <td>Renders with the default styling defined by the content author.</td>
+    </tr>
+    <tr>
+        <td>App with {@code isLightTheme} False,
+           {@code targetSdkVersion} ≥ {@link android.os.Build.VERSION_CODES#TIRAMISU},
+            and {@code setAlgorithmicDarkening(false)}</td>
+        <td>Renders with the dark theme defined by the content author.</td>
+        <td>Renders with the default styling defined by the content author.</td>
+    </tr>
+    <tr>
+        <td>App with {@code isLightTheme} False,
+           {@code targetSdkVersion} ≥ {@link android.os.Build.VERSION_CODES#TIRAMISU},
+            and {@code setAlgorithmicDarkening(true)}</td>
+        <td>Renders with the dark theme defined by the content author.</td>
+        <td>Renders with the styling modified to dark colors by an algorithm if allowed
+            by the content author.</td>
+    </tr>
+    </tbody>
+</table>
+<p></p>
+</div></div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

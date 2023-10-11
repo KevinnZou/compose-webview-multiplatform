@@ -1,0 +1,7 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+
+module:webview
+com.multiplatform.webview.cookie
+com.multiplatform.webview.setting
+com.multiplatform.webview.web

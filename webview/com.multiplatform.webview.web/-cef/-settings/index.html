@@ -1,0 +1,456 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Settings</title>
+<link href="../../../../images/logo-icon.svg" rel="icon" type="image/svg">    <script>var pathToRoot = "../../../../";</script>
+    <script>document.documentElement.classList.replace("no-js","js");</script>
+    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="https://unpkg.com/kotlin-playground@1/dist/playground.min.js" async></script>
+<script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../../styles/style.css" rel="Stylesheet">
+<link href="../../../../styles/main.css" rel="Stylesheet">
+<link href="../../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../../styles/logo-styles.css" rel="Stylesheet">
+<link href="../../../../styles/font-jb-sans-auto.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+    <div class="root">
+<nav class="navigation" id="navigation-wrapper">
+    <div class="navigation--inner">
+        <div class="navigation-title">
+            <button class="menu-toggle" id="menu-toggle" type="button">toggle menu</button>
+            <div class="library-name">
+<a class="library-name--link" href="../../../../index.html">
+                            compose-webview-multiplatform
+                    </a>            </div>
+            <div class="library-version">
+            </div>
+        </div>
+        <div class="filter-section" id="filter-section">
+                <button class="platform-tag platform-selector jvm-like" data-active="" data-filter=":webview:dokkaHtmlPartial/desktopMain">desktop</button>
+        </div>
+    </div>
+    <div class="navigation-controls">
+        <button class="navigation-controls--btn navigation-controls--theme" id="theme-toggle-button" type="button">switch theme</button>
+        <div class="navigation-controls--btn navigation-controls--search" id="searchBar" role="button">search in API</div>
+    </div>
+</nav>
+        <div id="container">
+            <div class="sidebar" id="leftColumn">
+                <div class="sidebar--inner" id="sideMenu"></div>
+            </div>
+            <div id="main">
+<div class="main-content" data-page-type="classlike" id="content" pageids="webview::com.multiplatform.webview.web/Cef.Settings///PointingToDeclaration//1345633588">
+  <div class="breadcrumbs"><a href="../../../index.html">webview</a><span class="delimiter">/</span><a href="../../index.html">com.multiplatform.webview.web</a><span class="delimiter">/</span><a href="../index.html">Cef</a><span class="delimiter">/</span><span class="current">Settings</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span><span>Settings</span></span></h1>
+    <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+      <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword">data </span><span class="token keyword">class </span><a href="index.html">Settings</a><span class="token punctuation">(</span><span class="parameters "><span class="parameter "><span class="token keyword">var </span>cachePath<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>browserSubProcessPath<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>commandLineArgsDisabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>cookieableSchemesExcludeDefaults<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>cookieableSchemesList<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>javascriptFlags<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>locale<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>localesDirPath<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>logFile<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>logSeverity<span class="token operator">: </span><a href="-log-severity/index.html">Cef.Settings.LogSeverity</a><span class="token operator"> = </span>LogSeverity.Default<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>packLoadingDisabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>persistSessionCookies<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>remoteDebuggingPort<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>resourcesDirPath<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>uncaughtExceptionStackSize<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>userAgent<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>userAgentProduct<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter "><span class="token keyword">var </span>windowlessRenderingEnabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span></div></div>    </div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="CONSTRUCTOR,TYPE,PROPERTY,FUNCTION">Members</button></div>
+    <div class="tabs-section-body">
+      <div data-togglable="CONSTRUCTOR">
+        <h2 class="">Constructors</h2>
+        <div class="table"><a data-name="-1363726637%2FConstructors%2F1345633588" anchor-label="Settings" id="-1363726637%2FConstructors%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-togglable="CONSTRUCTOR" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-settings.html"><span><span>Settings</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1363726637%2FConstructors%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword">constructor</span><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">cachePath<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">browserSubProcessPath<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">commandLineArgsDisabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">cookieableSchemesExcludeDefaults<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">cookieableSchemesList<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">javascriptFlags<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">locale<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">localesDirPath<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">logFile<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">logSeverity<span class="token operator">: </span><a href="-log-severity/index.html">Cef.Settings.LogSeverity</a><span class="token operator"> = </span>LogSeverity.Default<span class="token punctuation">, </span></span><span class="parameter ">packLoadingDisabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">persistSessionCookies<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span><span class="token punctuation">, </span></span><span class="parameter ">remoteDebuggingPort<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter ">resourcesDirPath<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">uncaughtExceptionStackSize<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="token operator"> = </span><span class="token constant">0</span><span class="token punctuation">, </span></span><span class="parameter ">userAgent<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">userAgentProduct<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span><span class="token operator"> = </span>null<span class="token punctuation">, </span></span><span class="parameter ">windowlessRenderingEnabled<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="token operator"> = </span><span class="token boolean">false</span></span></span><span class="token punctuation">)</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="TYPE">
+        <h2 class="">Types</h2>
+        <div class="table"><a data-name="432629938%2FClasslikes%2F1345633588" anchor-label="LogSeverity" id="432629938%2FClasslikes%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="-log-severity/index.html"><span>Log</span><wbr><span><span>Severity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="432629938%2FClasslikes%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword">interface </span><a href="-log-severity/index.html">LogSeverity</a></div><div class="brief "><p class="paragraph">Log severity levels.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="PROPERTY">
+        <h2 class="">Properties</h2>
+        <div class="table"><a data-name="-514491772%2FProperties%2F1345633588" anchor-label="browserSubProcessPath" id="-514491772%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="browser-sub-process-path.html"><span>browser</span><wbr><span>Sub</span><wbr><span>Process</span><wbr><span><span>Path</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-514491772%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="browser-sub-process-path.html">browserSubProcessPath</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The path to a separate executable that will be launched for sub-processes. By default the browser process executable is used. See the comments on CefExecuteProcess() for details. Also configurable using the "browser-subprocess-path" command-line switch.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1846329159%2FProperties%2F1345633588" anchor-label="cachePath" id="-1846329159%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="cache-path.html"><span>cache</span><wbr><span><span>Path</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1846329159%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="cache-path.html">cachePath</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The location where cache data will be stored on disk. If empty an in-memory cache will be used for some features and a temporary disk cache for others. HTML5 databases such as localStorage will only persist across sessions if a cache path is specified.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-265793176%2FProperties%2F1345633588" anchor-label="commandLineArgsDisabled" id="-265793176%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="command-line-args-disabled.html"><span>command</span><wbr><span>Line</span><wbr><span>Args</span><wbr><span><span>Disabled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-265793176%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="command-line-args-disabled.html">commandLineArgsDisabled</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Set to true to disable configuration of browser process features using standard CEF and Chromium command-line arguments. Configuration can still be specified using CEF data structures or via the CefApp::OnBeforeCommandLineProcessing() method.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1440318050%2FProperties%2F1345633588" anchor-label="cookieableSchemesExcludeDefaults" id="-1440318050%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="cookieable-schemes-exclude-defaults.html"><span>cookieable</span><wbr><span>Schemes</span><wbr><span>Exclude</span><wbr><span><span>Defaults</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1440318050%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="cookieable-schemes-exclude-defaults.html">cookieableSchemesExcludeDefaults</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="265356370%2FProperties%2F1345633588" anchor-label="cookieableSchemesList" id="265356370%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="cookieable-schemes-list.html"><span>cookieable</span><wbr><span>Schemes</span><wbr><span><span>List</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="265356370%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="cookieable-schemes-list.html">cookieableSchemesList</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1636381574%2FProperties%2F1345633588" anchor-label="javascriptFlags" id="1636381574%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="javascript-flags.html"><span>javascript</span><wbr><span><span>Flags</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1636381574%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="javascript-flags.html">javascriptFlags</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Custom flags that will be used when initializing the V8 JavaScript engine. The consequences of using custom flags may not be well tested. Also configurable using the "js-flags" command-line switch.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="2018106272%2FProperties%2F1345633588" anchor-label="locale" id="2018106272%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="locale.html"><span><span>locale</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2018106272%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="locale.html">locale</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The locale string that will be passed to Blink. If empty the default locale of "en-US" will be used. This value is ignored on Linux where locale is determined using environment variable parsing with the precedence order: LANGUAGE, LC_ALL, LC_MESSAGES and LANG. Also configurable using the "lang" command-line switch.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1994730719%2FProperties%2F1345633588" anchor-label="localesDirPath" id="-1994730719%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="locales-dir-path.html"><span>locales</span><wbr><span>Dir</span><wbr><span><span>Path</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1994730719%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="locales-dir-path.html">localesDirPath</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The fully qualified path for the locales directory. If this value is empty the locales directory must be located in the module directory. This value is ignored on Mac OS X where pack files are always loaded from the app bundle Resources directory. Also configurable using the "locales-dir-path" command-line switch.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="980690816%2FProperties%2F1345633588" anchor-label="logFile" id="980690816%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="log-file.html"><span>log</span><wbr><span><span>File</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="980690816%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="log-file.html">logFile</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The directory and file name to use for the debug log. If empty, the default name of "debug.log" will be used and the file will be written to the application directory. Also configurable using the "log-file" command-line switch.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-448424545%2FProperties%2F1345633588" anchor-label="logSeverity" id="-448424545%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="log-severity.html"><span>log</span><wbr><span><span>Severity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-448424545%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="log-severity.html">logSeverity</a><span class="token operator">: </span><a href="-log-severity/index.html">Cef.Settings.LogSeverity</a></div><div class="brief "><p class="paragraph">The log severity. Only messages of this severity level or higher will be logged. Also configurable using the "log-severity" command-line switch with a value of "verbose", "info", "warning", "error", "error-report" or "disable".</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1807454785%2FProperties%2F1345633588" anchor-label="packLoadingDisabled" id="1807454785%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="pack-loading-disabled.html"><span>pack</span><wbr><span>Loading</span><wbr><span><span>Disabled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1807454785%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="pack-loading-disabled.html">packLoadingDisabled</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Set to true to disable loading of pack files for resources and locales. A resource bundle handler must be provided for the browser and render processes via CefApp::GetResourceBundleHandler() if loading of pack files is disabled. Also configurable using the "disable-pack-loading" command- line switch.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="177401779%2FProperties%2F1345633588" anchor-label="persistSessionCookies" id="177401779%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="persist-session-cookies.html"><span>persist</span><wbr><span>Session</span><wbr><span><span>Cookies</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="177401779%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="persist-session-cookies.html">persistSessionCookies</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">To persist session cookies (cookies without an expiry date or validity interval) by default when using the global cookie manager set this value to true. Session cookies are generally intended to be transient and most Web browsers do not persist them. A |cache_path| value must also be specified to enable this feature. Also configurable using the "persist-session-cookies" command-line switch.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="918062103%2FProperties%2F1345633588" anchor-label="remoteDebuggingPort" id="918062103%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="remote-debugging-port.html"><span>remote</span><wbr><span>Debugging</span><wbr><span><span>Port</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="918062103%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="remote-debugging-port.html">remoteDebuggingPort</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">Set to a value between 1024 and 65535 to enable remote debugging on the specified port. For example, if 8080 is specified the remote debugging URL will be http: *localhost:8080. CEF can be remotely debugged from any CEF or Chrome browser window. Also configurable using the "remote-debugging-port" command-line switch.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="1944426669%2FProperties%2F1345633588" anchor-label="resourcesDirPath" id="1944426669%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="resources-dir-path.html"><span>resources</span><wbr><span>Dir</span><wbr><span><span>Path</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1944426669%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="resources-dir-path.html">resourcesDirPath</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">The fully qualified path for the resources directory. If this value is empty the cef.pak and/or devtools_resources.pak files must be located in the module directory on Windows/Linux or the app bundle Resources directory on Mac OS X. Also configurable using the "resources-dir-path" command-line switch.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1255614773%2FProperties%2F1345633588" anchor-label="uncaughtExceptionStackSize" id="-1255614773%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="uncaught-exception-stack-size.html"><span>uncaught</span><wbr><span>Exception</span><wbr><span>Stack</span><wbr><span><span>Size</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1255614773%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="uncaught-exception-stack-size.html">uncaughtExceptionStackSize</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></div><div class="brief "><p class="paragraph">The number of stack trace frames to capture for uncaught exceptions. Specify a positive value to enable the CefV8ContextHandler:: OnUncaughtException() callback. Specify 0 (default value) and OnUncaughtException() will not be called. Also configurable using the "uncaught-exception-stack-size" command-line switch.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1203398426%2FProperties%2F1345633588" anchor-label="userAgent" id="-1203398426%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="user-agent.html"><span>user</span><wbr><span><span>Agent</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1203398426%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="user-agent.html">userAgent</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Value that will be returned as the User-Agent HTTP header. If empty the default User-Agent string will be used. Also configurable using the "user-agent" command-line switch.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-419917691%2FProperties%2F1345633588" anchor-label="userAgentProduct" id="-419917691%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="user-agent-product.html"><span>user</span><wbr><span>Agent</span><wbr><span><span>Product</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-419917691%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="user-agent-product.html">userAgentProduct</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">?</span></div><div class="brief "><p class="paragraph">Value that will be inserted as the product portion of the default User-Agent string. If empty the Chromium product version will be used. If |userAgent| is specified this value will be ignored. Also configurable using the "user_agent_product" command-line switch.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+<a data-name="-1386552516%2FProperties%2F1345633588" anchor-label="windowlessRenderingEnabled" id="-1386552516%2FProperties%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="windowless-rendering-enabled.html"><span>windowless</span><wbr><span>Rendering</span><wbr><span><span>Enabled</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1386552516%2FProperties%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">var </span><a href="windowless-rendering-enabled.html">windowlessRenderingEnabled</a><span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a></div><div class="brief "><p class="paragraph">Set to true to enable windowless (off-screen) rendering support. Do not enable this value if the application does not use windowless rendering as it may reduce rendering performance on some systems.</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div data-togglable="FUNCTION">
+        <h2 class="">Functions</h2>
+        <div class="table"><a data-name="483464829%2FFunctions%2F1345633588" anchor-label="logSeverity" id="483464829%2FFunctions%2F1345633588" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain"></a>
+          <div class="table-row" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain">
+            <div class="main-subrow keyValue ">
+              <div class=""><span class="inline-flex">
+                  <div><a href="log-severity.html"><span>log</span><wbr><span><span>Severity</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="483464829%2FFunctions%2F1345633588"></span>
+                    <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                  </span></span></div>
+              <div>
+                <div class="title">
+                  <div class="platform-hinted  with-platform-tabs" data-platform-hinted="data-platform-hinted">
+                    <div class="platform-bookmarks-row" data-toggle-list="data-toggle-list"><button class="platform-bookmark" data-filterable-current=":webview:dokkaHtmlPartial/desktopMain" data-filterable-set=":webview:dokkaHtmlPartial/desktopMain" data-active="" data-toggle=":webview:dokkaHtmlPartial/desktopMain">desktop</button></div>
+<div class="content sourceset-dependent-content" data-active="" data-togglable=":webview:dokkaHtmlPartial/desktopMain"><div class="symbol monospace"><span class="token keyword"></span><span class="token keyword">fun </span><a href="log-severity.html"><span class="token function">logSeverity</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">severity<span class="token operator">: </span><span data-unresolved-link="org.cef/CefSettings.LogSeverity///PointingToDeclaration/">CefSettings.LogSeverity</span></span></span><span class="token punctuation">)</span><span class="token operator">: </span><a href="index.html">Cef.Settings</a></div><div class="brief "><p class="paragraph">The log severity. Only messages of this severity level or higher will be logged. Also configurable using the "log-severity" command-line switch with a value of "verbose", "info", "warning", "error", "error-report" or "disable".</p></div></div>                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+
