@@ -5,6 +5,12 @@ plugins {
     id("org.jetbrains.compose")
 }
 
+repositories {
+    google()
+    mavenCentral()
+    maven { url = uri("https://jogamp.org/deployment/maven") }
+}
+
 kotlin {
     jvm()
     sourceSets {

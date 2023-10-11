@@ -114,7 +114,3 @@ internal fun String.applyWorkaroundsForHtmlString(): String {
 internal fun String.toDataUri(): String {
     return "data:text/html,${this.applyWorkaroundsForHtmlString()}"
 }
-
-internal fun CefBrowser.loadHtml(html: String) {
-    this.loadURL(html.toDataUri())
-}

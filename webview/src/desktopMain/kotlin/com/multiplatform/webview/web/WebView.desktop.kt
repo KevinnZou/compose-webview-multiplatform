@@ -8,10 +8,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
+import dev.datlag.kcef.KCEF
+import dev.datlag.kcef.KCEFBrowser
+import dev.datlag.kcef.KCEFClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.cef.CefClient
-import org.cef.browser.CefBrowser
+import org.cef.browser.CefRendering
 
 
 @Composable
@@ -41,29 +43,35 @@ fun DesktopWebView(
     onDispose: () -> Unit
 ) {
     val currentOnDispose by rememberUpdatedState(onDispose)
-    val client by produceState<CefClient?>(null) {
+    val client by produceState<KCEFClient?>(null) {
         value = withContext(Dispatchers.IO) {
-            runCatching { Cef.newClient() }.getOrNull()
+            KCEF.newClientOrNull()
         }
     }
-    val browser: CefBrowser? = remember(client, state.webSettings.desktopWebSettings) {
+    val browser: KCEFBrowser? = remember(client, state.webSettings.desktopWebSettings) {
         val url = when (val current = state.content) {
             is WebContent.Url -> current.url
             is WebContent.Data -> current.data.toDataUri()
             else -> null
         }
 
+        val rendering = if (state.webSettings.desktopWebSettings.offScreenRendering) {
+            CefRendering.OFFSCREEN
+        } else {
+            CefRendering.DEFAULT
+        }
+
         client?.createBrowser(
             url,
-            state.webSettings.desktopWebSettings.offScreenRendering,
+            rendering,
             state.webSettings.desktopWebSettings.transparent,
             createModifiedRequestContext(state.webSettings)
-        )
+        )?.also {
+            state.webView = DesktopWebView(it)
+        }
     }
 
     browser?.let {
-        state.webView = DesktopWebView(it)
-
         SwingPanel(
             factory = {
                 browser.apply {
@@ -79,7 +87,7 @@ fun DesktopWebView(
 
     DisposableEffect(Unit) {
         onDispose {
-            client?.dispose()
+            browser?.dispose()
             currentOnDispose()
         }
     }

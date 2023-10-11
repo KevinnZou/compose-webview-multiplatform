@@ -1,36 +1,16 @@
 package com.multiplatform.webview.cookie
 
 import co.touchlab.kermit.Logger
-import org.cef.callback.CefCookieVisitor
-import org.cef.misc.BoolRef
+import dev.datlag.kcef.KCEFCookieManager
 import org.cef.network.CefCookie
-import org.cef.network.CefCookieManager
-import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
-object DesktopCookieManager : CookieManager, CefCookieVisitor {
-    /**
-     * CefCookieManager.getGlobalManager() is not available until CEF is initialized.
-     * Thus, we can only initialize it lazily.
-     */
-    private var desktopCookieManager: CefCookieManager? = null
-    private val cookies: MutableSet<CefCookie> = mutableSetOf()
+object DesktopCookieManager : CookieManager {
 
-    private fun applyManager() {
-        if (desktopCookieManager == null) {
-            desktopCookieManager = CefCookieManager.getGlobalManager()
-        }
-        desktopCookieManager?.visitAllCookies(this)
-    }
-
-    override suspend fun setCookie(url: String, cookie: Cookie) = suspendCoroutine { continuation ->
-        applyManager()
-
+    override suspend fun setCookie(url: String, cookie: Cookie) {
         val currentTime = System.currentTimeMillis()
         val cefCookie = CefCookie(
             cookie.name,
@@ -44,39 +24,14 @@ object DesktopCookieManager : CookieManager, CefCookieVisitor {
             Date(cookie.expiresDate ?: currentTime).before(Date(currentTime)),
             Date(cookie.expiresDate ?: System.currentTimeMillis())
         )
-        if (desktopCookieManager?.setCookie(url, cefCookie) == true) {
-            visit(cefCookie, 1, 1, BoolRef())
-        }
-        desktopCookieManager?.flushStore {
-            continuation.resume(Unit)
-        } ?: continuation.resume(Unit)
+        val addedCookie = KCEFCookieManager.instance.setCookie(url, cefCookie)
+        Logger.i(tag = "DesktopCookieManager") { "Added Cookie: $addedCookie" }
     }
 
-    override suspend fun getCookies(url: String): List<Cookie> = suspendCoroutine { continuation ->
-        applyManager()
-
+    override suspend fun getCookies(url: String): List<Cookie> {
         Logger.i(tag = "DesktopCookieManager") { "DesktopCookieManager getCookies: $url" }
-        val cookieList = mutableSetOf<Cookie>()
-        desktopCookieManager?.visitUrlCookies(url, true) { cookie, _, _, _ ->
-            cookieList.add(
-                Cookie(
-                    name = cookie.name,
-                    value = cookie.value,
-                    domain = cookie.domain,
-                    path = cookie.path,
-                    expiresDate = cookie.expires?.time,
-                    sameSite = null,
-                    isSecure = cookie.secure,
-                    isHttpOnly = cookie.httponly,
-                    maxAge = null
-                )
-            )
-            true
-        }
 
-        cookies.filter {
-            it.domain == URL(url).host
-        }.map {
+        return KCEFCookieManager.instance.getCookiesWhile(url, true).map {
             Cookie(
                 name = it.name,
                 value = it.value,
@@ -88,37 +43,15 @@ object DesktopCookieManager : CookieManager, CefCookieVisitor {
                 isHttpOnly = it.httponly,
                 maxAge = null
             )
-        }.forEach(cookieList::add)
-
-        continuation.resume(cookieList.toList())
-    }
-
-    override suspend fun removeAllCookies() = suspendCoroutine { continuation ->
-        applyManager()
-
-        cookies.clear()
-        desktopCookieManager?.deleteCookies("", "")
-        desktopCookieManager?.flushStore {
-            continuation.resume(Unit)
-        } ?: continuation.resume(Unit)
-    }
-
-    override suspend fun removeCookies(url: String) = suspendCoroutine { continuation ->
-        applyManager()
-
-        cookies.removeIf {
-            it.domain == URL(url).host
         }
-        desktopCookieManager?.deleteCookies(url, "")
-        desktopCookieManager?.flushStore {
-            continuation.resume(Unit)
-        } ?: continuation.resume(Unit)
     }
 
-    override fun visit(cookie: CefCookie?, count: Int, total: Int, delete: BoolRef?): Boolean {
-        cookie?.let(cookies::add)
+    override suspend fun removeAllCookies() {
+        KCEFCookieManager.instance.deleteAllCookies()
+    }
 
-        return true
+    override suspend fun removeCookies(url: String) {
+        KCEFCookieManager.instance.deleteCookies(url)
     }
 }
 

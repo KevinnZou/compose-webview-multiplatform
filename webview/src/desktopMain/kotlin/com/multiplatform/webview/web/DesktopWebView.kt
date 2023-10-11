@@ -1,7 +1,7 @@
 package com.multiplatform.webview.web
 
 import co.touchlab.kermit.Logger
-import org.cef.browser.CefBrowser
+import dev.datlag.kcef.KCEFBrowser
 import org.cef.network.CefPostData
 import org.cef.network.CefPostDataElement
 import org.cef.network.CefRequest
@@ -9,7 +9,7 @@ import org.cef.network.CefRequest
 /**
  * Created By Kevin Zou On 2023/9/12
  */
-class DesktopWebView(private val webView: CefBrowser) : IWebView {
+class DesktopWebView(private val webView: KCEFBrowser) : IWebView {
 
     override fun canGoBack() = webView.canGoBack()
 
@@ -27,7 +27,7 @@ class DesktopWebView(private val webView: CefBrowser) : IWebView {
         historyUrl: String?
     ) {
         if (html != null) {
-            webView.loadHtml(html)
+            webView.loadHtml(html, baseUrl ?: KCEFBrowser.BLANK_URI)
         }
     }
 
@@ -55,6 +55,10 @@ class DesktopWebView(private val webView: CefBrowser) : IWebView {
         Logger.i {
             "evaluateJavaScript: $script"
         }
-        webView.executeJavaScript(script, "", 0)
+        webView.evaluateJavaScript(script) {
+            if (it != null) {
+                callback?.invoke(it)
+            }
+        }
     }
 }

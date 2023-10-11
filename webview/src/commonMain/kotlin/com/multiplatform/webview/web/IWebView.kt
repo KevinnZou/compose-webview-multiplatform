@@ -25,6 +25,28 @@ interface IWebView {
         historyUrl: String? = null
     )
 
+    fun loadContent(content: WebContent) {
+        when (content) {
+            is WebContent.Url -> loadUrl(
+                content.url,
+                content.additionalHttpHeaders
+            )
+            is WebContent.Data -> loadHtml(
+                content.data,
+                content.baseUrl,
+                content.mimeType,
+                content.encoding,
+                content.historyUrl
+            )
+            is WebContent.Post -> postUrl(
+                content.url,
+                content.postData
+            )
+
+            WebContent.NavigatorOnly -> { }
+        }
+    }
+
     fun postUrl(
         url: String,
         postData: ByteArray
