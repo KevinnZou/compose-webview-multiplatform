@@ -17,6 +17,9 @@ import platform.WebKit.WKWebView
 /**
  * Created By Kevin Zou On 2023/9/5
  */
+/**
+ * iOS implementation of [IWebView]
+ */
 class IOSWebView(private val wkWebView: WKWebView) : IWebView {
 
     override fun canGoBack() = wkWebView.canGoBack

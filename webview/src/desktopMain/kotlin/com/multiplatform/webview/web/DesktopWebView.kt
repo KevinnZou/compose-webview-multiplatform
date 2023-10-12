@@ -9,6 +9,9 @@ import org.cef.network.CefRequest
 /**
  * Created By Kevin Zou On 2023/9/12
  */
+/**
+ * Desktop implementation of [IWebView]
+ */
 class DesktopWebView(private val webView: CefBrowser) : IWebView {
 
     override fun canGoBack() = webView.canGoBack()

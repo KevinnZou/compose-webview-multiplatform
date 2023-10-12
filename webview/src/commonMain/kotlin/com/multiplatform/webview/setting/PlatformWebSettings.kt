@@ -4,6 +4,9 @@ package com.multiplatform.webview.setting
  * Created By Kevin Zou On 2023/9/20
  */
 sealed class PlatformWebSettings {
+    /**
+     * Android web settings
+     */
     data class AndroidWebSettings(
         /**
          * whether the WebView should support zooming using its on-screen zoom
@@ -177,10 +180,16 @@ sealed class PlatformWebSettings {
         var domStorageEnabled: Boolean = false,
     ) : PlatformWebSettings()
 
+    /**
+     * Desktop web settings
+     */
     data class DesktopWebSettings(
         var offScreenRendering: Boolean = false,
         var transparent: Boolean = false,
     ) : PlatformWebSettings()
 
+    /**
+     * IOS web settings
+     */
     data object IOSWebSettings : PlatformWebSettings()
 }

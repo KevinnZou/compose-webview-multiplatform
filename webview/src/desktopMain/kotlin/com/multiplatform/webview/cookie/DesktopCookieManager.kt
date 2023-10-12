@@ -13,6 +13,9 @@ import java.util.TimeZone
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
 
+/**
+ * Desktop implementation of [CookieManager].
+ */
 object DesktopCookieManager : CookieManager, CefCookieVisitor {
     /**
      * CefCookieManager.getGlobalManager() is not available until CEF is initialized.
@@ -129,5 +132,8 @@ actual fun getCookieExpirationDate(expiresDate: Long): String {
     return sdf.format(Date(expiresDate))
 }
 
+/**
+ * Returns an instance of [DesktopCookieManager] for Desktop.
+ */
 @Suppress("FunctionName") // Builder Function
 actual fun WebViewCookieManager(): CookieManager = DesktopCookieManager

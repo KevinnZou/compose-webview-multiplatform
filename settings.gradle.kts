@@ -27,6 +27,7 @@ pluginManagement {
         id("com.android.library").version(agpVersion)
 
         id("org.jetbrains.compose").version(composeVersion)
+        id("org.jetbrains.dokka").version("1.9.0")
     }
 }
 

@@ -13,7 +13,9 @@ import kotlinx.coroutines.withContext
 import org.cef.CefClient
 import org.cef.browser.CefBrowser
 
-
+/**
+ * Desktop WebView implementation.
+ */
 @Composable
 actual fun ActualWebView(
     state: WebViewState,
@@ -32,6 +34,9 @@ actual fun ActualWebView(
     )
 }
 
+/**
+ * Desktop WebView implementation.
+ */
 @Composable
 fun DesktopWebView(
     state: WebViewState,

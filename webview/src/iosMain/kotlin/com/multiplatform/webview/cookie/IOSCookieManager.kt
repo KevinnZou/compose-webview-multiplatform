@@ -22,6 +22,9 @@ import platform.WebKit.WKHTTPCookieStore
 import platform.WebKit.WKWebsiteDataStore
 import kotlin.coroutines.resumeWithException
 
+/**
+ * iOS implementation of [CookieManager]
+ */
 object IOSCookieManager : CookieManager {
     private val cookieStore: WKHTTPCookieStore =
         WKWebsiteDataStore.defaultDataStore().httpCookieStore
@@ -113,5 +116,8 @@ actual fun getCookieExpirationDate(expiresDate: Long): String {
     return dateFormatter.stringFromDate(date)
 }
 
+/**
+ * Returns an instance of [IOSCookieManager] for iOS.
+ */
 @Suppress("FunctionName") // Builder Function
 actual fun WebViewCookieManager(): CookieManager = IOSCookieManager
