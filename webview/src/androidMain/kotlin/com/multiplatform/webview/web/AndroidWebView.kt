@@ -9,6 +9,9 @@ import kotlin.io.encoding.Base64
 /**
  * Created By Kevin Zou On 2023/9/5
  */
+/**
+ * Android implementation of [IWebView]
+ */
 class AndroidWebView(private val webView: WebView) : IWebView {
     override fun canGoBack() = webView.canGoBack()
 

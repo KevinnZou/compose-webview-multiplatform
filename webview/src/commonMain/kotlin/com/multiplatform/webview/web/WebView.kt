@@ -81,6 +81,9 @@ fun WebView(
     )
 }
 
+/**
+ * Expect API of [WebView] that is implemented in the platform-specific modules.
+ */
 @Composable
 expect fun ActualWebView(
     state: WebViewState,

@@ -26,17 +26,41 @@ import kotlinx.coroutines.withContext
  */
 @Stable
 class WebViewNavigator(private val coroutineScope: CoroutineScope) {
+    /**
+     * Sealed class for constraining possible navigation events.
+     */
     private sealed interface NavigationEvent {
+        /**
+         * Navigate back event.
+         */
         data object Back : NavigationEvent
+
+        /**
+         * Navigate forward event.
+         */
         data object Forward : NavigationEvent
+
+        /**
+         * Reload event.
+         */
         data object Reload : NavigationEvent
+
+        /**
+         * Stop loading event.
+         */
         data object StopLoading : NavigationEvent
 
+        /**
+         * Load url event.
+         */
         data class LoadUrl(
             val url: String,
             val additionalHttpHeaders: Map<String, String> = emptyMap()
         ) : NavigationEvent
 
+        /**
+         * Load html event.
+         */
         data class LoadHtml(
             val html: String,
             val baseUrl: String? = null,
@@ -45,6 +69,9 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
             val historyUrl: String? = null
         ) : NavigationEvent
 
+        /**
+         * Post url event.
+         */
         data class PostUrl(
             val url: String,
             val postData: ByteArray
@@ -68,15 +95,26 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
             }
         }
 
+        /**
+         * Evaluate javascript event.
+         */
         data class EvaluateJavaScript(
             val script: String,
             val callback: ((String) -> Unit)?
         ) : NavigationEvent
     }
 
+    /**
+     * A [MutableSharedFlow] of [NavigationEvent]s that is used to communicate navigation events
+     * from the composable to the [IWebView].
+     */
     private val navigationEvents: MutableSharedFlow<NavigationEvent> = MutableSharedFlow(replay = 1)
 
-    // Use Dispatchers.Main to ensure that the webview methods are called on UI thread
+    /**
+     * Handles navigation events from the composable and calls the appropriate method on the
+     * [IWebView].
+     * Use Dispatchers.Main to ensure that the webview methods are called on UI thread
+     */
     internal suspend fun IWebView.handleNavigationEvents(): Nothing =
         withContext(Dispatchers.Main) {
             navigationEvents.collect { event ->
@@ -123,6 +161,11 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
     var canGoForward: Boolean by mutableStateOf(false)
         internal set
 
+    /**
+     * Loads the given URL.
+     *
+     * @param url The URL of the resource to load.
+     */
     fun loadUrl(url: String, additionalHttpHeaders: Map<String, String> = emptyMap()) {
         coroutineScope.launch {
             navigationEvents.emit(
@@ -134,6 +177,15 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
         }
     }
 
+    /**
+     * Loads the given HTML string.
+     *
+     * @param html The HTML string to load.
+     * @param baseUrl The URL to use as the page's base URL.
+     * @param mimeType The MIME type of the data in the string.
+     * @param encoding The encoding of the data in the string.
+     * @param historyUrl The history URL for the loaded HTML. Leave null to use about:blank.
+     */
     fun loadHtml(
         html: String,
         baseUrl: String? = null,
@@ -154,6 +206,12 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
         }
     }
 
+    /**
+     * Posts the given data to the given URL.
+     *
+     * @param url The URL to post the data to.
+     * @param postData The data to post.
+     */
     fun postUrl(
         url: String,
         postData: ByteArray
@@ -168,6 +226,12 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
         }
     }
 
+    /**
+     * Evaluates the given JavaScript in the context of the currently displayed page.
+     *
+     * @param script The JavaScript to evaluate.
+     * @param callback A callback to be invoked when the script execution completes.
+     */
     fun evaluateJavaScript(script: String, callback: ((String) -> Unit)? = null) {
         coroutineScope.launch {
             navigationEvents.emit(

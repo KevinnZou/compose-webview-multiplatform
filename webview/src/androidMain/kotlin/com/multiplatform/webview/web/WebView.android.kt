@@ -3,6 +3,9 @@ package com.multiplatform.webview.web
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
+/**
+ * Android WebView implementation.
+ */
 @Composable
 actual fun ActualWebView(
     state: WebViewState,

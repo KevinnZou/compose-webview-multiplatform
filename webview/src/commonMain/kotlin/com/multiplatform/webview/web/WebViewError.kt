@@ -4,6 +4,9 @@ import androidx.compose.runtime.Immutable
 
 /**
  * Created By Kevin Zou On 2023/9/5
+ */
+
+/**
  * A wrapper class to hold errors from the WebView.
  */
 @Immutable

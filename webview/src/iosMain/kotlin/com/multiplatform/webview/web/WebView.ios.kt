@@ -10,6 +10,9 @@ import platform.CoreGraphics.CGRectZero
 import platform.WebKit.WKWebView
 import platform.WebKit.WKWebViewConfiguration
 
+/**
+ * iOS WebView implementation.
+ */
 @Composable
 actual fun ActualWebView(
     state: WebViewState,
@@ -29,6 +32,9 @@ actual fun ActualWebView(
     )
 }
 
+/**
+ * iOS WebView implementation.
+ */
 @OptIn(ExperimentalForeignApi::class)
 @Composable
 fun IOSWebView(

@@ -4,7 +4,8 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
-//    id("convention.publication")
+    id("org.jetbrains.dokka")
+    id("com.vanniktech.maven.publish")
 }
 
 kotlin {
@@ -101,4 +102,9 @@ fun org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget.setUpiOSObserver()
             compilerOpts("-F $path")
         }
     }
+}
+
+mavenPublishing {
+    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.S01, automaticRelease = true)
+    signAllPublications()
 }
