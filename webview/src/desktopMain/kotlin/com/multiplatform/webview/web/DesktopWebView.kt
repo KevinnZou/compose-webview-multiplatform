@@ -16,7 +16,15 @@ class DesktopWebView(private val webView: KCEFBrowser) : IWebView {
     override fun canGoForward() = webView.canGoForward()
 
     override fun loadUrl(url: String, additionalHttpHeaders: Map<String, String>) {
-        webView.loadURL(url)
+        if (additionalHttpHeaders.isNotEmpty()) {
+            val request = CefRequest.create().apply {
+                this.url = url
+                this.setHeaderMap(additionalHttpHeaders)
+            }
+            webView.loadRequest(request)
+        } else {
+            webView.loadURL(url)
+        }
     }
 
     override fun loadHtml(

@@ -64,25 +64,24 @@ fun DesktopWebView(
             is WebContent.Url -> client?.createBrowser(
                 current.url,
                 rendering,
-                state.webSettings.desktopWebSettings.transparent,
-                createModifiedRequestContext(state.webSettings)
+                state.webSettings.desktopWebSettings.transparent
             )
             is WebContent.Data -> client?.createBrowserWithHtml(
                 current.data,
                 current.baseUrl ?: KCEFBrowser.BLANK_URI,
                 rendering,
-                state.webSettings.desktopWebSettings.transparent,
-                createModifiedRequestContext(state.webSettings)
+                state.webSettings.desktopWebSettings.transparent
             )
             else -> {
                 client?.createBrowser(
                     KCEFBrowser.BLANK_URI,
                     rendering,
-                    state.webSettings.desktopWebSettings.transparent,
-                    createModifiedRequestContext(state.webSettings)
+                    state.webSettings.desktopWebSettings.transparent
                 )
             }
         }
+    }?.also {
+        state.webView = DesktopWebView(it)
     }
 
     browser?.let {
