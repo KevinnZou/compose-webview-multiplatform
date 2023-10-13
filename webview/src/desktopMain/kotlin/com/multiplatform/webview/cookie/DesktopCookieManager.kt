@@ -62,5 +62,8 @@ actual fun getCookieExpirationDate(expiresDate: Long): String {
     return sdf.format(Date(expiresDate))
 }
 
+/**
+ * Returns an instance of [DesktopCookieManager] for Desktop.
+ */
 @Suppress("FunctionName") // Builder Function
 actual fun WebViewCookieManager(): CookieManager = DesktopCookieManager

@@ -5,4 +5,6 @@ plugins {
     id("com.android.application").apply(false)
     id("com.android.library").apply(false)
     id("org.jetbrains.compose").apply(false)
+    id("org.jetbrains.dokka")
+    id("com.vanniktech.maven.publish") version "0.25.3" apply false
 }

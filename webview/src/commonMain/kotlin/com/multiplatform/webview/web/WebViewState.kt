@@ -13,10 +13,16 @@ import com.multiplatform.webview.setting.WebSettings
 
 /**
  * Created By Kevin Zou On 2023/9/5
+ */
+
+/**
  * A state holder to hold the state for the WebView. In most cases this will be remembered
  * using the rememberWebViewState(uri) function.
  */
 class WebViewState(webContent: WebContent) {
+    /**
+     * The last loaded url. This is updated when a new page is loaded.
+     */
     var lastLoadedUrl: String? by mutableStateOf(null)
         internal set
 
@@ -56,11 +62,17 @@ class WebViewState(webContent: WebContent) {
      */
     val webSettings: WebSettings by mutableStateOf(WebSettings())
 
-    // We need access to this in the state saver. An internal DisposableEffect or AndroidView
-    // onDestroy is called after the state saver and so can't be used.
+    /**
+     * Whether the WebView should capture back presses and navigate back.
+     * We need access to this in the state saver. An internal DisposableEffect or AndroidView
+     * onDestroy is called after the state saver and so can't be used.
+     */
     internal var webView by mutableStateOf<IWebView?>(null)
 
-    // exposes access to the cookie manager for webView
+    /**
+     * CookieManager for WebView.
+     * Exposes access to the cookie manager for webView
+     */
     val cookieManager: CookieManager by mutableStateOf(WebViewCookieManager())
 }
 
@@ -96,6 +108,10 @@ fun rememberWebViewState(
  * Creates a WebView state that is remembered across Compositions.
  *
  * @param data The uri to load in the WebView
+ * @param baseUrl The URL to use as the page's base URL.
+ * @param encoding The encoding of the data in the string.
+ * @param mimeType The MIME type of the data in the string.
+ * @param historyUrl The history URL for the loaded HTML. Leave null to use about:blank.
  */
 @Composable
 public fun rememberWebViewStateWithHTMLData(

@@ -3,12 +3,21 @@ package com.multiplatform.webview.web
 /**
  * Created By Kevin Zou On 2023/9/5
  */
+/**
+ * Sealed class for constraining possible web content.
+ */
 sealed class WebContent {
+    /**
+     * Url content
+     */
     data class Url(
         val url: String,
         val additionalHttpHeaders: Map<String, String> = emptyMap(),
     ) : WebContent()
 
+    /**
+     * Data content
+     */
     data class Data(
         val data: String,
         val baseUrl: String? = null,
@@ -17,6 +26,9 @@ sealed class WebContent {
         val historyUrl: String? = null
     ) : WebContent()
 
+    /**
+     * Post content
+     */
     data class Post(
         val url: String,
         val postData: ByteArray
@@ -40,6 +52,9 @@ sealed class WebContent {
         }
     }
 
+    /**
+     * @return the current url
+     */
     @Deprecated("Use state.lastLoadedUrl instead")
     fun getCurrentUrl(): String? {
         return when (this) {
@@ -53,6 +68,9 @@ sealed class WebContent {
     object NavigatorOnly : WebContent()
 }
 
+/**
+ * @return the WebContent.Url with the given url
+ */
 internal fun WebContent.withUrl(url: String) = when (this) {
     is WebContent.Url -> copy(url = url)
     else -> WebContent.Url(url)

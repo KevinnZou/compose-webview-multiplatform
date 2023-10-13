@@ -9,6 +9,9 @@ import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
 
+/**
+ * Android implementation of [CookieManager].
+ */
 object AndroidCookieManager : CookieManager {
 
     private val androidCookieManager = android.webkit.CookieManager.getInstance()
@@ -131,6 +134,9 @@ object AndroidCookieManager : CookieManager {
         androidCookieManager.flush()
     }
 
+    /**
+     * Not supported on Android yet.
+     */
     override suspend fun removeCookies(url: String) {
         // TODO
     }

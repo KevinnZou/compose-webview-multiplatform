@@ -1,6 +1,8 @@
 package com.multiplatform.webview.cookie
 
-
+/**
+ * Cookie data class.
+ */
 data class Cookie(
     /**
      * The cookie name.
@@ -98,4 +100,9 @@ data class Cookie(
     }
 }
 
+/**
+ * Get cookie expiration date.
+ * @param expiresDate The cookie expiration date in milliseconds.
+ * @return The cookie expiration date in [String] format.
+ * */
 expect fun getCookieExpirationDate(expiresDate: Long): String
