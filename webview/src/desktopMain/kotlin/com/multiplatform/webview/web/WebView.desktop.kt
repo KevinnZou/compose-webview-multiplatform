@@ -49,25 +49,34 @@ fun DesktopWebView(
         }
     }
     val browser: KCEFBrowser? = remember(client, state.webSettings.desktopWebSettings) {
-        val url = when (val current = state.content) {
-            is WebContent.Url -> current.url
-            is WebContent.Data -> current.data.toDataUri()
-            else -> KCEFBrowser.BLANK_URI
-        }
-
         val rendering = if (state.webSettings.desktopWebSettings.offScreenRendering) {
             CefRendering.OFFSCREEN
         } else {
             CefRendering.DEFAULT
         }
 
-        client?.createBrowser(
-            url,
-            rendering,
-            state.webSettings.desktopWebSettings.transparent,
-            createModifiedRequestContext(state.webSettings)
-        )?.also {
-            state.webView = DesktopWebView(it)
+        when (val current = state.content) {
+            is WebContent.Url -> client?.createBrowser(
+                current.url,
+                rendering,
+                state.webSettings.desktopWebSettings.transparent,
+                createModifiedRequestContext(state.webSettings)
+            )
+            is WebContent.Data -> client?.createBrowserWithHtml(
+                current.data,
+                current.baseUrl ?: KCEFBrowser.BLANK_URI,
+                rendering,
+                state.webSettings.desktopWebSettings.transparent,
+                createModifiedRequestContext(state.webSettings)
+            )
+            else -> {
+                client?.createBrowser(
+                    KCEFBrowser.BLANK_URI,
+                    rendering,
+                    state.webSettings.desktopWebSettings.transparent,
+                    createModifiedRequestContext(state.webSettings)
+                )
+            }
         }
     }
 
@@ -87,7 +96,7 @@ fun DesktopWebView(
 
     DisposableEffect(Unit) {
         onDispose {
-            browser?.dispose()
+            client?.dispose()
             currentOnDispose()
         }
     }

@@ -101,16 +101,3 @@ internal fun CefBrowser.addLoadListener(state: WebViewState, navigator: WebViewN
 
     })
 }
-
-// can be used for more workarounds as well
-internal fun String.applyWorkaroundsForHtmlString(): String {
-    val removeHexCharHtml =
-        "#(([0-9a-fA-F]{2}){3}|([0-9a-fA-F]){3})".toRegex().replace(this) { matchResult ->
-            matchResult.value.substring(1)
-        }
-    return removeHexCharHtml
-}
-
-internal fun String.toDataUri(): String {
-    return "data:text/html,${this.applyWorkaroundsForHtmlString()}"
-}
