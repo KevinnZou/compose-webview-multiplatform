@@ -4,6 +4,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import co.touchlab.kermit.Logger
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.resource
 
 /**
  * Created By Kevin Zou On 2023/8/31
@@ -23,6 +26,7 @@ import androidx.compose.ui.Modifier
  * @param onDispose Called when the WebView is destroyed.
  * @sample sample.BasicWebViewSample
  */
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun WebView(
     state: WebViewState,
@@ -57,6 +61,10 @@ fun WebView(
                             content.encoding,
                             content.historyUrl
                         )
+                    }
+
+                    is WebContent.File -> {
+                        wv.loadHtmlFile(content.fileName)
                     }
 
                     is WebContent.Post -> {

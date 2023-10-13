@@ -12,6 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.cef.CefClient
 import org.cef.browser.CefBrowser
+import java.util.logging.Logger
 
 /**
  * Desktop WebView implementation.
@@ -55,7 +56,11 @@ fun DesktopWebView(
         val url = when (val current = state.content) {
             is WebContent.Url -> current.url
             is WebContent.Data -> current.data.toDataUri()
-            else -> null
+            is WebContent.File -> "<html></html>".toDataUri()
+            else -> "about:blank"
+        }
+        co.touchlab.kermit.Logger.i {
+            "Create Browser: $url"
         }
 
         client?.createBrowser(

@@ -114,7 +114,7 @@ fun rememberWebViewState(
  * @param historyUrl The history URL for the loaded HTML. Leave null to use about:blank.
  */
 @Composable
-public fun rememberWebViewStateWithHTMLData(
+fun rememberWebViewStateWithHTMLData(
     data: String,
     baseUrl: String? = null,
     encoding: String = "utf-8",
@@ -127,4 +127,19 @@ public fun rememberWebViewStateWithHTMLData(
         this.content = WebContent.Data(
             data, baseUrl, encoding, mimeType, historyUrl
         )
+    }
+
+/**
+ * Creates a WebView state that is remembered across Compositions.
+ *
+ * @param data The uri to load in the WebView
+ */
+@Composable
+fun rememberWebViewStateWithHTMLFile(
+    fileName: String,
+): WebViewState =
+    remember {
+        WebViewState(WebContent.File(fileName))
+    }.apply {
+        this.content = WebContent.File(fileName)
     }

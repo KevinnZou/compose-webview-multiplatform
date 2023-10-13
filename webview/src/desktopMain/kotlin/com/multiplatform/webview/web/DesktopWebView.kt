@@ -29,6 +29,9 @@ class DesktopWebView(private val webView: CefBrowser) : IWebView {
         encoding: String?,
         historyUrl: String?
     ) {
+        Logger.i {
+            "DesktopWebView loadHtml"
+        }
         if (html != null) {
             webView.loadHtml(html)
         }

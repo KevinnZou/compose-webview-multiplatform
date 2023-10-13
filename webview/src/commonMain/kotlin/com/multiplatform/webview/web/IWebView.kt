@@ -1,5 +1,9 @@
 package com.multiplatform.webview.web
 
+import co.touchlab.kermit.Logger
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.resource
+
 /**
  * Created By Kevin Zou On 2023/9/5
  */
@@ -40,6 +44,13 @@ interface IWebView {
         encoding: String? = "utf-8",
         historyUrl: String? = null
     )
+
+    @OptIn(ExperimentalResourceApi::class)
+    suspend fun loadHtmlFile(fileName: String) {
+        val res = resource(fileName)
+        val html = res.readBytes().decodeToString().trimIndent()
+        loadHtml(html, encoding = "utf-8")
+    }
 
     /**
      * Posts the given data to the given URL.

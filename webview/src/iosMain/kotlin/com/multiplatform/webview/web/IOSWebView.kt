@@ -7,12 +7,18 @@ import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.memScoped
 import platform.Foundation.HTTPBody
 import platform.Foundation.HTTPMethod
+import platform.Foundation.NSBundle
 import platform.Foundation.NSData
 import platform.Foundation.NSMutableURLRequest
+import platform.Foundation.NSString
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLRequest
+import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.create
+import platform.Foundation.stringWithContentsOfFile
 import platform.WebKit.WKWebView
+import platform.darwin.NSObject
+import platform.darwin.NSObjectMeta
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -99,4 +105,7 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
         }
     }
 
+    private class BundleMarker : NSObject() {
+        companion object : NSObjectMeta()
+    }
 }

@@ -119,5 +119,8 @@ internal fun String.toDataUri(): String {
 }
 
 internal fun CefBrowser.loadHtml(html: String) {
+    Logger.i {
+        "CefBrowser.loadHtml"
+    }
     this.loadURL(html.toDataUri())
 }
