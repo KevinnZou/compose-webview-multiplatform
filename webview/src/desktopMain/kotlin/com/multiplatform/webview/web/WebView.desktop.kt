@@ -8,11 +8,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.cef.CefClient
 import org.cef.browser.CefBrowser
-import java.util.logging.Logger
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.resource
 
 /**
  * Desktop WebView implementation.
@@ -38,6 +40,7 @@ actual fun ActualWebView(
 /**
  * Desktop WebView implementation.
  */
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun DesktopWebView(
     state: WebViewState,
@@ -47,19 +50,27 @@ fun DesktopWebView(
     onDispose: () -> Unit
 ) {
     val currentOnDispose by rememberUpdatedState(onDispose)
+    val fileContent by produceState("",state.content) {
+        value = if (state.content is WebContent.File) {
+            val res = resource((state.content as WebContent.File).fileName)
+            res.readBytes().decodeToString().trimIndent()
+        } else {
+            ""
+        }
+    }
     val client by produceState<CefClient?>(null) {
         value = withContext(Dispatchers.IO) {
             runCatching { Cef.newClient() }.getOrNull()
         }
     }
-    val browser: CefBrowser? = remember(client, state.webSettings.desktopWebSettings) {
+    val browser: CefBrowser? = remember(client, state.webSettings.desktopWebSettings, fileContent) {
         val url = when (val current = state.content) {
             is WebContent.Url -> current.url
             is WebContent.Data -> current.data.toDataUri()
-            is WebContent.File -> "<html></html>".toDataUri()
+            is WebContent.File -> fileContent.toDataUri()
             else -> "about:blank"
         }
-        co.touchlab.kermit.Logger.i {
+        Logger.i {
             "Create Browser: $url"
         }
 
@@ -67,7 +78,6 @@ fun DesktopWebView(
             url,
             state.webSettings.desktopWebSettings.offScreenRendering,
             state.webSettings.desktopWebSettings.transparent,
-            createModifiedRequestContext(state.webSettings)
         )
     }
 
