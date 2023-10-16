@@ -54,10 +54,10 @@ internal fun BasicWebViewWithHTMLSample() {
         </body>
         </html>
     """.trimIndent()
-    val webViewState = rememberWebViewStateWithHTMLFile(
-        fileName = "index.html",
-    )
-//    val webViewState = rememberWebViewStateWithHTMLData(html)
+//    val webViewState = rememberWebViewStateWithHTMLFile(
+//        fileName = "index.html",
+//    )
+    val webViewState = rememberWebViewStateWithHTMLData(html)
     webViewState.webSettings.apply {
         isJavaScriptEnabled = true
         androidWebSettings.apply {

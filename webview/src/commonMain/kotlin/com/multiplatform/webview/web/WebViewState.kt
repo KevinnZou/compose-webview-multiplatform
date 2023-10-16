@@ -7,8 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.multiplatform.webview.cookie.WebViewCookieManager
 import com.multiplatform.webview.cookie.CookieManager
+import com.multiplatform.webview.cookie.WebViewCookieManager
 import com.multiplatform.webview.setting.WebSettings
 
 /**
@@ -132,7 +132,7 @@ fun rememberWebViewStateWithHTMLData(
 /**
  * Creates a WebView state that is remembered across Compositions.
  *
- * @param data The uri to load in the WebView
+ * @param fileName The file to load in the WebView
  */
 @Composable
 fun rememberWebViewStateWithHTMLFile(
