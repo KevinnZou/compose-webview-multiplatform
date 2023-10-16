@@ -1,6 +1,6 @@
 package com.multiplatform.webview.cookie
 
-import co.touchlab.kermit.Logger
+import com.multiplatform.webview.util.KLogger
 import org.cef.callback.CefCookieVisitor
 import org.cef.misc.BoolRef
 import org.cef.network.CefCookie
@@ -58,7 +58,7 @@ object DesktopCookieManager : CookieManager, CefCookieVisitor {
     override suspend fun getCookies(url: String): List<Cookie> = suspendCoroutine { continuation ->
         applyManager()
 
-        Logger.i(tag = "DesktopCookieManager") { "DesktopCookieManager getCookies: $url" }
+        KLogger.d(tag = "DesktopCookieManager") { "DesktopCookieManager getCookies: $url" }
         val cookieList = mutableSetOf<Cookie>()
         desktopCookieManager?.visitUrlCookies(url, true) { cookie, _, _, _ ->
             cookieList.add(

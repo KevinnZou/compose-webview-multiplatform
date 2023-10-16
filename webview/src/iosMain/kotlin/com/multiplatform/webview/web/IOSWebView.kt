@@ -1,6 +1,6 @@
 package com.multiplatform.webview.web
 
-import co.touchlab.kermit.Logger
+import com.multiplatform.webview.util.KLogger
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.allocArrayOf
@@ -27,7 +27,7 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
     override fun canGoForward() = wkWebView.canGoForward
 
     override fun loadUrl(url: String, additionalHttpHeaders: Map<String, String>) {
-        Logger.i { "Load url: $url" }
+        KLogger.d { "Load url: $url" }
         wkWebView.loadRequest(
             request = NSURLRequest(
                 uRL = NSURL(string = url),
@@ -43,12 +43,13 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
         historyUrl: String?
     ) {
         if (html == null) {
-            Logger.e {
+            KLogger.e {
                 "LoadHtml: html is null"
             }
             return
         }
-        val header = "<header><meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'></header>"
+        val header =
+            "<header><meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'></header>"
         val concat = header + html
         wkWebView.loadHTMLString(
             string = concat,
@@ -89,10 +90,10 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
     override fun evaluateJavaScript(script: String, callback: ((String) -> Unit)?) {
         wkWebView.evaluateJavaScript(script) { result, error ->
             if (error != null) {
-                Logger.e { "evaluateJavaScript error: $error" }
+                KLogger.e { "evaluateJavaScript error: $error" }
                 callback?.invoke(error.localizedDescription())
             } else {
-                Logger.i { "evaluateJavaScript result: $result" }
+                KLogger.i { "evaluateJavaScript result: $result" }
                 callback?.invoke(result?.toString() ?: "")
             }
         }
