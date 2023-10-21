@@ -48,11 +48,8 @@ fun DesktopWebView(
     onDispose: () -> Unit
 ) {
     val currentOnDispose by rememberUpdatedState(onDispose)
-    val client by produceState<KCEFClient?>(null) {
-        value = withContext(Dispatchers.IO) {
-            KCEF.newClientOrNull()
-        }
-    }
+    val client = remember { KCEF.newClientOrNullBlocking() }
+
     val browser: KCEFBrowser? = remember(client, state.webSettings.desktopWebSettings) {
         val rendering = if (state.webSettings.desktopWebSettings.offScreenRendering) {
             CefRendering.OFFSCREEN
