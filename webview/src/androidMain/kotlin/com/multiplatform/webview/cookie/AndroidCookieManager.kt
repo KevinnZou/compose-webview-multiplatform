@@ -1,8 +1,8 @@
 package com.multiplatform.webview.cookie
 
-import android.util.Log
 import androidx.webkit.CookieManagerCompat
 import androidx.webkit.WebViewFeature
+import com.multiplatform.webview.util.KLogger
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -129,7 +129,9 @@ object AndroidCookieManager : CookieManager {
 
     override suspend fun removeAllCookies() {
         androidCookieManager.removeAllCookies {
-            Log.i("AndroidCookieManager", "removeAllCookies: $it")
+            KLogger.d {
+                "AndroidCookieManager: removeAllCookies: $it"
+            }
         }
         androidCookieManager.flush()
     }

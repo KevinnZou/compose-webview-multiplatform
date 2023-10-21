@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -140,9 +139,6 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
                     }
 
                     is NavigationEvent.EvaluateJavaScript -> {
-                        Logger.i {
-                            "Received NavigationEvent.EvaluateJavaScript: ${event.script}"
-                        }
                         evaluateJavaScript(event.script, event.callback)
                     }
                 }

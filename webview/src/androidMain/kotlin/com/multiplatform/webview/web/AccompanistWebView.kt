@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import com.multiplatform.webview.util.KLogger
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -202,6 +203,9 @@ open class AccompanistWebViewClient : WebViewClient() {
 
     override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
         super.onPageStarted(view, url, favicon)
+        KLogger.d {
+            "onPageStarted: $url"
+        }
         state.loadingState = LoadingState.Loading(0.0f)
         state.errorsForCurrentRequest.clear()
         state.pageTitle = null
@@ -212,6 +216,9 @@ open class AccompanistWebViewClient : WebViewClient() {
 
     override fun onPageFinished(view: WebView, url: String?) {
         super.onPageFinished(view, url)
+        KLogger.d {
+            "onPageFinished: $url"
+        }
         state.loadingState = LoadingState.Finished
     }
 
@@ -228,7 +235,9 @@ open class AccompanistWebViewClient : WebViewClient() {
         error: WebResourceError?
     ) {
         super.onReceivedError(view, request, error)
-
+        KLogger.e {
+            "onReceivedError: ${error?.description}"
+        }
         if (error != null) {
             state.errorsForCurrentRequest.add(
                 WebViewError(
@@ -254,6 +263,9 @@ open class AccompanistWebChromeClient : WebChromeClient() {
 
     override fun onReceivedTitle(view: WebView, title: String?) {
         super.onReceivedTitle(view, title)
+        KLogger.d {
+            "onReceivedTitle: $title"
+        }
         state.pageTitle = title
     }
 
