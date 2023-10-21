@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
-import co.touchlab.kermit.Logger
+import com.multiplatform.webview.util.KLogger
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.cef.CefClient
@@ -50,7 +50,7 @@ fun DesktopWebView(
     onDispose: () -> Unit
 ) {
     val currentOnDispose by rememberUpdatedState(onDispose)
-    val fileContent by produceState("",state.content) {
+    val fileContent by produceState("", state.content) {
         value = if (state.content is WebContent.File) {
             val res = resource((state.content as WebContent.File).fileName)
             res.readBytes().decodeToString().trimIndent()
@@ -70,7 +70,7 @@ fun DesktopWebView(
             is WebContent.File -> fileContent.toDataUri()
             else -> "about:blank"
         }
-        Logger.i {
+        KLogger.d {
             "Create Browser: $url"
         }
 

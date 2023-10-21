@@ -119,7 +119,7 @@ internal fun String.toDataUri(): String {
 }
 
 internal fun CefBrowser.loadHtml(html: String) {
-    Logger.i {
+    KLogger.d {
         "CefBrowser.loadHtml"
     }
     this.loadURL(html.toDataUri())
