@@ -1,9 +1,7 @@
 package com.multiplatform.webview.web
 
-import co.touchlab.kermit.Logger
 import dev.datlag.kcef.KCEFBrowser
 import com.multiplatform.webview.util.KLogger
-import org.cef.browser.CefBrowser
 import org.cef.network.CefPostData
 import org.cef.network.CefPostDataElement
 import org.cef.network.CefRequest

@@ -1,10 +1,7 @@
 package com.multiplatform.webview.cookie
 
-import co.touchlab.kermit.Logger
 import dev.datlag.kcef.KCEFCookieManager
 import com.multiplatform.webview.util.KLogger
-import org.cef.callback.CefCookieVisitor
-import org.cef.misc.BoolRef
 import org.cef.network.CefCookie
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -28,11 +25,11 @@ object DesktopCookieManager : CookieManager {
             Date(cookie.expiresDate ?: System.currentTimeMillis())
         )
         val addedCookie = KCEFCookieManager.instance.setCookie(url, cefCookie)
-        Logger.i(tag = "DesktopCookieManager") { "Added Cookie: $addedCookie" }
+        KLogger.i(tag = "DesktopCookieManager") { "Added Cookie: $addedCookie" }
     }
 
     override suspend fun getCookies(url: String): List<Cookie> {
-        Logger.i(tag = "DesktopCookieManager") { "DesktopCookieManager getCookies: $url" }
+        KLogger.i(tag = "DesktopCookieManager") { "DesktopCookieManager getCookies: $url" }
 
         return KCEFCookieManager.instance.getCookiesWhile(url, true).map {
             Cookie(
