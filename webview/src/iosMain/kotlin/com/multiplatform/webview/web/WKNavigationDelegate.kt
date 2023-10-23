@@ -1,6 +1,6 @@
 package com.multiplatform.webview.web
 
-import co.touchlab.kermit.Logger
+import com.multiplatform.webview.util.KLogger
 import platform.Foundation.NSError
 import platform.WebKit.WKNavigation
 import platform.WebKit.WKNavigationDelegateProtocol
@@ -28,7 +28,7 @@ class WKNavigationDelegate(
         state.loadingState = LoadingState.Loading(0f)
         state.lastLoadedUrl = webView.URL.toString()
         state.errorsForCurrentRequest.clear()
-        Logger.i {
+        KLogger.d {
             "didStartProvisionalNavigation"
         }
     }
@@ -42,7 +42,7 @@ class WKNavigationDelegate(
     ) {
         state.loadingState =
             LoadingState.Loading(webView.estimatedProgress.toFloat())
-        Logger.i { "didCommitNavigation" }
+        KLogger.d { "didCommitNavigation" }
     }
 
     /**
@@ -57,7 +57,7 @@ class WKNavigationDelegate(
         state.loadingState = LoadingState.Finished
         navigator.canGoBack = webView.canGoBack
         navigator.canGoForward = webView.canGoForward
-        Logger.i { "didFinishNavigation" }
+        KLogger.d { "didFinishNavigation" }
     }
 
     /**
@@ -68,13 +68,16 @@ class WKNavigationDelegate(
         didFailProvisionalNavigation: WKNavigation?,
         withError: NSError
     ) {
+        KLogger.e {
+            "WebView Loading Failed with error: ${withError.localizedDescription}"
+        }
         state.errorsForCurrentRequest.add(
             WebViewError(
                 withError.code.toInt(),
                 withError.localizedDescription
             )
         )
-        Logger.i {
+        KLogger.e {
             "didFailNavigation"
         }
     }

@@ -1,6 +1,6 @@
 package com.multiplatform.webview.web
 
-import co.touchlab.kermit.Logger
+import com.multiplatform.webview.util.KLogger
 import org.cef.CefSettings
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
@@ -22,7 +22,7 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
         }
 
         override fun onTitleChange(browser: CefBrowser?, title: String?) {
-            Logger.i { "titleProperty: $title" }
+            KLogger.d { "titleProperty: $title" }
             state.pageTitle = title
         }
 
@@ -71,12 +71,12 @@ internal fun CefBrowser.addLoadListener(state: WebViewState, navigator: WebViewN
             frame: CefFrame?,
             transitionType: CefRequest.TransitionType?
         ) {
-            Logger.i { "Load Start" }
+            KLogger.d { "Load Start" }
             state.loadingState = LoadingState.Loading(0F)
         }
 
         override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
-            Logger.i { "Load End" }
+            KLogger.d { "Load End" }
             state.loadingState = LoadingState.Finished
             navigator.canGoBack = canGoBack()
             navigator.canGoBack = canGoForward()
@@ -91,6 +91,9 @@ internal fun CefBrowser.addLoadListener(state: WebViewState, navigator: WebViewN
             failedUrl: String?
         ) {
             state.loadingState = LoadingState.Finished
+            KLogger.e {
+                "Failed to load url: ${failedUrl}\n$errorText"
+            }
             state.errorsForCurrentRequest.add(
                 WebViewError(
                     code = errorCode?.code ?: 404,

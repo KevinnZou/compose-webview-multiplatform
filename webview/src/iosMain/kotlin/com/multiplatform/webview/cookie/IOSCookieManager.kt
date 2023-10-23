@@ -1,6 +1,6 @@
 package com.multiplatform.webview.cookie
 
-import co.touchlab.kermit.Logger
+import com.multiplatform.webview.util.KLogger
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.suspendCancellableCoroutine
 import platform.Foundation.NSDate
@@ -64,7 +64,7 @@ object IOSCookieManager : CookieManager {
             cookies?.forEach { cookie ->
                 cookieStore.deleteCookie(cookie as NSHTTPCookie) {}
             }
-            Logger.i(tag = "iOSCookieManager") { ("IOSCookieManager removeAllCookies: $cookies") }
+            KLogger.d(tag = "iOSCookieManager") { ("IOSCookieManager removeAllCookies: $cookies") }
             it.resume(Unit, {})
         }
     }
@@ -101,7 +101,7 @@ object IOSCookieManager : CookieManager {
             iCookie!!,
             completionHandler = {
                 it.resume(Unit, {})
-                Logger.i(tag = "iOSCookieManager") { ("IOSCookieManager setCookie: $cookie") }
+                KLogger.d(tag = "iOSCookieManager") { ("IOSCookieManager setCookie: $cookie") }
             })
     }
 }

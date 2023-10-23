@@ -2,6 +2,9 @@ package com.multiplatform.webview.cookie
 
 import co.touchlab.kermit.Logger
 import dev.datlag.kcef.KCEFCookieManager
+import com.multiplatform.webview.util.KLogger
+import org.cef.callback.CefCookieVisitor
+import org.cef.misc.BoolRef
 import org.cef.network.CefCookie
 import java.text.SimpleDateFormat
 import java.util.Date

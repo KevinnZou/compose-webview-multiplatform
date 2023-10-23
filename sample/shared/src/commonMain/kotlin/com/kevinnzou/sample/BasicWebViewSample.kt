@@ -31,6 +31,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
 import com.multiplatform.webview.cookie.Cookie
+import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewNavigator
@@ -44,6 +45,7 @@ internal fun BasicWebViewSample() {
     val initialUrl = "https://github.com/KevinnZou/compose-webview-multiplatform"
     val state = rememberWebViewState(url = initialUrl)
     state.webSettings.apply {
+        logSeverity = KLogSeverity.Debug
         customUserAgentString =
             "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1) AppleWebKit/625.20 (KHTML, like Gecko) Version/14.3.43 Safari/625.20"
     }

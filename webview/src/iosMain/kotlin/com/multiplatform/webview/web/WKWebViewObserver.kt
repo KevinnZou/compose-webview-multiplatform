@@ -1,6 +1,6 @@
 package com.multiplatform.webview.web
 
-import co.touchlab.kermit.Logger
+import com.multiplatform.webview.util.KLogger
 import kotlinx.cinterop.COpaquePointer
 import kotlinx.cinterop.ExperimentalForeignApi
 import observer.ObserverProtocol
@@ -26,7 +26,7 @@ class WKWebViewObserver(private val state: WebViewState, private val navigator: 
     ) {
         if (keyPath == "estimatedProgress") {
             val progress = change?.get("new") as? NSNumber
-            Logger.i { "Observe estimatedProgress Changed $progress" }
+            KLogger.d { "Observe estimatedProgress Changed $progress" }
             if (progress != null) {
                 state.loadingState = LoadingState.Loading(progress.floatValue)
                 if (progress.floatValue >= 1.0f) {
@@ -35,25 +35,25 @@ class WKWebViewObserver(private val state: WebViewState, private val navigator: 
             }
         } else if (keyPath == "title") {
             val title = change?.get("new") as? String
-            Logger.i { "Observe title Changed $title" }
+            KLogger.d { "Observe title Changed $title" }
             if (title != null) {
                 state.pageTitle = title
             }
         } else if (keyPath == "URL") {
             val url = change?.get("new") as? NSURL
-            Logger.i { "Observe URL Changed ${url?.absoluteString}" }
+            KLogger.d { "Observe URL Changed ${url?.absoluteString}" }
             if (url != null) {
                 state.lastLoadedUrl = url.absoluteString
             }
         } else if (keyPath == "canGoBack") {
             val canGoBack = change?.get("new") as? NSNumber
-            Logger.i { "Observe canGoBack Changed $canGoBack" }
+            KLogger.d { "Observe canGoBack Changed $canGoBack" }
             if (canGoBack != null) {
                 navigator.canGoBack = canGoBack.boolValue
             }
         } else if (keyPath == "canGoForward") {
             val canGoForward = change?.get("new") as? NSNumber
-            Logger.i { "Observe canGoForward Changed $canGoForward" }
+            KLogger.d { "Observe canGoForward Changed $canGoForward" }
             if (canGoForward != null) {
                 navigator.canGoForward = canGoForward.boolValue
             }
