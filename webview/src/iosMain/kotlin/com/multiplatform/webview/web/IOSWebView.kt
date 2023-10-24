@@ -10,12 +10,9 @@ import platform.Foundation.HTTPMethod
 import platform.Foundation.NSBundle
 import platform.Foundation.NSData
 import platform.Foundation.NSMutableURLRequest
-import platform.Foundation.NSString
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLRequest
-import platform.Foundation.NSUTF8StringEncoding
 import platform.Foundation.create
-import platform.Foundation.stringWithContentsOfFile
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
 import platform.darwin.NSObjectMeta
@@ -61,6 +58,12 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
             string = concat,
             baseURL = baseUrl?.let { NSURL.URLWithString(it) },
         )
+    }
+
+    override suspend fun loadHtmlFile(fileName: String) {
+        val res = NSBundle.mainBundle.resourcePath + "/compose-resources/assets/" + fileName
+        val url = NSURL.fileURLWithPath(res)
+        wkWebView.loadFileURL(url, url)
     }
 
     @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)

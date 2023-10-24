@@ -52,7 +52,7 @@ fun DesktopWebView(
     val currentOnDispose by rememberUpdatedState(onDispose)
     val fileContent by produceState("", state.content) {
         value = if (state.content is WebContent.File) {
-            val res = resource((state.content as WebContent.File).fileName)
+            val res = resource("assets/${(state.content as WebContent.File).fileName}")
             res.readBytes().decodeToString().trimIndent()
         } else {
             ""

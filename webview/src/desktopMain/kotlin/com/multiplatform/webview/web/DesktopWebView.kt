@@ -37,6 +37,10 @@ class DesktopWebView(private val webView: CefBrowser) : IWebView {
         }
     }
 
+    override suspend fun loadHtmlFile(fileName: String) {
+        // TODO
+    }
+
     override fun postUrl(url: String, postData: ByteArray) {
         val request = CefRequest.create().apply {
             this.url = url
