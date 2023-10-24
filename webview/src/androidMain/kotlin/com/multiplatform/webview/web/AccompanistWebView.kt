@@ -4,6 +4,8 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
 import android.view.ViewGroup
+import android.webkit.GeolocationPermissions
+import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -17,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.multiplatform.webview.util.KLogger
+import com.multiplatform.webview.web.PermissionRequest as MultiplatformPermissionRequest
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -271,14 +274,37 @@ open class AccompanistWebViewClient : WebViewClient() {
  * As Accompanist Web needs to set its own web client to function, it provides this intermediary
  * class that can be overriden if further custom behaviour is required.
  */
-open class AccompanistWebChromeClient : WebChromeClient() {
+open class AccompanistWebChromeClient(
+    private val permissionHandler: PermissionHandler = { PermissionRequestResponse.DENY }
+) : WebChromeClient() {
     open lateinit var state: WebViewState
         internal set
 
-    override fun onReceivedTitle(
-        view: WebView,
-        title: String?,
+    override fun onPermissionRequest(request: PermissionRequest) {
+        val response = permissionHandler(request.toMultiplatformPermissionRequest())
+
+        if (response == PermissionRequestResponse.GRANT) {
+            request.grant(request.resources)
+        } else {
+            request.deny()
+        }
+    }
+
+    override fun onGeolocationPermissionsShowPrompt(
+        origin: String,
+        callback: GeolocationPermissions.Callback,
     ) {
+        val allow = permissionHandler(
+            MultiplatformPermissionRequest(
+                origin,
+                listOf(MultiplatformPermissionRequest.Permission.LOCATION)
+            )
+        ) == PermissionRequestResponse.GRANT
+
+        callback.invoke(origin, allow, false)
+    }
+
+    override fun onReceivedTitle(view: WebView, title: String?) {
         super.onReceivedTitle(view, title)
         KLogger.d {
             "onReceivedTitle: $title"
@@ -302,4 +328,17 @@ open class AccompanistWebChromeClient : WebChromeClient() {
         if (state.loadingState is LoadingState.Finished) return
         state.loadingState = LoadingState.Loading(newProgress / 100.0f)
     }
+}
+
+private fun PermissionRequest.toMultiplatformPermissionRequest() = MultiplatformPermissionRequest(
+    origin.toString(),
+    resources.map(String::toPermission)
+)
+
+private fun String.toPermission(): MultiplatformPermissionRequest.Permission = when (this) {
+    PermissionRequest.RESOURCE_AUDIO_CAPTURE -> MultiplatformPermissionRequest.Permission.AUDIO
+    PermissionRequest.RESOURCE_MIDI_SYSEX -> MultiplatformPermissionRequest.Permission.MIDI
+    PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID -> MultiplatformPermissionRequest.Permission.MEDIA
+    PermissionRequest.RESOURCE_VIDEO_CAPTURE -> MultiplatformPermissionRequest.Permission.VIDEO
+    else -> error("Unknown resource: $this")
 }

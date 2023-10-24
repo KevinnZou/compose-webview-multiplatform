@@ -19,6 +19,7 @@ actual fun ActualWebView(
     modifier: Modifier,
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
+    permissionHandler: PermissionHandler,
     onCreated: () -> Unit,
     onDispose: () -> Unit,
 ) {
@@ -27,6 +28,7 @@ actual fun ActualWebView(
         modifier = modifier,
         captureBackPresses = captureBackPresses,
         navigator = navigator,
+        permissionHandler = permissionHandler,
         onCreated = onCreated,
         onDispose = onDispose,
     )
@@ -42,6 +44,7 @@ fun IOSWebView(
     modifier: Modifier,
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
+    permissionHandler: PermissionHandler,
     onCreated: () -> Unit,
     onDispose: () -> Unit,
 ) {
@@ -78,7 +81,8 @@ fun IOSWebView(
                             "canGoForward",
                         ),
                 )
-                this.navigationDelegate = navigationDelegate
+                this.navigationDelegate = WKNavigationDelegate(state, navigator)
+                this.UIDelegate = WKPermissionHandler(permissionHandler)
                 onCreated()
             }.also { state.webView = IOSWebView(it) }
         },

@@ -1,6 +1,7 @@
 package com.multiplatform.webview.web
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 
 /**
@@ -12,6 +13,7 @@ actual fun ActualWebView(
     modifier: Modifier,
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
+    permissionHandler: PermissionHandler,
     onCreated: () -> Unit,
     onDispose: () -> Unit,
 ) {
@@ -20,6 +22,7 @@ actual fun ActualWebView(
         modifier,
         captureBackPresses,
         navigator,
+        chromeClient = remember { AccompanistWebChromeClient(permissionHandler) },
         onCreated = { _ -> onCreated() },
         onDispose = { _ -> onDispose() },
     )
