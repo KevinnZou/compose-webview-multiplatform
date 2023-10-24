@@ -51,6 +51,8 @@ fun IOSWebView(
             navigator = navigator
         )
     }
+    val navigationDelegate = remember { WKNavigationDelegate(state, navigator) }
+
     UIKitView(
         factory = {
             val config = WKWebViewConfiguration().apply {
@@ -73,7 +75,7 @@ fun IOSWebView(
                         "canGoForward"
                     )
                 )
-                this.navigationDelegate = WKNavigationDelegate(state, navigator)
+                this.navigationDelegate = navigationDelegate
                 onCreated()
             }.also { state.webView = IOSWebView(it) }
         },

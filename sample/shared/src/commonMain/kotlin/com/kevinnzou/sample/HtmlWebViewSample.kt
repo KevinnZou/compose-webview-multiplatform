@@ -13,6 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
@@ -59,6 +60,7 @@ internal fun BasicWebViewWithHTMLSample() {
 //    val webViewState = rememberWebViewStateWithHTMLData(html)
     webViewState.webSettings.apply {
         isJavaScriptEnabled = true
+        logSeverity = KLogSeverity.Debug
         androidWebSettings.apply {
             isAlgorithmicDarkeningAllowed = true
             safeBrowsingEnabled = true
