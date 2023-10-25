@@ -29,9 +29,16 @@ class DesktopWebView(private val webView: CefBrowser) : IWebView {
         encoding: String?,
         historyUrl: String?
     ) {
+        KLogger.d {
+            "DesktopWebView loadHtml"
+        }
         if (html != null) {
             webView.loadHtml(html)
         }
+    }
+
+    override suspend fun loadHtmlFile(fileName: String) {
+        // TODO
     }
 
     override fun postUrl(url: String, postData: ByteArray) {

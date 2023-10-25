@@ -71,12 +71,12 @@ internal fun CefBrowser.addLoadListener(state: WebViewState, navigator: WebViewN
             frame: CefFrame?,
             transitionType: CefRequest.TransitionType?
         ) {
-            KLogger.d { "Load Start" }
+            KLogger.d { "Load Start ${browser?.url}" }
             state.loadingState = LoadingState.Loading(0F)
         }
 
         override fun onLoadEnd(browser: CefBrowser?, frame: CefFrame?, httpStatusCode: Int) {
-            KLogger.d { "Load End" }
+            KLogger.d { "Load End ${browser?.url}" }
             state.loadingState = LoadingState.Finished
             navigator.canGoBack = canGoBack()
             navigator.canGoBack = canGoForward()
@@ -119,5 +119,8 @@ internal fun String.toDataUri(): String {
 }
 
 internal fun CefBrowser.loadHtml(html: String) {
+    KLogger.d {
+        "CefBrowser.loadHtml"
+    }
     this.loadURL(html.toDataUri())
 }

@@ -7,12 +7,15 @@ import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.memScoped
 import platform.Foundation.HTTPBody
 import platform.Foundation.HTTPMethod
+import platform.Foundation.NSBundle
 import platform.Foundation.NSData
 import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSURL
 import platform.Foundation.NSURLRequest
 import platform.Foundation.create
 import platform.WebKit.WKWebView
+import platform.darwin.NSObject
+import platform.darwin.NSObjectMeta
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -57,6 +60,12 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
         )
     }
 
+    override suspend fun loadHtmlFile(fileName: String) {
+        val res = NSBundle.mainBundle.resourcePath + "/compose-resources/assets/" + fileName
+        val url = NSURL.fileURLWithPath(res)
+        wkWebView.loadFileURL(url, url)
+    }
+
     @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
     override fun postUrl(url: String, postData: ByteArray) {
         val request = NSMutableURLRequest(
@@ -99,4 +108,7 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
         }
     }
 
+    private class BundleMarker : NSObject() {
+        companion object : NSObjectMeta()
+    }
 }

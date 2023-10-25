@@ -40,8 +40,6 @@ class WKNavigationDelegate(
         webView: WKWebView,
         didCommitNavigation: WKNavigation?
     ) {
-        state.loadingState =
-            LoadingState.Loading(webView.estimatedProgress.toFloat())
         KLogger.d { "didCommitNavigation" }
     }
 

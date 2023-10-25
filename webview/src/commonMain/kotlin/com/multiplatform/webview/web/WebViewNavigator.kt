@@ -68,6 +68,10 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
             val historyUrl: String? = null
         ) : NavigationEvent
 
+        data class LoadHtmlFile(
+            val fileName: String
+        ) : NavigationEvent
+
         /**
          * Post url event.
          */
@@ -129,6 +133,10 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
                         event.encoding,
                         event.historyUrl
                     )
+
+                    is NavigationEvent.LoadHtmlFile -> {
+                        loadHtmlFile(event.fileName)
+                    }
 
                     is NavigationEvent.LoadUrl -> {
                         loadUrl(event.url, event.additionalHttpHeaders)
@@ -197,6 +205,16 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
                     mimeType,
                     encoding,
                     historyUrl
+                )
+            )
+        }
+    }
+
+    fun loadHtmlFile(fileName: String) {
+        coroutineScope.launch {
+            navigationEvents.emit(
+                NavigationEvent.LoadHtmlFile(
+                    fileName
                 )
             )
         }
