@@ -130,9 +130,10 @@ fun rememberWebViewStateWithHTMLData(
     }
 
 /**
- * Creates a WebView state that is remembered across Compositions.
+ * Creates a WebView state for HTML file loading that is remembered across Compositions.
  *
  * @param fileName The file to load in the WebView
+ * Please note that the file should be placed in the commonMain/resources/assets folder.
  */
 @Composable
 fun rememberWebViewStateWithHTMLFile(
