@@ -134,6 +134,7 @@ fun rememberWebViewStateWithHTMLData(
  *
  * @param fileName The file to load in the WebView
  * Please note that the file should be placed in the commonMain/resources/assets folder.
+ * The fileName just need to be the relative path to the assets folder.
  */
 @Composable
 fun rememberWebViewStateWithHTMLFile(
