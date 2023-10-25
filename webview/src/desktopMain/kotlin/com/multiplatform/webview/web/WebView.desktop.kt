@@ -14,6 +14,13 @@ import dev.datlag.kcef.KCEFClient
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.cef.browser.CefRendering
+import com.multiplatform.webview.util.KLogger
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.cef.CefClient
+import org.cef.browser.CefBrowser
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.resource
 
 /**
  * Desktop WebView implementation.
@@ -39,6 +46,7 @@ actual fun ActualWebView(
 /**
  * Desktop WebView implementation.
  */
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun DesktopWebView(
     state: WebViewState,

@@ -7,8 +7,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.multiplatform.webview.cookie.WebViewCookieManager
 import com.multiplatform.webview.cookie.CookieManager
+import com.multiplatform.webview.cookie.WebViewCookieManager
 import com.multiplatform.webview.setting.WebSettings
 
 /**
@@ -114,7 +114,7 @@ fun rememberWebViewState(
  * @param historyUrl The history URL for the loaded HTML. Leave null to use about:blank.
  */
 @Composable
-public fun rememberWebViewStateWithHTMLData(
+fun rememberWebViewStateWithHTMLData(
     data: String,
     baseUrl: String? = null,
     encoding: String = "utf-8",
@@ -127,4 +127,21 @@ public fun rememberWebViewStateWithHTMLData(
         this.content = WebContent.Data(
             data, baseUrl, encoding, mimeType, historyUrl
         )
+    }
+
+/**
+ * Creates a WebView state for HTML file loading that is remembered across Compositions.
+ *
+ * @param fileName The file to load in the WebView
+ * Please note that the file should be placed in the commonMain/resources/assets folder.
+ * The fileName just need to be the relative path to the assets folder.
+ */
+@Composable
+fun rememberWebViewStateWithHTMLFile(
+    fileName: String,
+): WebViewState =
+    remember {
+        WebViewState(WebContent.File(fileName))
+    }.apply {
+        this.content = WebContent.File(fileName)
     }

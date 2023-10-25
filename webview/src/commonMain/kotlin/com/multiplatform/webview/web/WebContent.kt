@@ -26,6 +26,10 @@ sealed class WebContent {
         val historyUrl: String? = null
     ) : WebContent()
 
+    data class File(
+        val fileName: String
+    ) : WebContent()
+
     /**
      * Post content
      */
@@ -60,6 +64,7 @@ sealed class WebContent {
         return when (this) {
             is Url -> url
             is Data -> baseUrl
+            is File -> throw IllegalStateException("Unsupported")
             is Post -> url
             is NavigatorOnly -> throw IllegalStateException("Unsupported")
         }

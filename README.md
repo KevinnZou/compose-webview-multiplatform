@@ -97,22 +97,35 @@ val state = rememberWebViewState("https://github.com/KevinnZou/compose-webview-m
 fun rememberWebViewState(
     url: String,
     additionalHttpHeaders: Map<String, String> = emptyMap()
-): WebViewState =
-// Rather than using .apply {} here we will recreate the state, this prevents
-    // a recomposition loop when the webview updates the url itself.
-    remember {
-        WebViewState(
-            WebContent.Url(
-                url = url,
-                additionalHttpHeaders = additionalHttpHeaders
-            )
-        )
-    }.apply {
-        this.content = WebContent.Url(
-            url = url,
-            additionalHttpHeaders = additionalHttpHeaders
-        )
-    }
+)
+
+/**
+ * Creates a WebView state that is remembered across Compositions.
+ *
+ * @param data The uri to load in the WebView
+ * @param baseUrl The URL to use as the page's base URL.
+ * @param encoding The encoding of the data in the string.
+ * @param mimeType The MIME type of the data in the string.
+ * @param historyUrl The history URL for the loaded HTML. Leave null to use about:blank.
+ */
+@Composable
+fun rememberWebViewStateWithHTMLData(
+  data: String,
+  baseUrl: String? = null,
+  encoding: String = "utf-8",
+  mimeType: String? = null,
+  historyUrl: String? = null
+)
+
+/**
+ * Creates a WebView state that is remembered across Compositions.
+ *
+ * @param fileName The file to load in the WebView
+ */
+@Composable
+fun rememberWebViewStateWithHTMLFile(
+  fileName: String,
+)
 ```
 Developers can use the *WebViewState* to get the loading information of the WebView, such as the loading progress, the loading status, and the URL of the current page.
 ```kotlin
@@ -382,7 +395,7 @@ kotlin {
         commonMain {
             dependencies {
                 // use api since the desktop app need to access the Cef to initialize it.
-                api("io.github.kevinnzou:compose-webview-multiplatform:1.5.0")
+                api("io.github.kevinnzou:compose-webview-multiplatform:1.6.0")
             }
         }
     }

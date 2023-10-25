@@ -1,5 +1,8 @@
 package com.multiplatform.webview.web
 
+import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.resource
+
 /**
  * Created By Kevin Zou On 2023/9/5
  */
@@ -62,6 +65,31 @@ interface IWebView {
             WebContent.NavigatorOnly -> { }
         }
     }
+
+    /**
+     * Loads the given HTML file.
+     * The file should be placed in the resources folder.
+     * It should not contains external links to css or js files.
+     * Otherwise, use [loadHtmlFile] instead.
+     *
+     * @param fileName The name of the HTML file to load.
+     */
+    @OptIn(ExperimentalResourceApi::class)
+    suspend fun loadRawHtmlFile(fileName: String) {
+        val res = resource(fileName)
+        val html = res.readBytes().decodeToString().trimIndent()
+        loadHtml(html, encoding = "utf-8")
+    }
+
+    /**
+     * Loads the given HTML file.
+     * The file should be placed in the commonMain/resources/assets folder.
+     * It supports external links to css or js files on Android and iOS.
+     * But it is not supported on desktop platform because it is not supported by CEF currently.
+     *
+     * @param fileName The name of the HTML file to load.
+     */
+    suspend fun loadHtmlFile(fileName: String)
 
     /**
      * Posts the given data to the given URL.

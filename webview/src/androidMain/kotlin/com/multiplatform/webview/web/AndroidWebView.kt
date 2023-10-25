@@ -29,6 +29,13 @@ class AndroidWebView(private val webView: WebView) : IWebView {
         webView.loadDataWithBaseURL(baseUrl, html, mimeType, encoding, historyUrl)
     }
 
+    override suspend fun loadHtmlFile(fileName: String) {
+        KLogger.d {
+            "loadHtmlFile: $fileName"
+        }
+        webView.loadUrl("file:///android_asset/$fileName")
+    }
+
     override fun postUrl(url: String, postData: ByteArray) {
         webView.postUrl(url, postData)
     }

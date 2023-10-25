@@ -39,7 +39,9 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines")
+                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+                implementation(compose.components.resources)
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
                 implementation("co.touchlab:kermit:2.0.0-RC5")
             }
         }
