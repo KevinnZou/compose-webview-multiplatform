@@ -3,24 +3,14 @@ package com.multiplatform.webview.web
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import dev.datlag.kcef.KCEF
 import dev.datlag.kcef.KCEFBrowser
-import dev.datlag.kcef.KCEFClient
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import org.cef.browser.CefRendering
-import com.multiplatform.webview.util.KLogger
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import org.cef.CefClient
-import org.cef.browser.CefBrowser
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.resource
 
 /**
  * Desktop WebView implementation.
@@ -71,12 +61,14 @@ fun DesktopWebView(
                 rendering,
                 state.webSettings.desktopWebSettings.transparent
             )
+
             is WebContent.Data -> client?.createBrowserWithHtml(
                 current.data,
                 current.baseUrl ?: KCEFBrowser.BLANK_URI,
                 rendering,
                 state.webSettings.desktopWebSettings.transparent
             )
+
             else -> {
                 client?.createBrowser(
                     KCEFBrowser.BLANK_URI,

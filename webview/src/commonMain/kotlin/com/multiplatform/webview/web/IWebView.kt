@@ -44,12 +44,13 @@ interface IWebView {
         historyUrl: String? = null
     )
 
-    fun loadContent(content: WebContent) {
+    suspend fun loadContent(content: WebContent) {
         when (content) {
             is WebContent.Url -> loadUrl(
                 content.url,
                 content.additionalHttpHeaders
             )
+
             is WebContent.Data -> loadHtml(
                 content.data,
                 content.baseUrl,
@@ -57,12 +58,17 @@ interface IWebView {
                 content.encoding,
                 content.historyUrl
             )
+
+            is WebContent.File -> loadHtmlFile(
+                content.fileName
+            )
+
             is WebContent.Post -> postUrl(
                 content.url,
                 content.postData
             )
 
-            WebContent.NavigatorOnly -> { }
+            is WebContent.NavigatorOnly -> {}
         }
     }
 
