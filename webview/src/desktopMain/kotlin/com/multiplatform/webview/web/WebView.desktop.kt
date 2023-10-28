@@ -3,6 +3,7 @@ package com.multiplatform.webview.web
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
@@ -11,6 +12,7 @@ import dev.datlag.kcef.KCEF
 import dev.datlag.kcef.KCEFBrowser
 import org.cef.browser.CefRendering
 import org.jetbrains.compose.resources.ExperimentalResourceApi
+import org.jetbrains.compose.resources.resource
 
 /**
  * Desktop WebView implementation.
@@ -47,39 +49,55 @@ fun DesktopWebView(
 ) {
     val currentOnDispose by rememberUpdatedState(onDispose)
     val client = remember { KCEF.newClientOrNullBlocking() }
-
-    val browser: KCEFBrowser? = remember(client, state.webSettings.desktopWebSettings) {
-        val rendering = if (state.webSettings.desktopWebSettings.offScreenRendering) {
-            CefRendering.OFFSCREEN
+    val fileContent by produceState("", state.content) {
+        value = if (state.content is WebContent.File) {
+            val res = resource("assets/${(state.content as WebContent.File).fileName}")
+            res.readBytes().decodeToString().trimIndent()
         } else {
-            CefRendering.DEFAULT
+            ""
         }
+    }
 
-        when (val current = state.content) {
-            is WebContent.Url -> client?.createBrowser(
-                current.url,
-                rendering,
-                state.webSettings.desktopWebSettings.transparent
-            )
+    val browser: KCEFBrowser? =
+        remember(client, state.webSettings.desktopWebSettings, fileContent) {
+            val rendering = if (state.webSettings.desktopWebSettings.offScreenRendering) {
+                CefRendering.OFFSCREEN
+            } else {
+                CefRendering.DEFAULT
+            }
 
-            is WebContent.Data -> client?.createBrowserWithHtml(
-                current.data,
-                current.baseUrl ?: KCEFBrowser.BLANK_URI,
-                rendering,
-                state.webSettings.desktopWebSettings.transparent
-            )
+            when (val current = state.content) {
+                is WebContent.Url -> client?.createBrowser(
+                    current.url,
+                    rendering,
+                    state.webSettings.desktopWebSettings.transparent
+                )
 
-            else -> {
-                client?.createBrowser(
+                is WebContent.Data -> client?.createBrowserWithHtml(
+                    current.data,
+                    current.baseUrl ?: KCEFBrowser.BLANK_URI,
+                    rendering,
+                    state.webSettings.desktopWebSettings.transparent
+                )
+
+                is WebContent.File -> client?.createBrowserWithHtml(
+                    fileContent,
                     KCEFBrowser.BLANK_URI,
                     rendering,
                     state.webSettings.desktopWebSettings.transparent
                 )
+
+                else -> {
+                    client?.createBrowser(
+                        KCEFBrowser.BLANK_URI,
+                        rendering,
+                        state.webSettings.desktopWebSettings.transparent
+                    )
+                }
             }
+        }?.also {
+            state.webView = DesktopWebView(it)
         }
-    }?.also {
-        state.webView = DesktopWebView(it)
-    }
 
     browser?.let {
         SwingPanel(
