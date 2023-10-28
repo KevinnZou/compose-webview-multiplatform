@@ -409,10 +409,10 @@ Add the dependency to app level `build.gradle.kts`:
 
 ```kotlin
 repositories {
-    maven("https://jitpack.io")
+    mavenCentral()
 }
 
 dependencies {
-    implementation ("com.github.KevinnZou:compose-webview:0.33.2")
+    implementation("io.github.KevinnZou:compose-webview:0.33.3")
 }
 ```
