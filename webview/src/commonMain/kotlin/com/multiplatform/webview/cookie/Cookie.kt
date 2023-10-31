@@ -8,60 +8,50 @@ data class Cookie(
      * The cookie name.
      * */
     val name: String,
-
     /**
      * The cookie value.
      * */
     val value: String,
-
     /**
      * The cookie domain.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
     val domain: String? = null,
-
     /**
      * The cookie expiration date in milliseconds.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
     val path: String? = null,
-
     /**
      * The cookie expiration date in milliseconds.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
     val expiresDate: Long? = null,
-
     /**
      * Whether the cookie is only valid for the current session.
      * */
     val isSessionOnly: Boolean = false,
-
     /**
      * The cookie same site policy.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
     val sameSite: HTTPCookieSameSitePolicy? = null,
-
     /**
      * Whether the cookie is secure.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
     val isSecure: Boolean? = null,
-
     /**
      * Whether the cookie is HTTP only.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
     val isHttpOnly: Boolean? = null,
-
     /**
      * The cookie maximum age in seconds.
      * available on `Android` only if [androidx.webkit.WebViewFeature.GET_COOKIE_INFO] feature is supported.
      * */
-    val maxAge: Long? = null
+    val maxAge: Long? = null,
 ) {
-
     enum class HTTPCookieSameSitePolicy {
         /**
          * The default value; allows cookies to be sent normally.
@@ -76,7 +66,7 @@ data class Cookie(
         /**
          * Cookies are only sent with requests originating from the same website.
          */
-        STRICT
+        STRICT,
     }
 
     override fun toString(): String {

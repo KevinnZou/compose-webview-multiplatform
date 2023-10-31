@@ -45,35 +45,38 @@ fun IOSWebView(
     onCreated: () -> Unit,
     onDispose: () -> Unit,
 ) {
-    val observer = remember {
-        WKWebViewObserver(
-            state = state,
-            navigator = navigator
-        )
-    }
+    val observer =
+        remember {
+            WKWebViewObserver(
+                state = state,
+                navigator = navigator,
+            )
+        }
     val navigationDelegate = remember { WKNavigationDelegate(state, navigator) }
 
     UIKitView(
         factory = {
-            val config = WKWebViewConfiguration().apply {
-                allowsInlineMediaPlayback = true
-            }
+            val config =
+                WKWebViewConfiguration().apply {
+                    allowsInlineMediaPlayback = true
+                }
             WKWebView(
                 frame = CGRectZero.readValue(),
-                configuration = config
+                configuration = config,
             ).apply {
                 userInteractionEnabled = captureBackPresses
                 allowsBackForwardNavigationGestures = captureBackPresses
                 customUserAgent = state.webSettings.customUserAgentString
                 this.addObservers(
                     observer = observer,
-                    properties = listOf(
-                        "estimatedProgress",
-                        "title",
-                        "URL",
-                        "canGoBack",
-                        "canGoForward"
-                    )
+                    properties =
+                        listOf(
+                            "estimatedProgress",
+                            "title",
+                            "URL",
+                            "canGoBack",
+                            "canGoForward",
+                        ),
                 )
                 this.navigationDelegate = navigationDelegate
                 onCreated()
@@ -84,16 +87,17 @@ fun IOSWebView(
             state.webView = null
             it.removeObservers(
                 observer = observer,
-                properties = listOf(
-                    "estimatedProgress",
-                    "title",
-                    "URL",
-                    "canGoBack",
-                    "canGoForward"
-                )
+                properties =
+                    listOf(
+                        "estimatedProgress",
+                        "title",
+                        "URL",
+                        "canGoBack",
+                        "canGoForward",
+                    ),
             )
             it.navigationDelegate = null
             onDispose()
-        }
+        },
     )
 }

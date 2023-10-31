@@ -62,11 +62,11 @@ internal fun BasicWebViewSample() {
                         IconButton(onClick = { navigator.navigateBack() }) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Back"
+                                contentDescription = "Back",
                             )
                         }
                     }
-                }
+                },
             )
 
             Row {
@@ -76,16 +76,17 @@ internal fun BasicWebViewSample() {
                             imageVector = Icons.Default.Close,
                             contentDescription = "Error",
                             colorFilter = ColorFilter.tint(Color.Red),
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd)
-                                .padding(8.dp)
+                            modifier =
+                                Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .padding(8.dp),
                         )
                     }
 
                     OutlinedTextField(
                         value = textFieldValue ?: "",
                         onValueChange = { textFieldValue = it },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     )
                 }
 
@@ -95,7 +96,7 @@ internal fun BasicWebViewSample() {
                             navigator.loadUrl(it)
                         }
                     },
-                    modifier = Modifier.align(Alignment.CenterVertically)
+                    modifier = Modifier.align(Alignment.CenterVertically),
                 ) {
                     Text("Go")
                 }
@@ -105,7 +106,7 @@ internal fun BasicWebViewSample() {
             if (loadingState is LoadingState.Loading) {
                 LinearProgressIndicator(
                     progress = loadingState.progress,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 )
             }
 
@@ -117,8 +118,8 @@ internal fun BasicWebViewSample() {
                             name = "test",
                             value = "value",
                             domain = "github.com",
-                            expiresDate = 1896863778
-                        )
+                            expiresDate = 1896863778,
+                        ),
                     )
                     Logger.i {
                         "cookie: ${state.cookieManager.getCookies("https://github.com")}"
@@ -132,11 +133,11 @@ internal fun BasicWebViewSample() {
 
             WebView(
                 state = state,
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .fillMaxSize(),
                 navigator = navigator,
             )
         }
     }
-
 }

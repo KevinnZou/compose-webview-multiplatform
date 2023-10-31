@@ -1,7 +1,7 @@
 package com.multiplatform.webview.cookie
 
-import dev.datlag.kcef.KCEFCookieManager
 import com.multiplatform.webview.util.KLogger
+import dev.datlag.kcef.KCEFCookieManager
 import org.cef.network.CefCookie
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -9,21 +9,24 @@ import java.util.Locale
 import java.util.TimeZone
 
 object DesktopCookieManager : CookieManager {
-
-    override suspend fun setCookie(url: String, cookie: Cookie) {
+    override suspend fun setCookie(
+        url: String,
+        cookie: Cookie,
+    ) {
         val currentTime = System.currentTimeMillis()
-        val cefCookie = CefCookie(
-            cookie.name,
-            cookie.value,
-            cookie.domain,
-            cookie.path,
-            cookie.isSecure ?: false,
-            cookie.isHttpOnly ?: false,
-            Date(currentTime),
-            Date(currentTime),
-            Date(cookie.expiresDate ?: currentTime).before(Date(currentTime)),
-            Date(cookie.expiresDate ?: System.currentTimeMillis())
-        )
+        val cefCookie =
+            CefCookie(
+                cookie.name,
+                cookie.value,
+                cookie.domain,
+                cookie.path,
+                cookie.isSecure ?: false,
+                cookie.isHttpOnly ?: false,
+                Date(currentTime),
+                Date(currentTime),
+                Date(cookie.expiresDate ?: currentTime).before(Date(currentTime)),
+                Date(cookie.expiresDate ?: System.currentTimeMillis()),
+            )
         val addedCookie = KCEFCookieManager.instance.setCookie(url, cefCookie)
         KLogger.i(tag = "DesktopCookieManager") { "Added Cookie: $addedCookie" }
     }
@@ -41,7 +44,7 @@ object DesktopCookieManager : CookieManager {
                 sameSite = null,
                 isSecure = it.secure,
                 isHttpOnly = it.httponly,
-                maxAge = null
+                maxAge = null,
             )
         }
     }
@@ -56,9 +59,10 @@ object DesktopCookieManager : CookieManager {
 }
 
 actual fun getCookieExpirationDate(expiresDate: Long): String {
-    val sdf = SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss z", Locale.US).apply {
-        timeZone = TimeZone.getTimeZone("GMT")
-    }
+    val sdf =
+        SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss z", Locale.US).apply {
+            timeZone = TimeZone.getTimeZone("GMT")
+        }
     return sdf.format(Date(expiresDate))
 }
 

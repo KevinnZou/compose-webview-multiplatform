@@ -47,6 +47,4 @@ class WebSettings {
      * iOS platform specific settings
      */
     val iOSWebSettings = PlatformWebSettings.IOSWebSettings
-
 }
-

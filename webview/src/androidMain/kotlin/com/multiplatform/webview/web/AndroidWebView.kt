@@ -6,6 +6,7 @@ import com.multiplatform.webview.util.KLogger
 /**
  * Created By Kevin Zou On 2023/9/5
  */
+
 /**
  * Android implementation of [IWebView]
  */
@@ -14,7 +15,10 @@ class AndroidWebView(private val webView: WebView) : IWebView {
 
     override fun canGoForward() = webView.canGoForward()
 
-    override fun loadUrl(url: String, additionalHttpHeaders: Map<String, String>) {
+    override fun loadUrl(
+        url: String,
+        additionalHttpHeaders: Map<String, String>,
+    ) {
         webView.loadUrl(url, additionalHttpHeaders)
     }
 
@@ -23,7 +27,7 @@ class AndroidWebView(private val webView: WebView) : IWebView {
         baseUrl: String?,
         mimeType: String?,
         encoding: String?,
-        historyUrl: String?
+        historyUrl: String?,
     ) {
         if (html == null) return
         webView.loadDataWithBaseURL(baseUrl, html, mimeType, encoding, historyUrl)
@@ -36,7 +40,10 @@ class AndroidWebView(private val webView: WebView) : IWebView {
         webView.loadUrl("file:///android_asset/$fileName")
     }
 
-    override fun postUrl(url: String, postData: ByteArray) {
+    override fun postUrl(
+        url: String,
+        postData: ByteArray,
+    ) {
         webView.postUrl(url, postData)
     }
 
@@ -56,12 +63,14 @@ class AndroidWebView(private val webView: WebView) : IWebView {
         webView.stopLoading()
     }
 
-    override fun evaluateJavaScript(script: String, callback: ((String) -> Unit)?) {
+    override fun evaluateJavaScript(
+        script: String,
+        callback: ((String) -> Unit)?,
+    ) {
         val androidScript = "javascript:$script"
         KLogger.i {
             "evaluateJavaScript: $androidScript"
         }
         webView.evaluateJavascript(androidScript, callback)
     }
-
 }

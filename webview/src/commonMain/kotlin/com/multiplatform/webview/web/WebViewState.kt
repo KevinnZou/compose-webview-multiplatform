@@ -86,7 +86,7 @@ class WebViewState(webContent: WebContent) {
 @Composable
 fun rememberWebViewState(
     url: String,
-    additionalHttpHeaders: Map<String, String> = emptyMap()
+    additionalHttpHeaders: Map<String, String> = emptyMap(),
 ): WebViewState =
 // Rather than using .apply {} here we will recreate the state, this prevents
     // a recomposition loop when the webview updates the url itself.
@@ -94,14 +94,15 @@ fun rememberWebViewState(
         WebViewState(
             WebContent.Url(
                 url = url,
-                additionalHttpHeaders = additionalHttpHeaders
-            )
+                additionalHttpHeaders = additionalHttpHeaders,
+            ),
         )
     }.apply {
-        this.content = WebContent.Url(
-            url = url,
-            additionalHttpHeaders = additionalHttpHeaders
-        )
+        this.content =
+            WebContent.Url(
+                url = url,
+                additionalHttpHeaders = additionalHttpHeaders,
+            )
     }
 
 /**
@@ -119,14 +120,15 @@ fun rememberWebViewStateWithHTMLData(
     baseUrl: String? = null,
     encoding: String = "utf-8",
     mimeType: String? = null,
-    historyUrl: String? = null
+    historyUrl: String? = null,
 ): WebViewState =
     remember {
         WebViewState(WebContent.Data(data, baseUrl, encoding, mimeType, historyUrl))
     }.apply {
-        this.content = WebContent.Data(
-            data, baseUrl, encoding, mimeType, historyUrl
-        )
+        this.content =
+            WebContent.Data(
+                data, baseUrl, encoding, mimeType, historyUrl,
+            )
     }
 
 /**
@@ -137,9 +139,7 @@ fun rememberWebViewStateWithHTMLData(
  * The fileName just need to be the relative path to the assets folder.
  */
 @Composable
-fun rememberWebViewStateWithHTMLFile(
-    fileName: String,
-): WebViewState =
+fun rememberWebViewStateWithHTMLFile(fileName: String): WebViewState =
     remember {
         WebViewState(WebContent.File(fileName))
     }.apply {

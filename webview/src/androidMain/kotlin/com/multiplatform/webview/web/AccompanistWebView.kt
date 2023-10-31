@@ -64,20 +64,23 @@ fun AccompanistWebView(
         // it's layoutParams. We convert from Compose Modifier to
         // layout params here.
         val width =
-            if (constraints.hasFixedWidth)
+            if (constraints.hasFixedWidth) {
                 ViewGroup.LayoutParams.MATCH_PARENT
-            else
+            } else {
                 ViewGroup.LayoutParams.WRAP_CONTENT
+            }
         val height =
-            if (constraints.hasFixedHeight)
+            if (constraints.hasFixedHeight) {
                 ViewGroup.LayoutParams.MATCH_PARENT
-            else
+            } else {
                 ViewGroup.LayoutParams.WRAP_CONTENT
+            }
 
-        val layoutParams = FrameLayout.LayoutParams(
-            width,
-            height
-        )
+        val layoutParams =
+            FrameLayout.LayoutParams(
+                width,
+                height,
+            )
 
         AccompanistWebView(
             state,
@@ -89,7 +92,7 @@ fun AccompanistWebView(
             onDispose,
             client,
             chromeClient,
-            factory
+            factory,
         )
     }
 }
@@ -183,7 +186,7 @@ fun AccompanistWebView(
         modifier = modifier,
         onRelease = {
             onDispose(it)
-        }
+        },
     )
 }
 
@@ -201,7 +204,11 @@ open class AccompanistWebViewClient : WebViewClient() {
     open lateinit var navigator: WebViewNavigator
         internal set
 
-    override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
+    override fun onPageStarted(
+        view: WebView,
+        url: String?,
+        favicon: Bitmap?,
+    ) {
         super.onPageStarted(view, url, favicon)
         KLogger.d {
             "onPageStarted: $url"
@@ -214,7 +221,10 @@ open class AccompanistWebViewClient : WebViewClient() {
         state.lastLoadedUrl = url
     }
 
-    override fun onPageFinished(view: WebView, url: String?) {
+    override fun onPageFinished(
+        view: WebView,
+        url: String?,
+    ) {
         super.onPageFinished(view, url)
         KLogger.d {
             "onPageFinished: $url"
@@ -222,7 +232,11 @@ open class AccompanistWebViewClient : WebViewClient() {
         state.loadingState = LoadingState.Finished
     }
 
-    override fun doUpdateVisitedHistory(view: WebView, url: String?, isReload: Boolean) {
+    override fun doUpdateVisitedHistory(
+        view: WebView,
+        url: String?,
+        isReload: Boolean,
+    ) {
         super.doUpdateVisitedHistory(view, url, isReload)
 
         navigator.canGoBack = view.canGoBack()
@@ -232,7 +246,7 @@ open class AccompanistWebViewClient : WebViewClient() {
     override fun onReceivedError(
         view: WebView,
         request: WebResourceRequest?,
-        error: WebResourceError?
+        error: WebResourceError?,
     ) {
         super.onReceivedError(view, request, error)
         KLogger.e {
@@ -242,8 +256,8 @@ open class AccompanistWebViewClient : WebViewClient() {
             state.errorsForCurrentRequest.add(
                 WebViewError(
                     error.errorCode,
-                    error.description.toString()
-                )
+                    error.description.toString(),
+                ),
             )
         }
     }
@@ -261,7 +275,10 @@ open class AccompanistWebChromeClient : WebChromeClient() {
     open lateinit var state: WebViewState
         internal set
 
-    override fun onReceivedTitle(view: WebView, title: String?) {
+    override fun onReceivedTitle(
+        view: WebView,
+        title: String?,
+    ) {
         super.onReceivedTitle(view, title)
         KLogger.d {
             "onReceivedTitle: $title"
@@ -269,12 +286,18 @@ open class AccompanistWebChromeClient : WebChromeClient() {
         state.pageTitle = title
     }
 
-    override fun onReceivedIcon(view: WebView, icon: Bitmap?) {
+    override fun onReceivedIcon(
+        view: WebView,
+        icon: Bitmap?,
+    ) {
         super.onReceivedIcon(view, icon)
 //        state.pageIcon = icon
     }
 
-    override fun onProgressChanged(view: WebView, newProgress: Int) {
+    override fun onProgressChanged(
+        view: WebView,
+        newProgress: Int,
+    ) {
         super.onProgressChanged(view, newProgress)
         if (state.loadingState is LoadingState.Finished) return
         state.loadingState = LoadingState.Loading(newProgress / 100.0f)

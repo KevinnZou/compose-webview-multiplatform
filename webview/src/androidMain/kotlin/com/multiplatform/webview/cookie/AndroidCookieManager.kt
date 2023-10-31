@@ -13,10 +13,12 @@ import java.util.TimeZone
  * Android implementation of [CookieManager].
  */
 object AndroidCookieManager : CookieManager {
-
     private val androidCookieManager = android.webkit.CookieManager.getInstance()
 
-    override suspend fun setCookie(url: String, cookie: Cookie) {
+    override suspend fun setCookie(
+        url: String,
+        cookie: Cookie,
+    ) {
         androidCookieManager.setCookie(url, cookie.toString())
     }
 
@@ -26,44 +28,49 @@ object AndroidCookieManager : CookieManager {
         var cookies: List<String> = ArrayList()
 
         if (WebViewFeature.isFeatureSupported(WebViewFeature.GET_COOKIE_INFO)) {
-            cookies = CookieManagerCompat.getCookieInfo(
-                androidCookieManager, url
-            )
+            cookies =
+                CookieManagerCompat.getCookieInfo(
+                    androidCookieManager, url,
+                )
         } else {
             val cookiesString: String? = androidCookieManager.getCookie(url)
             if (!cookiesString.isNullOrBlank()) {
-                cookies = cookiesString.split("; ".toRegex())
-                    .dropLastWhile { it.isEmpty() }
+                cookies =
+                    cookiesString.split("; ".toRegex())
+                        .dropLastWhile { it.isEmpty() }
             }
         }
 
         for (cookie in cookies) {
-            val cookieParams = cookie.split(";".toRegex())
-                .dropLastWhile { it.isEmpty() }
+            val cookieParams =
+                cookie.split(";".toRegex())
+                    .dropLastWhile { it.isEmpty() }
 
             if (cookieParams.isEmpty()) continue
 
             val nameValue = cookieParams[0].split("=".toRegex(), limit = 2).toTypedArray()
             val name = nameValue[0].trim { it <= ' ' }
             val value = if (nameValue.size > 1) nameValue[1].trim { it <= ' ' } else ""
-            var cookieObj = Cookie(
-                name = name,
-                value = value,
-                domain = null,
-                path = null,
-                expiresDate = null,
-                isSessionOnly = false,
-                sameSite = null,
-                isSecure = null,
-                isHttpOnly = null,
-                maxAge = null
-            )
+            var cookieObj =
+                Cookie(
+                    name = name,
+                    value = value,
+                    domain = null,
+                    path = null,
+                    expiresDate = null,
+                    isSessionOnly = false,
+                    sameSite = null,
+                    isSecure = null,
+                    isHttpOnly = null,
+                    maxAge = null,
+                )
 
             if (WebViewFeature.isFeatureSupported(WebViewFeature.GET_COOKIE_INFO)) {
-                cookieObj = cookieObj.copy(
-                    isSecure = false,
-                    isHttpOnly = false
-                )
+                cookieObj =
+                    cookieObj.copy(
+                        isSecure = false,
+                        isHttpOnly = false,
+                    )
 
                 for (i in 1 until cookieParams.size) {
                     val cookieParamNameValue =
@@ -78,9 +85,10 @@ object AndroidCookieManager : CookieManager {
                                 val sdf = SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss z", Locale.US)
                                 val expiryDate = sdf.parse(cookieParamValue)
                                 if (expiryDate != null) {
-                                    cookieObj = cookieObj.copy(
-                                        expiresDate = expiryDate.time
-                                    )
+                                    cookieObj =
+                                        cookieObj.copy(
+                                            expiresDate = expiryDate.time,
+                                        )
                                 }
                             } catch (e: ParseException) {
                                 e.printStackTrace()
@@ -90,10 +98,11 @@ object AndroidCookieManager : CookieManager {
                         cookieParamName.equals("Max-Age", ignoreCase = true) -> {
                             try {
                                 val maxAge = cookieParamValue.toLong()
-                                cookieObj = cookieObj.copy(
-                                    maxAge = maxAge,
-                                    expiresDate = System.currentTimeMillis() + maxAge
-                                )
+                                cookieObj =
+                                    cookieObj.copy(
+                                        maxAge = maxAge,
+                                        expiresDate = System.currentTimeMillis() + maxAge,
+                                    )
                             } catch (e: NumberFormatException) {
                                 e.printStackTrace()
                             }
@@ -145,9 +154,10 @@ object AndroidCookieManager : CookieManager {
 }
 
 actual fun getCookieExpirationDate(expiresDate: Long): String {
-    val sdf = SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss z", Locale.US).apply {
-        timeZone = TimeZone.getTimeZone("GMT")
-    }
+    val sdf =
+        SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss z", Locale.US).apply {
+            timeZone = TimeZone.getTimeZone("GMT")
+        }
     return sdf.format(Date(expiresDate))
 }
 

@@ -3,6 +3,7 @@ package com.multiplatform.webview.web
 /**
  * Created By Kevin Zou On 2023/9/5
  */
+
 /**
  * Sealed class for constraining possible web content.
  */
@@ -23,11 +24,11 @@ sealed class WebContent {
         val baseUrl: String? = null,
         val encoding: String = "utf-8",
         val mimeType: String? = null,
-        val historyUrl: String? = null
+        val historyUrl: String? = null,
     ) : WebContent()
 
     data class File(
-        val fileName: String
+        val fileName: String,
     ) : WebContent()
 
     /**
@@ -35,7 +36,7 @@ sealed class WebContent {
      */
     data class Post(
         val url: String,
-        val postData: ByteArray
+        val postData: ByteArray,
     ) : WebContent() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
@@ -76,7 +77,8 @@ sealed class WebContent {
 /**
  * @return the WebContent.Url with the given url
  */
-internal fun WebContent.withUrl(url: String) = when (this) {
-    is WebContent.Url -> copy(url = url)
-    else -> WebContent.Url(url)
-}
+internal fun WebContent.withUrl(url: String) =
+    when (this) {
+        is WebContent.Url -> copy(url = url)
+        else -> WebContent.Url(url)
+    }

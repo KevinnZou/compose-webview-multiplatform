@@ -6,6 +6,7 @@ import org.jetbrains.compose.resources.resource
 /**
  * Created By Kevin Zou On 2023/9/5
  */
+
 /**
  * Interface for WebView
  */
@@ -25,7 +26,10 @@ interface IWebView {
      *
      * @param url The URL of the resource to load.
      */
-    fun loadUrl(url: String, additionalHttpHeaders: Map<String, String> = emptyMap())
+    fun loadUrl(
+        url: String,
+        additionalHttpHeaders: Map<String, String> = emptyMap(),
+    )
 
     /**
      * Loads the given HTML string.
@@ -41,32 +45,36 @@ interface IWebView {
         baseUrl: String? = null,
         mimeType: String? = "text/html",
         encoding: String? = "utf-8",
-        historyUrl: String? = null
+        historyUrl: String? = null,
     )
 
     suspend fun loadContent(content: WebContent) {
         when (content) {
-            is WebContent.Url -> loadUrl(
-                content.url,
-                content.additionalHttpHeaders
-            )
+            is WebContent.Url ->
+                loadUrl(
+                    content.url,
+                    content.additionalHttpHeaders,
+                )
 
-            is WebContent.Data -> loadHtml(
-                content.data,
-                content.baseUrl,
-                content.mimeType,
-                content.encoding,
-                content.historyUrl
-            )
+            is WebContent.Data ->
+                loadHtml(
+                    content.data,
+                    content.baseUrl,
+                    content.mimeType,
+                    content.encoding,
+                    content.historyUrl,
+                )
 
-            is WebContent.File -> loadHtmlFile(
-                content.fileName
-            )
+            is WebContent.File ->
+                loadHtmlFile(
+                    content.fileName,
+                )
 
-            is WebContent.Post -> postUrl(
-                content.url,
-                content.postData
-            )
+            is WebContent.Post ->
+                postUrl(
+                    content.url,
+                    content.postData,
+                )
 
             is WebContent.NavigatorOnly -> {}
         }
@@ -105,7 +113,7 @@ interface IWebView {
      */
     fun postUrl(
         url: String,
-        postData: ByteArray
+        postData: ByteArray,
     )
 
     /**
@@ -133,5 +141,8 @@ interface IWebView {
      * and returns the result of the evaluation.
      * Note: The callback will not be called from desktop platform because it is not supported by CEF currently.
      */
-    fun evaluateJavaScript(script: String, callback: ((String) -> Unit)? = null)
+    fun evaluateJavaScript(
+        script: String,
+        callback: ((String) -> Unit)? = null,
+    )
 }

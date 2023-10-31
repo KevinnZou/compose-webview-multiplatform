@@ -10,20 +10,21 @@ import platform.darwin.NSObject
 /**
  * Created By Kevin Zou On 2023/9/13
  */
+
 /**
  * Navigation delegate for the WKWebView
  */
 @Suppress("CONFLICTING_OVERLOADS")
 class WKNavigationDelegate(
     private val state: WebViewState,
-    private val navigator: WebViewNavigator
+    private val navigator: WebViewNavigator,
 ) : NSObject(), WKNavigationDelegateProtocol {
     /**
      * Called when the web view begins to receive web content.
      */
     override fun webView(
         webView: WKWebView,
-        didStartProvisionalNavigation: WKNavigation?
+        didStartProvisionalNavigation: WKNavigation?,
     ) {
         state.loadingState = LoadingState.Loading(0f)
         state.lastLoadedUrl = webView.URL.toString()
@@ -38,7 +39,7 @@ class WKNavigationDelegate(
      */
     override fun webView(
         webView: WKWebView,
-        didCommitNavigation: WKNavigation?
+        didCommitNavigation: WKNavigation?,
     ) {
         KLogger.d { "didCommitNavigation" }
     }
@@ -48,7 +49,7 @@ class WKNavigationDelegate(
      */
     override fun webView(
         webView: WKWebView,
-        didFinishNavigation: WKNavigation?
+        didFinishNavigation: WKNavigation?,
     ) {
         state.pageTitle = webView.title
         state.lastLoadedUrl = webView.URL.toString()
@@ -64,7 +65,7 @@ class WKNavigationDelegate(
     override fun webView(
         webView: WKWebView,
         didFailProvisionalNavigation: WKNavigation?,
-        withError: NSError
+        withError: NSError,
     ) {
         KLogger.e {
             "WebView Loading Failed with error: ${withError.localizedDescription}"
@@ -72,8 +73,8 @@ class WKNavigationDelegate(
         state.errorsForCurrentRequest.add(
             WebViewError(
                 withError.code.toInt(),
-                withError.localizedDescription
-            )
+                withError.localizedDescription,
+            ),
         )
         KLogger.e {
             "didFailNavigation"

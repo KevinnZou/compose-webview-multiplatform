@@ -18,5 +18,5 @@ data class WebViewError(
     /**
      * The error that was reported.
      */
-    val description: String
+    val description: String,
 )
