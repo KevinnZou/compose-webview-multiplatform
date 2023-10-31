@@ -10,6 +10,10 @@
 
 <img src="media/cmm-webview-sample.png" height="500">
 
+> **Note**
+> This library is built using the [compose multiplatform library template](https://github.com/KevinnZou/compose-multiplatform-library-template).
+> It supports automatic package publishing, documentation, and code style checking.
+
 This library can be considered as the Multiplatform version of [Accompanist Web library](https://github.com/google/accompanist/tree/main/web). 
 It provides the basic WebView functionalities for JetBrains Compose Multiplatform, which supports loading URLs, HTML, and post data. Currently, it supports the platforms of Android, iOS, and Desktop.
 
