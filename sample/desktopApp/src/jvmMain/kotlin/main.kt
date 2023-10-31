@@ -13,49 +13,50 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
-fun main() = application {
-    Window(onCloseRequest = ::exitApplication) {
-        var restartRequired by remember { mutableStateOf(false) }
-        var downloading by remember { mutableStateOf(0F) }
-        var initialized by remember { mutableStateOf(false) }
+fun main() =
+    application {
+        Window(onCloseRequest = ::exitApplication) {
+            var restartRequired by remember { mutableStateOf(false) }
+            var downloading by remember { mutableStateOf(0F) }
+            var initialized by remember { mutableStateOf(false) }
 
-        LaunchedEffect(Unit) {
-            withContext(Dispatchers.IO) {
-                KCEF.init(builder = {
-                    installDir(File("jcef-bundle"))
-                    progress {
-                        onDownloading {
-                            downloading = it
+            LaunchedEffect(Unit) {
+                withContext(Dispatchers.IO) {
+                    KCEF.init(builder = {
+                        installDir(File("jcef-bundle"))
+                        progress {
+                            onDownloading {
+                                downloading = it
+                            }
+                            onInitialized {
+                                initialized = true
+                            }
                         }
-                        onInitialized {
-                            initialized = true
+                        settings {
+                            cachePath = File("cache").absolutePath
                         }
-                    }
-                    settings {
-                        cachePath = File("cache").absolutePath
-                    }
-                }, onError = {
-                    it?.printStackTrace()
-                }, onRestartRequired = {
-                    restartRequired = true
-                })
+                    }, onError = {
+                        it?.printStackTrace()
+                    }, onRestartRequired = {
+                        restartRequired = true
+                    })
+                }
             }
-        }
 
-        if (restartRequired) {
-            Text(text = "Restart required.")
-        } else {
-            if (initialized) {
-                MainWebView()
+            if (restartRequired) {
+                Text(text = "Restart required.")
             } else {
-                Text(text = "Downloading $downloading%")
+                if (initialized) {
+                    MainWebView()
+                } else {
+                    Text(text = "Downloading $downloading%")
+                }
             }
-        }
 
-        DisposableEffect(Unit) {
-            onDispose {
-                KCEF.disposeBlocking()
+            DisposableEffect(Unit) {
+                onDispose {
+                    KCEF.disposeBlocking()
+                }
             }
         }
     }
-}

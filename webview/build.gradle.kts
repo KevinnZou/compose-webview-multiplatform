@@ -13,7 +13,7 @@ kotlin {
 
     targetHierarchy.default()
 
-    androidTarget() {
+    androidTarget {
         publishLibraryVariants("release")
     }
 
@@ -22,7 +22,7 @@ kotlin {
     listOf(
         iosX64(),
         iosArm64(),
-        iosSimulatorArm64()
+        iosSimulatorArm64(),
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
             baseName = "webview"

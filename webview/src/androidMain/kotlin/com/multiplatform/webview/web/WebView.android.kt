@@ -21,5 +21,6 @@ actual fun ActualWebView(
         captureBackPresses,
         navigator,
         onCreated = { _ -> onCreated() },
-        onDispose = { _ -> onDispose() })
+        onDispose = { _ -> onDispose() },
+    )
 }

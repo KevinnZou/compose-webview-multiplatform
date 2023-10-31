@@ -23,7 +23,8 @@ import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
  */
 @Composable
 internal fun BasicWebViewWithHTMLSample() {
-    val html = """
+    val html =
+        """
         <html>
         <head>
             <title>Compose WebView Multiplatform</title>
@@ -53,7 +54,7 @@ internal fun BasicWebViewWithHTMLSample() {
             <h2 id="subtitle">Basic Html Test</h2>
         </body>
         </html>
-    """.trimIndent()
+        """.trimIndent()
 //    val webViewState = rememberWebViewStateWithHTMLFile(
 //        fileName = "index.html",
 //    )
@@ -81,18 +82,17 @@ internal fun BasicWebViewWithHTMLSample() {
                 onClick = {
                     webViewNavigator.evaluateJavaScript(
                         """
-                            document.getElementById("subtitle").innerText = "Hello from KMM!";
-                            callJS();
-                        """.trimIndent()
+                        document.getElementById("subtitle").innerText = "Hello from KMM!";
+                        callJS();
+                        """.trimIndent(),
                     ) {
                         jsRes = it
                     }
                 },
-                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 50.dp)
+                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 50.dp),
             ) {
                 Text(jsRes)
             }
         }
     }
-
 }

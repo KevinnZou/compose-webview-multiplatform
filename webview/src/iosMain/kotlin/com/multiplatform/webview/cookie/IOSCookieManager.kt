@@ -30,70 +30,80 @@ object IOSCookieManager : CookieManager {
         WKWebsiteDataStore.defaultDataStore().httpCookieStore
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun getCookies(url: String): List<Cookie> = suspendCancellableCoroutine {
-        val cookieList = mutableListOf<Cookie>()
-        cookieStore.getAllCookies { cookies ->
-            cookies?.forEach { cookie ->
-                if (cookie is NSHTTPCookie) {
-                    if (url.contains(cookie.domain)) {
-                        cookieList.add(
-                            Cookie(
-                                name = cookie.name,
-                                value = cookie.value,
-                                domain = cookie.domain,
-                                path = cookie.path,
-                                expiresDate = cookie.expiresDate?.timeIntervalSince1970?.toLong(),
-                                isSessionOnly = cookie.isSessionOnly(),
-                                sameSite = null,
-                                isSecure = cookie.isSecure(),
-                                isHttpOnly = cookie.isHTTPOnly(),
-                                maxAge = null
+    override suspend fun getCookies(url: String): List<Cookie> =
+        suspendCancellableCoroutine {
+            val cookieList = mutableListOf<Cookie>()
+            cookieStore.getAllCookies { cookies ->
+                cookies?.forEach { cookie ->
+                    if (cookie is NSHTTPCookie) {
+                        if (url.contains(cookie.domain)) {
+                            cookieList.add(
+                                Cookie(
+                                    name = cookie.name,
+                                    value = cookie.value,
+                                    domain = cookie.domain,
+                                    path = cookie.path,
+                                    expiresDate = cookie.expiresDate?.timeIntervalSince1970?.toLong(),
+                                    isSessionOnly = cookie.isSessionOnly(),
+                                    sameSite = null,
+                                    isSecure = cookie.isSecure(),
+                                    isHttpOnly = cookie.isHTTPOnly(),
+                                    maxAge = null,
+                                ),
                             )
-                        )
+                        }
                     }
                 }
+                it.resume(cookieList, {})
             }
-            it.resume(cookieList, {})
         }
-    }
-
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun removeAllCookies() = suspendCancellableCoroutine {
-        cookieStore.getAllCookies { cookies ->
-            cookies?.forEach { cookie ->
-                cookieStore.deleteCookie(cookie as NSHTTPCookie) {}
+    override suspend fun removeAllCookies() =
+        suspendCancellableCoroutine {
+            cookieStore.getAllCookies { cookies ->
+                cookies?.forEach { cookie ->
+                    cookieStore.deleteCookie(cookie as NSHTTPCookie) {}
+                }
+                KLogger.d(tag = "iOSCookieManager") { ("IOSCookieManager removeAllCookies: $cookies") }
+                it.resume(Unit, {})
             }
-            KLogger.d(tag = "iOSCookieManager") { ("IOSCookieManager removeAllCookies: $cookies") }
-            it.resume(Unit, {})
         }
-    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun removeCookies(url: String) = suspendCancellableCoroutine {
-        cookieStore.getAllCookies { cookies ->
-            cookies?.filter { cookie ->
-                cookie is NSHTTPCookie && url.contains(cookie.domain)
-            }?.forEach { cookie ->
-                cookieStore.deleteCookie(cookie as NSHTTPCookie) {}
+    override suspend fun removeCookies(url: String) =
+        suspendCancellableCoroutine {
+            cookieStore.getAllCookies { cookies ->
+                cookies?.filter { cookie ->
+                    cookie is NSHTTPCookie && url.contains(cookie.domain)
+                }?.forEach { cookie ->
+                    cookieStore.deleteCookie(cookie as NSHTTPCookie) {}
+                }
+                it.resume(Unit, {})
             }
-            it.resume(Unit, {})
         }
-    }
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    override suspend fun setCookie(url: String, cookie: Cookie) = suspendCancellableCoroutine {
-        val iCookie = NSHTTPCookie.cookieWithProperties(mapOf(
-            NSHTTPCookieName to cookie.name,
-            NSHTTPCookieValue to cookie.value,
-            NSHTTPCookieDomain to (cookie.domain ?: ""),
-            NSHTTPCookiePath to (cookie.path ?: "/"),
-            NSHTTPCookieExpires to (cookie.expiresDate?.let {
-                NSDate.dateWithTimeIntervalSince1970(
-                    it.toDouble()
-                )
-            }),
-        ).filterValues { it != null })
+    override suspend fun setCookie(
+        url: String,
+        cookie: Cookie,
+    ) = suspendCancellableCoroutine {
+        val iCookie =
+            NSHTTPCookie.cookieWithProperties(
+                mapOf(
+                    NSHTTPCookieName to cookie.name,
+                    NSHTTPCookieValue to cookie.value,
+                    NSHTTPCookieDomain to (cookie.domain ?: ""),
+                    NSHTTPCookiePath to (cookie.path ?: "/"),
+                    NSHTTPCookieExpires to (
+                        cookie.expiresDate?.let {
+                            NSDate.dateWithTimeIntervalSince1970(
+                                it.toDouble(),
+                            )
+                        }
+                    ),
+                ).filterValues { it != null },
+            )
         if (iCookie == null) {
             it.resumeWithException(Exception("Cookie properties are invalid."))
         }
@@ -102,17 +112,19 @@ object IOSCookieManager : CookieManager {
             completionHandler = {
                 it.resume(Unit, {})
                 KLogger.d(tag = "iOSCookieManager") { ("IOSCookieManager setCookie: $cookie") }
-            })
+            },
+        )
     }
 }
 
 actual fun getCookieExpirationDate(expiresDate: Long): String {
     val date = NSDate.dateWithTimeIntervalSince1970(expiresDate.toDouble())
-    val dateFormatter = NSDateFormatter().apply {
-        dateFormat = "EEE, dd MMM yyyy hh:mm:ss z"
-        locale = NSLocale.currentLocale()
-        timeZone = NSTimeZone.timeZoneWithName("GMT") ?: NSTimeZone.timeZoneForSecondsFromGMT(0)
-    }
+    val dateFormatter =
+        NSDateFormatter().apply {
+            dateFormat = "EEE, dd MMM yyyy hh:mm:ss z"
+            locale = NSLocale.currentLocale()
+            timeZone = NSTimeZone.timeZoneWithName("GMT") ?: NSTimeZone.timeZoneForSecondsFromGMT(0)
+        }
     return dateFormatter.stringFromDate(date)
 }
 

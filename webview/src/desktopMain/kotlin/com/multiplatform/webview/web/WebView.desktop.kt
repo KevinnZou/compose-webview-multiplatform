@@ -24,14 +24,14 @@ actual fun ActualWebView(
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
     onCreated: () -> Unit,
-    onDispose: () -> Unit
+    onDispose: () -> Unit,
 ) {
     DesktopWebView(
         state,
         modifier,
         navigator,
         onCreated = onCreated,
-        onDispose = onDispose
+        onDispose = onDispose,
     )
 }
 
@@ -45,53 +45,58 @@ fun DesktopWebView(
     modifier: Modifier,
     navigator: WebViewNavigator,
     onCreated: () -> Unit,
-    onDispose: () -> Unit
+    onDispose: () -> Unit,
 ) {
     val currentOnDispose by rememberUpdatedState(onDispose)
     val client = remember { KCEF.newClientOrNullBlocking() }
     val fileContent by produceState("", state.content) {
-        value = if (state.content is WebContent.File) {
-            val res = resource("assets/${(state.content as WebContent.File).fileName}")
-            res.readBytes().decodeToString().trimIndent()
-        } else {
-            ""
-        }
+        value =
+            if (state.content is WebContent.File) {
+                val res = resource("assets/${(state.content as WebContent.File).fileName}")
+                res.readBytes().decodeToString().trimIndent()
+            } else {
+                ""
+            }
     }
 
     val browser: KCEFBrowser? =
         remember(client, state.webSettings.desktopWebSettings, fileContent) {
-            val rendering = if (state.webSettings.desktopWebSettings.offScreenRendering) {
-                CefRendering.OFFSCREEN
-            } else {
-                CefRendering.DEFAULT
-            }
+            val rendering =
+                if (state.webSettings.desktopWebSettings.offScreenRendering) {
+                    CefRendering.OFFSCREEN
+                } else {
+                    CefRendering.DEFAULT
+                }
 
             when (val current = state.content) {
-                is WebContent.Url -> client?.createBrowser(
-                    current.url,
-                    rendering,
-                    state.webSettings.desktopWebSettings.transparent
-                )
+                is WebContent.Url ->
+                    client?.createBrowser(
+                        current.url,
+                        rendering,
+                        state.webSettings.desktopWebSettings.transparent,
+                    )
 
-                is WebContent.Data -> client?.createBrowserWithHtml(
-                    current.data,
-                    current.baseUrl ?: KCEFBrowser.BLANK_URI,
-                    rendering,
-                    state.webSettings.desktopWebSettings.transparent
-                )
+                is WebContent.Data ->
+                    client?.createBrowserWithHtml(
+                        current.data,
+                        current.baseUrl ?: KCEFBrowser.BLANK_URI,
+                        rendering,
+                        state.webSettings.desktopWebSettings.transparent,
+                    )
 
-                is WebContent.File -> client?.createBrowserWithHtml(
-                    fileContent,
-                    KCEFBrowser.BLANK_URI,
-                    rendering,
-                    state.webSettings.desktopWebSettings.transparent
-                )
+                is WebContent.File ->
+                    client?.createBrowserWithHtml(
+                        fileContent,
+                        KCEFBrowser.BLANK_URI,
+                        rendering,
+                        state.webSettings.desktopWebSettings.transparent,
+                    )
 
                 else -> {
                     client?.createBrowser(
                         KCEFBrowser.BLANK_URI,
                         rendering,
-                        state.webSettings.desktopWebSettings.transparent
+                        state.webSettings.desktopWebSettings.transparent,
                     )
                 }
             }

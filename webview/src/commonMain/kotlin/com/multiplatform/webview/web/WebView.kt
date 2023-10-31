@@ -4,9 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import co.touchlab.kermit.Logger
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.resource
 
 /**
  * Created By Kevin Zou On 2023/8/31
@@ -59,7 +57,7 @@ fun WebView(
                             content.baseUrl,
                             content.mimeType,
                             content.encoding,
-                            content.historyUrl
+                            content.historyUrl,
                         )
                     }
 
@@ -70,7 +68,7 @@ fun WebView(
                     is WebContent.Post -> {
                         wv.postUrl(
                             content.url,
-                            content.postData
+                            content.postData,
                         )
                     }
 
@@ -104,4 +102,3 @@ expect fun ActualWebView(
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
 )
-

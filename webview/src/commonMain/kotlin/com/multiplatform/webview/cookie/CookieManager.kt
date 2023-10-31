@@ -1,6 +1,5 @@
 package com.multiplatform.webview.cookie
 
-
 /**
  * Cookie Manager exposing access to cookies of the WebView.
  * This is an interface to allow platform specific implementations.
@@ -9,13 +8,15 @@ package com.multiplatform.webview.cookie
  * since expect/actual classes will be marked as beta in coming kotlin releases.
  * */
 interface CookieManager {
-
     /**
      * Sets a cookie for the given url.
      * @param url The url for which the cookie is to be set.
      * @param cookie The cookie to be set.
      * */
-    suspend fun setCookie(url: String, cookie: Cookie)
+    suspend fun setCookie(
+        url: String,
+        cookie: Cookie,
+    )
 
     /**
      * Gets all the cookies for the given url.

@@ -11,7 +11,7 @@ import co.touchlab.kermit.platformLogWriter
  */
 internal object KLogger : Logger(
     config = mutableLoggerConfigInit(listOf(platformLogWriter(DefaultFormatter))),
-    tag = "ComposeWebView"
+    tag = "ComposeWebView",
 ) {
     init {
         setMinSeverity(KLogSeverity.Info)
@@ -28,7 +28,7 @@ enum class KLogSeverity {
     Info,
     Warn,
     Error,
-    Assert
+    Assert,
 }
 
 fun KLogSeverity.toKermitSeverity(): Severity {

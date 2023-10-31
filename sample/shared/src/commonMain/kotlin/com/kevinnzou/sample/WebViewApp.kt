@@ -31,16 +31,16 @@ internal fun WebViewSample() {
             }
         }
         Column(Modifier.fillMaxSize()) {
-            val text = webViewState.let {
-                "${it.pageTitle ?: ""} ${it.loadingState} ${it.lastLoadedUrl ?: ""}"
-            }
+            val text =
+                webViewState.let {
+                    "${it.pageTitle ?: ""} ${it.loadingState} ${it.lastLoadedUrl ?: ""}"
+                }
             Text(text)
             WebView(
                 state = webViewState,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
             )
         }
-
     }
 }
 

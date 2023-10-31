@@ -20,21 +20,25 @@ import platform.darwin.NSObjectMeta
 /**
  * Created By Kevin Zou On 2023/9/5
  */
+
 /**
  * iOS implementation of [IWebView]
  */
 class IOSWebView(private val wkWebView: WKWebView) : IWebView {
-
     override fun canGoBack() = wkWebView.canGoBack
 
     override fun canGoForward() = wkWebView.canGoForward
 
-    override fun loadUrl(url: String, additionalHttpHeaders: Map<String, String>) {
+    override fun loadUrl(
+        url: String,
+        additionalHttpHeaders: Map<String, String>,
+    ) {
         KLogger.d { "Load url: $url" }
         wkWebView.loadRequest(
-            request = NSURLRequest(
-                uRL = NSURL(string = url),
-            )
+            request =
+                NSURLRequest(
+                    uRL = NSURL(string = url),
+                ),
         )
     }
 
@@ -43,7 +47,7 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
         baseUrl: String?,
         mimeType: String?,
         encoding: String?,
-        historyUrl: String?
+        historyUrl: String?,
     ) {
         if (html == null) {
             KLogger.e {
@@ -51,6 +55,7 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
             }
             return
         }
+        @Suppress("ktlint:standard:max-line-length")
         val header =
             "<header><meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'></header>"
         val concat = header + html
@@ -67,15 +72,20 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
     }
 
     @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
-    override fun postUrl(url: String, postData: ByteArray) {
-        val request = NSMutableURLRequest(
-            uRL = NSURL(string = url),
-        )
+    override fun postUrl(
+        url: String,
+        postData: ByteArray,
+    ) {
+        val request =
+            NSMutableURLRequest(
+                uRL = NSURL(string = url),
+            )
         request.apply {
             HTTPMethod = "POST"
-            HTTPBody = memScoped {
-                NSData.create(bytes = allocArrayOf(postData), length = postData.size.toULong())
-            }
+            HTTPBody =
+                memScoped {
+                    NSData.create(bytes = allocArrayOf(postData), length = postData.size.toULong())
+                }
         }
         wkWebView.loadRequest(request = request)
     }
@@ -96,7 +106,10 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
         wkWebView.stopLoading()
     }
 
-    override fun evaluateJavaScript(script: String, callback: ((String) -> Unit)?) {
+    override fun evaluateJavaScript(
+        script: String,
+        callback: ((String) -> Unit)?,
+    ) {
         wkWebView.evaluateJavaScript(script) { result, error ->
             if (error != null) {
                 KLogger.e { "evaluateJavaScript error: $error" }

@@ -54,7 +54,7 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
          */
         data class LoadUrl(
             val url: String,
-            val additionalHttpHeaders: Map<String, String> = emptyMap()
+            val additionalHttpHeaders: Map<String, String> = emptyMap(),
         ) : NavigationEvent
 
         /**
@@ -65,11 +65,11 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
             val baseUrl: String? = null,
             val mimeType: String? = null,
             val encoding: String? = "utf-8",
-            val historyUrl: String? = null
+            val historyUrl: String? = null,
         ) : NavigationEvent
 
         data class LoadHtmlFile(
-            val fileName: String
+            val fileName: String,
         ) : NavigationEvent
 
         /**
@@ -77,7 +77,7 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
          */
         data class PostUrl(
             val url: String,
-            val postData: ByteArray
+            val postData: ByteArray,
         ) : NavigationEvent {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
@@ -103,7 +103,7 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
          */
         data class EvaluateJavaScript(
             val script: String,
-            val callback: ((String) -> Unit)?
+            val callback: ((String) -> Unit)?,
         ) : NavigationEvent
     }
 
@@ -126,13 +126,14 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
                     is NavigationEvent.Forward -> goForward()
                     is NavigationEvent.Reload -> reload()
                     is NavigationEvent.StopLoading -> stopLoading()
-                    is NavigationEvent.LoadHtml -> loadHtml(
-                        event.baseUrl,
-                        event.html,
-                        event.mimeType,
-                        event.encoding,
-                        event.historyUrl
-                    )
+                    is NavigationEvent.LoadHtml ->
+                        loadHtml(
+                            event.baseUrl,
+                            event.html,
+                            event.mimeType,
+                            event.encoding,
+                            event.historyUrl,
+                        )
 
                     is NavigationEvent.LoadHtmlFile -> {
                         loadHtmlFile(event.fileName)
@@ -170,13 +171,16 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
      *
      * @param url The URL of the resource to load.
      */
-    fun loadUrl(url: String, additionalHttpHeaders: Map<String, String> = emptyMap()) {
+    fun loadUrl(
+        url: String,
+        additionalHttpHeaders: Map<String, String> = emptyMap(),
+    ) {
         coroutineScope.launch {
             navigationEvents.emit(
                 NavigationEvent.LoadUrl(
                     url,
-                    additionalHttpHeaders
-                )
+                    additionalHttpHeaders,
+                ),
             )
         }
     }
@@ -195,7 +199,7 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
         baseUrl: String? = null,
         mimeType: String? = null,
         encoding: String? = "utf-8",
-        historyUrl: String? = null
+        historyUrl: String? = null,
     ) {
         coroutineScope.launch {
             navigationEvents.emit(
@@ -204,8 +208,8 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
                     baseUrl,
                     mimeType,
                     encoding,
-                    historyUrl
-                )
+                    historyUrl,
+                ),
             )
         }
     }
@@ -214,8 +218,8 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
         coroutineScope.launch {
             navigationEvents.emit(
                 NavigationEvent.LoadHtmlFile(
-                    fileName
-                )
+                    fileName,
+                ),
             )
         }
     }
@@ -228,14 +232,14 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
      */
     fun postUrl(
         url: String,
-        postData: ByteArray
+        postData: ByteArray,
     ) {
         coroutineScope.launch {
             navigationEvents.emit(
                 NavigationEvent.PostUrl(
                     url,
-                    postData
-                )
+                    postData,
+                ),
             )
         }
     }
@@ -246,13 +250,16 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
      * @param script The JavaScript to evaluate.
      * @param callback A callback to be invoked when the script execution completes.
      */
-    fun evaluateJavaScript(script: String, callback: ((String) -> Unit)? = null) {
+    fun evaluateJavaScript(
+        script: String,
+        callback: ((String) -> Unit)? = null,
+    ) {
         coroutineScope.launch {
             navigationEvents.emit(
                 NavigationEvent.EvaluateJavaScript(
                     script,
-                    callback
-                )
+                    callback,
+                ),
             )
         }
     }
@@ -291,6 +298,5 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
  * override.
  */
 @Composable
-fun rememberWebViewNavigator(
-    coroutineScope: CoroutineScope = rememberCoroutineScope()
-): WebViewNavigator = remember(coroutineScope) { WebViewNavigator(coroutineScope) }
+fun rememberWebViewNavigator(coroutineScope: CoroutineScope = rememberCoroutineScope()): WebViewNavigator =
+    remember(coroutineScope) { WebViewNavigator(coroutineScope) }

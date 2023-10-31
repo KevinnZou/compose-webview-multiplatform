@@ -11,6 +11,7 @@ import platform.darwin.NSObject
 /**
  * Created By Kevin Zou On 2023/9/13
  */
+
 /**
  * Observer for the WKWebView's loading state
  */
@@ -22,7 +23,7 @@ class WKWebViewObserver(private val state: WebViewState, private val navigator: 
         keyPath: String?,
         ofObject: Any?,
         change: Map<Any?, *>?,
-        context: COpaquePointer?
+        context: COpaquePointer?,
     ) {
         if (keyPath == "estimatedProgress") {
             val progress = change?.get("new") as? NSNumber

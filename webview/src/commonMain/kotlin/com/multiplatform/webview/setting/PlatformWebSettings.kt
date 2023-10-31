@@ -18,7 +18,6 @@ sealed class PlatformWebSettings {
          * @param support whether the WebView should support zoom
          */
         var supportZoom: Boolean = true,
-
         /**
          * Enables or disables file access within WebView.
          * Note that this enables or disables file system access only. Assets and resources
@@ -38,14 +37,12 @@ sealed class PlatformWebSettings {
          * {@link android.os.Build.VERSION_CODES#R} and above.
          */
         var allowFileAccess: Boolean = false,
-
         /**
          * The text zoom of the page in percent. The default is 100.
          *
          * @param textZoom the text zoom in percent
          */
         var textZoom: Int = 100,
-
         /**
          * Whether the WebView should enable support for the &quot;viewport&quot;
          * HTML meta tag or should use a wide viewport.
@@ -57,14 +54,12 @@ sealed class PlatformWebSettings {
          *
          */
         var useWideViewPort: Boolean = false,
-
         /**
          * The standard font family name. The default is "sans-serif".
          *
          * @param font a font family name
          */
         var standardFontFamily: String = "sans-serif",
-
         /**
          * The default font size. The default is 16.
          *
@@ -72,7 +67,6 @@ sealed class PlatformWebSettings {
          *             the specified range will be pinned.
          */
         var defaultFontSize: Int = 16,
-
         /**
          * Sets whether the WebView should load image resources. Note that this method
          * controls loading of all images, including those embedded using the data
@@ -85,7 +79,6 @@ sealed class PlatformWebSettings {
          * @param flag whether the WebView should load image resources
          */
         var loadsImagesAutomatically: Boolean = true,
-
         /**
          * Control whether algorithmic darkening is allowed.
          *
@@ -173,7 +166,6 @@ sealed class PlatformWebSettings {
          * protect against malware and phishing attacks by verifying the links.
          */
         var safeBrowsingEnabled: Boolean = true,
-
         /**
          * Whether the DOM storage API is enabled. The default value is {@code false}.
          */
