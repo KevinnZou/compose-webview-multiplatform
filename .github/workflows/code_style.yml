@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - feature/ci_support
+      - feature/ci_setup
   pull_request:
 
 jobs:
