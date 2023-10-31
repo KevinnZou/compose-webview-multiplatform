@@ -1,0 +1,20 @@
+name: Check code style
+on:
+  push:
+    branches:
+      - main
+      - feature/ci_support
+  pull_request:
+
+jobs:
+  check-code-style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'corretto'
+          java-version: '17'
+      - name: Check code style
+        shell: bash
+        run: ./gradlew ktlintCheck
