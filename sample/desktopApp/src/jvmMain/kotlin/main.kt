@@ -8,11 +8,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.kevinnzou.sample.MainWebView
-import com.multiplatform.webview.web.Cef
+import dev.datlag.kcef.KCEF
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
-import kotlin.math.max
 
 fun main() = application {
     Window(onCloseRequest = ::exitApplication) {
@@ -22,20 +21,21 @@ fun main() = application {
 
         LaunchedEffect(Unit) {
             withContext(Dispatchers.IO) {
-                Cef.init(builder = {
-                    installDir = File("jcef-bundle")
+                KCEF.init(builder = {
+                    installDir(File("jcef-bundle"))
+                    progress {
+                        onDownloading {
+                            downloading = it
+                        }
+                        onInitialized {
+                            initialized = true
+                        }
+                    }
                     settings {
                         cachePath = File("cache").absolutePath
                     }
-                }, initProgress = {
-                    onDownloading {
-                        downloading = max(it, 0F)
-                    }
-                    onInitialized {
-                        initialized = true
-                    }
                 }, onError = {
-                    it.printStackTrace()
+                    it?.printStackTrace()
                 }, onRestartRequired = {
                     restartRequired = true
                 })
@@ -54,7 +54,7 @@ fun main() = application {
 
         DisposableEffect(Unit) {
             onDispose {
-                Cef.dispose()
+                KCEF.disposeBlocking()
             }
         }
     }

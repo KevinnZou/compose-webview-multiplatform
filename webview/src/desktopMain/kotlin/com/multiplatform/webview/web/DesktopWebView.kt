@@ -1,7 +1,7 @@
 package com.multiplatform.webview.web
 
+import dev.datlag.kcef.KCEFBrowser
 import com.multiplatform.webview.util.KLogger
-import org.cef.browser.CefBrowser
 import org.cef.network.CefPostData
 import org.cef.network.CefPostDataElement
 import org.cef.network.CefRequest
@@ -9,17 +9,22 @@ import org.cef.network.CefRequest
 /**
  * Created By Kevin Zou On 2023/9/12
  */
-/**
- * Desktop implementation of [IWebView]
- */
-class DesktopWebView(private val webView: CefBrowser) : IWebView {
+class DesktopWebView(private val webView: KCEFBrowser) : IWebView {
 
     override fun canGoBack() = webView.canGoBack()
 
     override fun canGoForward() = webView.canGoForward()
 
     override fun loadUrl(url: String, additionalHttpHeaders: Map<String, String>) {
-        webView.loadURL(url)
+        if (additionalHttpHeaders.isNotEmpty()) {
+            val request = CefRequest.create().apply {
+                this.url = url
+                this.setHeaderMap(additionalHttpHeaders)
+            }
+            webView.loadRequest(request)
+        } else {
+            webView.loadURL(url)
+        }
     }
 
     override fun loadHtml(
@@ -33,7 +38,7 @@ class DesktopWebView(private val webView: CefBrowser) : IWebView {
             "DesktopWebView loadHtml"
         }
         if (html != null) {
-            webView.loadHtml(html)
+            webView.loadHtml(html, baseUrl ?: KCEFBrowser.BLANK_URI)
         }
     }
 
@@ -65,6 +70,10 @@ class DesktopWebView(private val webView: CefBrowser) : IWebView {
         KLogger.d {
             "evaluateJavaScript: $script"
         }
-        webView.executeJavaScript(script, "", 0)
+        webView.evaluateJavaScript(script) {
+            if (it != null) {
+                callback?.invoke(it)
+            }
+        }
     }
 }

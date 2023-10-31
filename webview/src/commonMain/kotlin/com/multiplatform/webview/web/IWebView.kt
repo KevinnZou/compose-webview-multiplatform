@@ -44,6 +44,34 @@ interface IWebView {
         historyUrl: String? = null
     )
 
+    suspend fun loadContent(content: WebContent) {
+        when (content) {
+            is WebContent.Url -> loadUrl(
+                content.url,
+                content.additionalHttpHeaders
+            )
+
+            is WebContent.Data -> loadHtml(
+                content.data,
+                content.baseUrl,
+                content.mimeType,
+                content.encoding,
+                content.historyUrl
+            )
+
+            is WebContent.File -> loadHtmlFile(
+                content.fileName
+            )
+
+            is WebContent.Post -> postUrl(
+                content.url,
+                content.postData
+            )
+
+            is WebContent.NavigatorOnly -> {}
+        }
+    }
+
     /**
      * Loads the given HTML file.
      * The file should be placed in the resources folder.
