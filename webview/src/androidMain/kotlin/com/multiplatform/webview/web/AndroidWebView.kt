@@ -1,7 +1,11 @@
 package com.multiplatform.webview.web
 
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import com.multiplatform.webview.jsbridge.JsBridge
+import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.util.KLogger
+import kotlinx.coroutines.CoroutineScope
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -10,7 +14,11 @@ import com.multiplatform.webview.util.KLogger
 /**
  * Android implementation of [IWebView]
  */
-class AndroidWebView(private val webView: WebView) : IWebView {
+class AndroidWebView(
+    private val webView: WebView,
+    override var scope: CoroutineScope,
+    override var jsBridge: JsBridge,
+) : IWebView {
     override fun canGoBack() = webView.canGoBack()
 
     override fun canGoForward() = webView.canGoForward()
@@ -74,5 +82,19 @@ class AndroidWebView(private val webView: WebView) : IWebView {
         webView.post {
             webView.evaluateJavascript(androidScript, callback)
         }
+    }
+
+    override fun injectBridge(jsBridge: JsBridge) {
+        webView.addJavascriptInterface(this, "jsBridge")
+    }
+
+    @JavascriptInterface
+    fun call(
+        id: Int,
+        method: String,
+        params: String,
+    ) {
+        KLogger.d { "call from JS: $id, $method, $params" }
+        jsBridge.dispatch(JsMessage(id, method, params))
     }
 }

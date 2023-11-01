@@ -15,6 +15,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.multiplatform.webview.util.KLogger
@@ -137,6 +138,7 @@ fun AccompanistWebView(
     factory: ((Context) -> WebView)? = null,
 ) {
     val webView = state.webView
+    val scope = rememberCoroutineScope()
 
     BackHandler(captureBackPresses && navigator.canGoBack) {
         webView?.goBack()
@@ -189,7 +191,7 @@ fun AccompanistWebView(
                         domStorageEnabled = it.domStorageEnabled
                     }
                 }
-            }.also { state.webView = AndroidWebView(it) }
+            }.also { state.webView = AndroidWebView(it, scope, state.jsBridge) }
         },
         modifier = modifier,
         onRelease = {
