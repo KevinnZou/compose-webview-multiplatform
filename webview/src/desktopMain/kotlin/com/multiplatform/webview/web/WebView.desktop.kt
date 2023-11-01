@@ -6,6 +6,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
@@ -61,6 +62,7 @@ fun DesktopWebView(
                 }
             }
         }
+    val scope = rememberCoroutineScope()
     val fileContent by produceState("", state.content) {
         value =
             if (state.content is WebContent.File) {
@@ -118,7 +120,7 @@ fun DesktopWebView(
                 }
             }
         }?.also {
-            state.webView = DesktopWebView(it)
+            state.webView = DesktopWebView(it, scope, state.jsBridge)
         }
 
     browser?.let {

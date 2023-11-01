@@ -1,7 +1,9 @@
 package com.multiplatform.webview.web
 
+import com.multiplatform.webview.jsbridge.JsBridge
 import com.multiplatform.webview.util.KLogger
 import dev.datlag.kcef.KCEFBrowser
+import kotlinx.coroutines.CoroutineScope
 import org.cef.network.CefPostData
 import org.cef.network.CefPostDataElement
 import org.cef.network.CefRequest
@@ -9,7 +11,11 @@ import org.cef.network.CefRequest
 /**
  * Created By Kevin Zou On 2023/9/12
  */
-class DesktopWebView(private val webView: KCEFBrowser) : IWebView {
+class DesktopWebView(
+    private val webView: KCEFBrowser,
+    override var scope: CoroutineScope,
+    override var jsBridge: JsBridge,
+) : IWebView {
     override fun canGoBack() = webView.canGoBack()
 
     override fun canGoForward() = webView.canGoForward()
@@ -88,5 +94,8 @@ class DesktopWebView(private val webView: KCEFBrowser) : IWebView {
                 callback?.invoke(it)
             }
         }
+    }
+
+    override fun injectBridge(jsBridge: JsBridge) {
     }
 }
