@@ -19,6 +19,9 @@ class AndroidWebView(
     override var scope: CoroutineScope,
     override var jsBridge: JsBridge,
 ) : IWebView {
+    init {
+        initWebView()
+    }
     override fun canGoBack() = webView.canGoBack()
 
     override fun canGoForward() = webView.canGoForward()
