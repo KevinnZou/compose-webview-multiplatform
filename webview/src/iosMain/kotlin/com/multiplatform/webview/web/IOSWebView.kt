@@ -37,7 +37,7 @@ class IOSWebView(
     override var jsBridge: JsBridge,
 ) : IWebView {
     init {
-        init()
+        initWebView()
     }
 
     override fun canGoBack() = wkWebView.canGoBack

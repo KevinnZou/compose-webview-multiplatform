@@ -162,9 +162,9 @@ interface IWebView {
 
     fun injectBridge(jsBridge: JsBridge)
 
-    fun init() {
+    fun initWebView() {
         scope.launch {
-            injectInitJS()
+//            injectInitJS()
             injectBridge(jsBridge)
         }
     }
