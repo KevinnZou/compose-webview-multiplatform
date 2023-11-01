@@ -2,6 +2,7 @@ package com.multiplatform.webview.web
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.interop.UIKitView
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -55,6 +56,7 @@ fun IOSWebView(
             )
         }
     val navigationDelegate = remember { WKNavigationDelegate(state, navigator) }
+    val scope = rememberCoroutineScope()
 
     UIKitView(
         factory = {
@@ -88,7 +90,10 @@ fun IOSWebView(
                 )
                 this.navigationDelegate = navigationDelegate
                 onCreated()
-            }.also { state.webView = IOSWebView(it) }
+            }.also {
+                val iosWebView = IOSWebView(it, scope, state.jsBridge)
+                state.webView = iosWebView
+            }
         },
         modifier = modifier,
         onRelease = {
