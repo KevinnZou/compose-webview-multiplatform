@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.multiplatform.webview.cookie.CookieManager
 import com.multiplatform.webview.cookie.WebViewCookieManager
+import com.multiplatform.webview.jsbridge.JsBridge
 import com.multiplatform.webview.setting.WebSettings
 
 /**
@@ -61,6 +62,8 @@ class WebViewState(webContent: WebContent) {
      * Custom Settings for WebView.
      */
     val webSettings: WebSettings by mutableStateOf(WebSettings())
+
+    val jsBridge: JsBridge by mutableStateOf(JsBridge())
 
     /**
      * Whether the WebView should capture back presses and navigate back.
