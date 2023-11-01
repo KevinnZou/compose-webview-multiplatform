@@ -18,6 +18,7 @@ import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
+import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
 
 /**
  * Created By Kevin Zou On 2023/9/8
@@ -56,10 +57,10 @@ internal fun BasicWebViewWithHTMLSample() {
         </body>
         </html>
         """.trimIndent()
-//    val webViewState = rememberWebViewStateWithHTMLFile(
-//        fileName = "index.html",
-//    )
-    val webViewState = rememberWebViewStateWithHTMLData(html)
+    val webViewState = rememberWebViewStateWithHTMLFile(
+        fileName = "index.html",
+    )
+//    val webViewState = rememberWebViewStateWithHTMLData(html)
     LaunchedEffect(Unit) {
         webViewState.webSettings.apply {
             zoomLevel = 1.0
