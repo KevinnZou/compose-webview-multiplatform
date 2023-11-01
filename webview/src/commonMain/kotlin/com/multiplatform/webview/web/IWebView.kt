@@ -1,5 +1,8 @@
 package com.multiplatform.webview.web
 
+import com.multiplatform.webview.jsbridge.JsBridge
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.resource
 
@@ -11,6 +14,10 @@ import org.jetbrains.compose.resources.resource
  * Interface for WebView
  */
 interface IWebView {
+    var scope: CoroutineScope
+
+    var jsBridge: JsBridge
+
     /**
      * True when the web view is able to navigate backwards, false otherwise.
      */
@@ -145,4 +152,20 @@ interface IWebView {
         script: String,
         callback: ((String) -> Unit)? = null,
     )
+
+    @OptIn(ExperimentalResourceApi::class)
+    suspend fun injectInitJS() {
+        val res = resource("jsbridge.js")
+        val initJs = res.readBytes().decodeToString()
+        evaluateJavaScript(initJs)
+    }
+
+    fun injectBridge(jsBridge: JsBridge)
+
+    fun init() {
+        scope.launch {
+            injectInitJS()
+            injectBridge(jsBridge)
+        }
+    }
 }
