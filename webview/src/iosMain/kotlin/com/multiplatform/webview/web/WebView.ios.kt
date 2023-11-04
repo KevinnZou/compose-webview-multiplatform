@@ -57,6 +57,9 @@ fun IOSWebView(
         }
     val navigationDelegate = remember { WKNavigationDelegate(state, navigator) }
 
+    val wkPermissionHandler = remember {
+        WKPermissionHandler(permissionHandler)
+    }
     UIKitView(
         factory = {
             val config =
@@ -70,6 +73,8 @@ fun IOSWebView(
                 userInteractionEnabled = captureBackPresses
                 allowsBackForwardNavigationGestures = captureBackPresses
                 customUserAgent = state.webSettings.customUserAgentString
+                navigationDelegate = navigationDelegate
+                UIDelegate = wkPermissionHandler
                 this.addObservers(
                     observer = observer,
                     properties =
@@ -81,8 +86,6 @@ fun IOSWebView(
                             "canGoForward",
                         ),
                 )
-                this.navigationDelegate = WKNavigationDelegate(state, navigator)
-                this.UIDelegate = WKPermissionHandler(permissionHandler)
                 onCreated()
             }.also { state.webView = IOSWebView(it) }
         },
