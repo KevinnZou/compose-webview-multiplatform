@@ -173,6 +173,8 @@ fun AccompanistWebView(
                         }
                         setSupportZoom(it.supportZoom)
                         allowFileAccess = it.allowFileAccess
+                        allowFileAccessFromFileURLs = it.allowFileAccessFromFileURLs
+                        allowUniversalAccessFromFileURLs = it.allowUniversalAccessFromFileURLs
                         textZoom = it.textZoom
                         useWideViewPort = it.useWideViewPort
                         standardFontFamily = it.standardFontFamily
