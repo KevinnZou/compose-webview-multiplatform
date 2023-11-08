@@ -11,8 +11,8 @@ import platform.Foundation.NSBundle
 import platform.Foundation.NSData
 import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSURL
-import platform.Foundation.NSURLRequest
 import platform.Foundation.create
+import platform.Foundation.setValue
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
 import platform.darwin.NSObjectMeta
@@ -34,11 +34,19 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
         additionalHttpHeaders: Map<String, String>,
     ) {
         KLogger.d { "Load url: $url" }
+        val request =
+            NSMutableURLRequest.requestWithURL(
+                URL = NSURL(string = url),
+            )
+        additionalHttpHeaders.all { (key, value) ->
+            request.setValue(
+                value = value,
+                forHTTPHeaderField = key,
+            )
+            true
+        }
         wkWebView.loadRequest(
-            request =
-                NSURLRequest(
-                    uRL = NSURL(string = url),
-                ),
+            request = request,
         )
     }
 
