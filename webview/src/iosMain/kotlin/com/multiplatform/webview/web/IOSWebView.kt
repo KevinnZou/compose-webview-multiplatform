@@ -34,9 +34,10 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
         additionalHttpHeaders: Map<String, String>,
     ) {
         KLogger.d { "Load url: $url" }
-        val request = NSMutableURLRequest.requestWithURL(
-            URL = NSURL(string = url),
-        )
+        val request =
+            NSMutableURLRequest.requestWithURL(
+                URL = NSURL(string = url),
+            )
         additionalHttpHeaders.all { (key, value) ->
             request.setValue(
                 value = value,
