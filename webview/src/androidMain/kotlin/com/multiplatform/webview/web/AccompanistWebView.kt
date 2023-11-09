@@ -162,8 +162,13 @@ fun AccompanistWebView(
                 webChromeClient = chromeClient
                 webViewClient = client
                 settings.apply {
-                    javaScriptEnabled = state.webSettings.isJavaScriptEnabled
-                    userAgentString = state.webSettings.customUserAgentString
+                    state.webSettings.let {
+                        javaScriptEnabled = it.isJavaScriptEnabled
+                        userAgentString = it.customUserAgentString
+                        allowFileAccessFromFileURLs = it.allowFileAccessFromFileURLs
+                        allowUniversalAccessFromFileURLs = it.allowUniversalAccessFromFileURLs
+                    }
+
                     state.webSettings.androidWebSettings.let {
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             safeBrowsingEnabled = it.safeBrowsingEnabled
@@ -173,8 +178,6 @@ fun AccompanistWebView(
                         }
                         setSupportZoom(it.supportZoom)
                         allowFileAccess = it.allowFileAccess
-                        allowFileAccessFromFileURLs = it.allowFileAccessFromFileURLs
-                        allowUniversalAccessFromFileURLs = it.allowUniversalAccessFromFileURLs
                         textZoom = it.textZoom
                         useWideViewPort = it.useWideViewPort
                         standardFontFamily = it.standardFontFamily
