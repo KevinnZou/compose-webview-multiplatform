@@ -62,6 +62,8 @@ internal fun BasicWebViewWithHTMLSample() {
     webViewState.webSettings.apply {
         isJavaScriptEnabled = true
         logSeverity = KLogSeverity.Debug
+        allowFileAccessFromFileURLs = true
+        allowUniversalAccessFromFileURLs = true
         androidWebSettings.apply {
             isAlgorithmicDarkeningAllowed = true
             safeBrowsingEnabled = true
