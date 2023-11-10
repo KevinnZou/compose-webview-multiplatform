@@ -23,7 +23,7 @@ fun main() =
             LaunchedEffect(Unit) {
                 withContext(Dispatchers.IO) {
                     KCEF.init(builder = {
-                        installDir(File("jcef-bundle"))
+                        installDir(File("kcef-bundle"))
                         progress {
                             onDownloading {
                                 downloading = it

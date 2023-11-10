@@ -24,7 +24,7 @@ fun main() = application {
         LaunchedEffect(Unit) {
             withContext(Dispatchers.IO) {
                 KCEF.init(builder = {
-                    installDir = File("kcef-bundle")
+                    installDir(File("kcef-bundle"))
                     progress {
                         onDownloading {
                             downloading = max(it, 0F)
@@ -56,7 +56,7 @@ fun main() = application {
 
         DisposableEffect(Unit) {
             onDispose {
-                KCEF.dispose()
+                KCEF.disposeBlocking()
             }
         }
     }
@@ -103,5 +103,14 @@ compose.desktop {
       configurationFiles.from("compose-desktop.pro")
     }
   }
+}
+```
+
+## Dependencies
+This library requires Jogamp's Maven to be added to your project's repositories.
+
+```kotlin
+repositories {
+    maven("https://jogamp.org/deployment/maven")
 }
 ```
