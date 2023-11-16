@@ -329,6 +329,36 @@ webViewState.webSettings.apply {
 }
 ```
 
+## HTML
+This library supports loading HTML data and HTML files.
+
+### HTML Data
+Developers can load HTML data in the following way:
+```kotlin
+val html = """
+    <html>
+        <body>
+            <h1>Hello World</h1>
+        </body>
+    </html>
+""".trimIndent()
+val webViewState = rememberWebViewStateWithHTMLData(
+    data = html
+)
+```
+
+### HTML File
+Developers can load HTML files in the following way:
+```kotlin
+val webViewState = rememberWebViewStateWithHTMLFile(
+    fileName = "index.html"
+)
+```
+Note that the HTML file should be put in the `resources/assets` folder of the shared module.
+
+It also supports external resources such as images, CSS, and JavaScript files on Android and iOS. Desktop support is coming soon.
+
+
 ## API
 The complete API of this library is as follows:
 ```kotlin

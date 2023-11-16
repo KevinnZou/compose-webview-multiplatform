@@ -7,8 +7,10 @@ import androidx.compose.ui.interop.UIKitView
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.readValue
 import platform.CoreGraphics.CGRectZero
+import platform.Foundation.setValue
 import platform.WebKit.WKWebView
 import platform.WebKit.WKWebViewConfiguration
+import platform.WebKit.javaScriptEnabled
 
 /**
  * iOS WebView implementation.
@@ -59,6 +61,12 @@ fun IOSWebView(
             val config =
                 WKWebViewConfiguration().apply {
                     allowsInlineMediaPlayback = true
+                    defaultWebpagePreferences.allowsContentJavaScript = state.webSettings.isJavaScriptEnabled
+                    preferences.apply {
+                        setValue(state.webSettings.allowFileAccessFromFileURLs, forKey = "allowFileAccessFromFileURLs")
+                        javaScriptEnabled = state.webSettings.isJavaScriptEnabled
+                    }
+                    setValue(state.webSettings.allowUniversalAccessFromFileURLs, forKey = "allowUniversalAccessFromFileURLs")
                 }
             WKWebView(
                 frame = CGRectZero.readValue(),
