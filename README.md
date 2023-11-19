@@ -423,6 +423,8 @@ To add to a multiplatform project, add the dependency to the common source-set:
 ```kotlin
 repositories {
     mavenCentral()
+    // Desktop target has to add this repo
+    maven("https://jogamp.org/deployment/maven")
 }
 
 kotlin {
