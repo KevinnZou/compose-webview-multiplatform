@@ -20,6 +20,7 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
  * the WebView back.
  * @param navigator An optional navigator object that can be used to control the WebView's
  * navigation from outside the composable.
+ * @param permissionHandler a [PermissionHandler] for handling permission requests of the website
  * @param onCreated Called when the WebView is first created.
  * @param onDispose Called when the WebView is destroyed.
  * @sample sample.BasicWebViewSample
@@ -31,6 +32,7 @@ fun WebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
+    permissionHandler: PermissionHandler = { PermissionRequestResponse.DENY },
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
 ) {
@@ -85,6 +87,7 @@ fun WebView(
         modifier = modifier,
         captureBackPresses = captureBackPresses,
         navigator = navigator,
+        permissionHandler = permissionHandler,
         onCreated = onCreated,
         onDispose = onDispose,
     )
@@ -99,6 +102,7 @@ expect fun ActualWebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
+    permissionHandler: PermissionHandler,
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
 )
