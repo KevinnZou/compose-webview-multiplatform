@@ -5,6 +5,10 @@ on:
       - main
       - feature/ci_setup
   pull_request:
+    paths:
+      - '.github/workflows/code_style.yml'
+      - '**/*.kt'
+      - '**/*.kts'
 
 jobs:
   check-code-style:
@@ -15,6 +19,23 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '17'
+
+      - name: Format code style
+        run: |
+          ./gradlew ktlintFormat
+
+      - name: Commit files changed by ktlintFormat
+        run: |
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+          git add .
+          git diff --quiet && git diff --staged --quiet || git commit -m "Apply ktlint formatting"
+
       - name: Check code style
         shell: bash
         run: ./gradlew ktlintCheck
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
