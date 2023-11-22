@@ -38,7 +38,7 @@ jobs:
         run: ./gradlew ktlintCheck
 
       - name: Pull latest changes
-        run: git pull origin ${BRANCH_REF}
+        run: git pull --rebase origin ${BRANCH_REF}
 
       - name: Push changes
         uses: ad-m/github-push-action@master
