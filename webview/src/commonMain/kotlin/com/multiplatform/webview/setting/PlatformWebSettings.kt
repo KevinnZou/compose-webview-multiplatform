@@ -178,7 +178,7 @@ sealed class PlatformWebSettings {
     data class DesktopWebSettings(
         var offScreenRendering: Boolean = false,
         var transparent: Boolean = false,
-        var disablePopupWindows: Boolean = false
+        var disablePopupWindows: Boolean = false,
     ) : PlatformWebSettings()
 
     /**

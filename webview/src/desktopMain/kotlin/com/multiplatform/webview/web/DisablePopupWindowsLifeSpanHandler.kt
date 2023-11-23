@@ -9,7 +9,7 @@ class DisablePopupWindowsLifeSpanHandler : CefLifeSpanHandlerAdapter() {
         browser: CefBrowser?,
         frame: CefFrame?,
         target_url: String?,
-        target_frame_name: String?
+        target_frame_name: String?,
     ): Boolean {
         if (target_url != null) {
             browser?.loadURL(target_url)
