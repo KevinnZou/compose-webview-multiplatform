@@ -48,7 +48,18 @@ fun DesktopWebView(
     onDispose: () -> Unit,
 ) {
     val currentOnDispose by rememberUpdatedState(onDispose)
-    val client = remember { KCEF.newClientOrNullBlocking() }
+    val client =
+        remember(state.webSettings.desktopWebSettings.disablePopupWindows) {
+            KCEF.newClientOrNullBlocking()?.also {
+                if (state.webSettings.desktopWebSettings.disablePopupWindows) {
+                    it.addLifeSpanHandler(DisablePopupWindowsLifeSpanHandler())
+                } else {
+                    if (it.getLifeSpanHandler() is DisablePopupWindowsLifeSpanHandler) {
+                        it.removeLifeSpanHandler()
+                    }
+                }
+            }
+        }
     val fileContent by produceState("", state.content) {
         value =
             if (state.content is WebContent.File) {
@@ -60,7 +71,12 @@ fun DesktopWebView(
     }
 
     val browser: KCEFBrowser? =
-        remember(client, state.webSettings.desktopWebSettings, fileContent) {
+        remember(
+            client,
+            state.webSettings.desktopWebSettings.offScreenRendering,
+            state.webSettings.desktopWebSettings.transparent,
+            fileContent,
+        ) {
             val rendering =
                 if (state.webSettings.desktopWebSettings.offScreenRendering) {
                     CefRendering.OFFSCREEN
