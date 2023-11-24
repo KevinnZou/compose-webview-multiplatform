@@ -36,7 +36,10 @@ object IOSCookieManager : CookieManager {
             cookieStore.getAllCookies { cookies ->
                 cookies?.forEach { cookie ->
                     if (cookie is NSHTTPCookie) {
-                        if (url.contains(cookie.domain)) {
+                        KLogger.d {
+                            "IOSCookieManager getCookies: name: ${cookie.name}, value: ${cookie.value} url: $url, domain: ${cookie.domain}"
+                        }
+                        if (url.contains(cookie.domain.removePrefix("."))) {
                             cookieList.add(
                                 Cookie(
                                     name = cookie.name,
