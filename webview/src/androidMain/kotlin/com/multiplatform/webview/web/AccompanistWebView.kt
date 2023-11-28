@@ -165,6 +165,7 @@ fun AccompanistWebView(
                     state.webSettings.let {
                         javaScriptEnabled = it.isJavaScriptEnabled
                         userAgentString = it.customUserAgentString
+                        setInitialScale((it.zoomLevel * 100).toInt())
                         allowFileAccessFromFileURLs = it.allowFileAccessFromFileURLs
                         allowUniversalAccessFromFileURLs = it.allowUniversalAccessFromFileURLs
                     }
