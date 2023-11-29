@@ -1,8 +1,12 @@
 package com.multiplatform.webview.web
 
+import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.util.KLogger
 import platform.Foundation.NSError
+import platform.Foundation.allHTTPHeaderFields
 import platform.WebKit.WKNavigation
+import platform.WebKit.WKNavigationAction
+import platform.WebKit.WKNavigationActionPolicy
 import platform.WebKit.WKNavigationDelegateProtocol
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
@@ -19,6 +23,8 @@ class WKNavigationDelegate(
     private val state: WebViewState,
     private val navigator: WebViewNavigator,
 ) : NSObject(), WKNavigationDelegateProtocol {
+    private var isNavigationHandled = false
+
     /**
      * Called when the web view begins to receive web content.
      */
@@ -78,6 +84,41 @@ class WKNavigationDelegate(
         )
         KLogger.e {
             "didFailNavigation"
+        }
+    }
+
+    override fun webView(
+        webView: WKWebView,
+        decidePolicyForNavigationAction: WKNavigationAction,
+        decisionHandler: (WKNavigationActionPolicy) -> Unit,
+    ) {
+        if (!isNavigationHandled) {
+            val request = decidePolicyForNavigationAction.request
+            val headerMap = mutableMapOf<String, String>()
+            request.allHTTPHeaderFields?.forEach {
+                headerMap[it.key.toString()] = it.value.toString()
+            }
+            KLogger.i {
+                "decidePolicyForNavigationAction: ${request.URL?.absoluteString}, $headerMap"
+            }
+            val webRequest =
+                WebRequest(
+                    request.URL?.absoluteString ?: "",
+                    headerMap,
+                )
+            val intercept =
+                navigator.requestInterceptor?.beforeRequest(
+                    webRequest, navigator,
+                ) ?: false
+            if (!intercept) {
+                decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
+            } else {
+                decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyCancel)
+            }
+            isNavigationHandled = true
+        } else {
+            isNavigationHandled = false
+            decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
         }
     }
 }
