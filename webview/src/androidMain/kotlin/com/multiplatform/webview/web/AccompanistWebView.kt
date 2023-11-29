@@ -2,11 +2,13 @@ package com.multiplatform.webview.web
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Build
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -16,6 +18,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import com.multiplatform.webview.request.RequestData
+import com.multiplatform.webview.request.RequestResult
 import com.multiplatform.webview.util.KLogger
 
 /**
@@ -208,6 +212,29 @@ open class AccompanistWebViewClient : WebViewClient() {
         internal set
     open lateinit var navigator: WebViewNavigator
         internal set
+
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest): Boolean {
+        val data = RequestData(
+            url = request.url.toString(),
+            isForMainFrame = request.isForMainFrame,
+            isRedirect = request.isRedirect,
+            method = request.method,
+            requestHeaders = request.requestHeaders ?: emptyMap()
+        )
+
+        KLogger.d { "shouldOverrideUrlLoading: $data" }
+        val result = navigator.requestInterceptor(data)
+        KLogger.d { "shouldOverrideUrlLoading: load new: $result" }
+
+        return when (result) {
+            RequestResult.Allow -> false
+            is RequestResult.Modify -> {
+                navigator.loadUrl(result.url, result.additionalHeaders)
+                true
+            }
+            RequestResult.Reject -> true
+        }
+    }
 
     override fun onPageStarted(
         view: WebView,

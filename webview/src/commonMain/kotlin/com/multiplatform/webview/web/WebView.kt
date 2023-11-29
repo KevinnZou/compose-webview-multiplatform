@@ -4,6 +4,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import com.multiplatform.webview.util.KLogger
+import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
@@ -34,9 +36,16 @@ fun WebView(
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
 ) {
-    val webView = state.webView
+    ActualWebView(
+        state = state,
+        modifier = modifier,
+        captureBackPresses = captureBackPresses,
+        navigator = navigator,
+        onCreated = onCreated,
+        onDispose = onDispose,
+    )
 
-    webView?.let { wv ->
+    state.webView?.let { wv ->
         LaunchedEffect(wv, navigator) {
             with(navigator) {
                 wv.handleNavigationEvents()
@@ -80,14 +89,7 @@ fun WebView(
         }
     }
 
-    ActualWebView(
-        state = state,
-        modifier = modifier,
-        captureBackPresses = captureBackPresses,
-        navigator = navigator,
-        onCreated = onCreated,
-        onDispose = onDispose,
-    )
+
 }
 
 /**

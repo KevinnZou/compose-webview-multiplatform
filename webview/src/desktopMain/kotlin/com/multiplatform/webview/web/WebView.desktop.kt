@@ -8,6 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
+import com.multiplatform.webview.util.KLogger
 import dev.datlag.kcef.KCEF
 import dev.datlag.kcef.KCEFBrowser
 import org.cef.browser.CefRendering
@@ -61,6 +62,8 @@ fun DesktopWebView(
 
     val browser: KCEFBrowser? =
         remember(client, state.webSettings.desktopWebSettings, fileContent) {
+            KLogger.d { "Trying to create a webview now... because $client" }
+
             val rendering =
                 if (state.webSettings.desktopWebSettings.offScreenRendering) {
                     CefRendering.OFFSCREEN
@@ -68,7 +71,7 @@ fun DesktopWebView(
                     CefRendering.DEFAULT
                 }
 
-            when (val current = state.content) {
+            val view = when (val current = state.content) {
                 is WebContent.Url ->
                     client?.createBrowser(
                         current.url,
@@ -100,8 +103,14 @@ fun DesktopWebView(
                     )
                 }
             }
+
+            KLogger.d { "View is $view" }
+
+            view
         }?.also {
-            state.webView = DesktopWebView(it)
+            val ww = DesktopWebView(it)
+            KLogger.d { "Webview is $ww" }
+            state.webView = ww
         }
 
     browser?.let {
@@ -110,6 +119,7 @@ fun DesktopWebView(
                 browser.apply {
                     addDisplayHandler(state)
                     addLoadListener(state, navigator)
+                    addRequestHandler(state, navigator)
                 }
                 onCreated()
                 browser.uiComponent
