@@ -34,10 +34,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import co.touchlab.kermit.Logger
 import com.multiplatform.webview.cookie.Cookie
+import com.multiplatform.webview.request.RequestInterceptor
+import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewState
+import com.multiplatform.webview.web.WebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
 import kotlinx.coroutines.flow.filter
@@ -64,7 +67,23 @@ internal fun BasicWebViewSample(navHostController: NavHostController? = null) {
 
         onDispose { }
     }
-    val navigator = rememberWebViewNavigator()
+    val navigator =
+        rememberWebViewNavigator(
+            requestInterceptor =
+                object : RequestInterceptor {
+                    override fun beforeRequest(
+                        request: WebRequest,
+                        navigator: WebViewNavigator,
+                    ): Boolean {
+                        request.url?.let {
+                            Logger.i { "Sample beforeRequest: $it" }
+                        }
+                        request.headers?.put("test", "test")
+                        navigator.loadUrl("https://kotlinlang.org/", request.headers?.toMap() ?: emptyMap())
+                        return true
+                    }
+                },
+        )
     var textFieldValue by remember(state.lastLoadedUrl) {
         mutableStateOf(state.lastLoadedUrl)
     }
