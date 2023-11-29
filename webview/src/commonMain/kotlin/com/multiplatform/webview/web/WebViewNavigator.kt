@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.multiplatform.webview.request.RequestInterceptor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -24,7 +25,7 @@ import kotlinx.coroutines.withContext
  * @see [rememberWebViewNavigator]
  */
 @Stable
-class WebViewNavigator(val coroutineScope: CoroutineScope) {
+class WebViewNavigator(val coroutineScope: CoroutineScope, val requestInterceptor: RequestInterceptor? = null) {
     /**
      * Sealed class for constraining possible navigation events.
      */
@@ -298,5 +299,7 @@ class WebViewNavigator(val coroutineScope: CoroutineScope) {
  * override.
  */
 @Composable
-fun rememberWebViewNavigator(coroutineScope: CoroutineScope = rememberCoroutineScope()): WebViewNavigator =
-    remember(coroutineScope) { WebViewNavigator(coroutineScope) }
+fun rememberWebViewNavigator(
+    coroutineScope: CoroutineScope = rememberCoroutineScope(),
+    requestInterceptor: RequestInterceptor? = null,
+): WebViewNavigator = remember(coroutineScope) { WebViewNavigator(coroutineScope, requestInterceptor) }
