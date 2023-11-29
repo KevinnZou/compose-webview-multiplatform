@@ -27,7 +27,7 @@ class WKNavigationDelegate(
     private val state: WebViewState,
     private val navigator: WebViewNavigator,
 ) : NSObject(), WKNavigationDelegateProtocol {
-    private var isNavigationHandled = false
+    private var lastUrl = ""
 
     /**
      * Called when the web view begins to receive web content.
@@ -115,7 +115,7 @@ class WKNavigationDelegate(
         decidePolicyForNavigationAction: WKNavigationAction,
         decisionHandler: (WKNavigationActionPolicy) -> Unit,
     ) {
-        if (!isNavigationHandled) {
+        if (lastUrl != decidePolicyForNavigationAction.request.URL?.absoluteString) {
             val request = decidePolicyForNavigationAction.request
             val headerMap = mutableMapOf<String, String>()
             request.allHTTPHeaderFields?.forEach {
@@ -133,14 +133,13 @@ class WKNavigationDelegate(
                 navigator.requestInterceptor?.beforeRequest(
                     webRequest, navigator,
                 ) ?: false
+            lastUrl = webRequest.url ?: ""
             if (!intercept) {
                 decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
             } else {
                 decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyCancel)
             }
-            isNavigationHandled = true
         } else {
-            isNavigationHandled = false
             decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
         }
     }
