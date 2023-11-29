@@ -18,6 +18,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
+import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.util.KLogger
 
 /**
@@ -261,6 +262,9 @@ open class AccompanistWebViewClient : WebViewClient() {
         url: String?,
         isReload: Boolean,
     ) {
+        KLogger.d {
+            "doUpdateVisitedHistory: $url"
+        }
         super.doUpdateVisitedHistory(view, url, isReload)
 
         navigator.canGoBack = view.canGoBack()
@@ -284,6 +288,26 @@ open class AccompanistWebViewClient : WebViewClient() {
                 ),
             )
         }
+    }
+
+    override fun shouldOverrideUrlLoading(
+        view: WebView?,
+        request: WebResourceRequest?,
+    ): Boolean {
+        KLogger.d {
+            "shouldOverrideUrlLoading: ${request?.url}"
+        }
+        val webRequest =
+            WebRequest(
+                request?.url.toString(),
+                request?.requestHeaders?.toMutableMap(),
+            )
+        val intercept =
+            navigator.requestInterceptor?.beforeRequest(
+                webRequest,
+                navigator,
+            )
+        return intercept ?: super.shouldOverrideUrlLoading(view, request)
     }
 }
 
