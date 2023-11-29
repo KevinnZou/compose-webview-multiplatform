@@ -126,6 +126,7 @@ fun DesktopWebView(
                 browser.apply {
                     addDisplayHandler(state)
                     addLoadListener(state, navigator)
+                    addRequestHandler(state, navigator)
                 }
                 onCreated()
                 browser.uiComponent
