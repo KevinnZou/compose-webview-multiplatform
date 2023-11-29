@@ -63,12 +63,8 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
             }
             return
         }
-        @Suppress("ktlint:standard:max-line-length")
-        val header =
-            "<header><meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'></header>"
-        val concat = header + html
         wkWebView.loadHTMLString(
-            string = concat,
+            string = html,
             baseURL = baseUrl?.let { NSURL.URLWithString(it) },
         )
     }
