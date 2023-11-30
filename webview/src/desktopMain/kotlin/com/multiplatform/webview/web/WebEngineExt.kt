@@ -31,6 +31,7 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
                 title: String?,
             ) {
                 KLogger.d { "titleProperty: $title" }
+                zoomLevel = state.webSettings.zoomLevel
                 state.pageTitle = title
             }
 
@@ -44,7 +45,8 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
             override fun onStatusMessage(
                 browser: CefBrowser?,
                 value: String?,
-            ) {}
+            ) {
+            }
 
             override fun onConsoleMessage(
                 browser: CefBrowser?,
@@ -102,7 +104,6 @@ internal fun CefBrowser.addLoadListener(
                 httpStatusCode: Int,
             ) {
                 KLogger.d { "Load End ${browser?.url}" }
-                zoomLevel = state.webSettings.zoomLevel
                 state.loadingState = LoadingState.Finished
                 navigator.canGoBack = canGoBack()
                 navigator.canGoBack = canGoForward()
