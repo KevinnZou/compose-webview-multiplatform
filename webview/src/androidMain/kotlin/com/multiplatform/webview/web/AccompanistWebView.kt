@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
 import com.multiplatform.webview.request.WebRequest
+import com.multiplatform.webview.request.WebRequestInterceptResult
 import com.multiplatform.webview.util.KLogger
 
 /**
@@ -278,17 +279,35 @@ open class AccompanistWebViewClient : WebViewClient() {
         KLogger.d {
             "shouldOverrideUrlLoading: ${request?.url}"
         }
-        val webRequest =
-            WebRequest(
-                request?.url.toString(),
-                request?.requestHeaders?.toMutableMap(),
-            )
-        val intercept =
-            navigator.requestInterceptor?.beforeRequest(
-                webRequest,
-                navigator,
-            )
-        return intercept ?: super.shouldOverrideUrlLoading(view, request)
+        navigator.requestInterceptor?.apply {
+            val webRequest =
+                WebRequest(
+                    request?.url.toString(),
+                    request?.requestHeaders?.toMutableMap() ?: mutableMapOf(),
+                )
+            val interceptResult =
+                this.beforeRequest(
+                    webRequest,
+                    navigator,
+                )
+            return when (interceptResult) {
+                is WebRequestInterceptResult.Allow -> {
+                    super.shouldOverrideUrlLoading(view, request)
+                }
+
+                is WebRequestInterceptResult.Reject -> {
+                    true
+                }
+
+                is WebRequestInterceptResult.Redirect -> {
+                    interceptResult.request.apply {
+                        navigator.loadUrl(this.url, this.headers)
+                    }
+                    true
+                }
+            }
+        }
+        return super.shouldOverrideUrlLoading(view, request)
     }
 }
 
