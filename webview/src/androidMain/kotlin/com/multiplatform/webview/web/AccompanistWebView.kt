@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -165,7 +166,7 @@ fun AccompanistWebView(
                     state.webSettings.let {
                         javaScriptEnabled = it.isJavaScriptEnabled
                         userAgentString = it.customUserAgentString
-                        setInitialScale((it.zoomLevel * 100).toInt())
+//                        setInitialScale((it.zoomLevel * 100).toInt())
                         allowFileAccessFromFileURLs = it.allowFileAccessFromFileURLs
                         allowUniversalAccessFromFileURLs = it.allowUniversalAccessFromFileURLs
                     }
@@ -209,6 +210,18 @@ open class AccompanistWebViewClient : WebViewClient() {
         internal set
     open lateinit var navigator: WebViewNavigator
         internal set
+
+    override fun shouldInterceptRequest(
+        view: WebView?,
+        request: WebResourceRequest?,
+    ): WebResourceResponse? {
+        val script =
+            "javascript:var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=${state.webSettings.zoomLevel}, maximum-scale=10.0, minimum-scale=0.1,user-scalable=yes');document.getElementsByTagName('head')[0].appendChild(meta);"
+        view?.post {
+            view.evaluateJavascript(script) {}
+        }
+        return super.shouldInterceptRequest(view, request)
+    }
 
     override fun onPageStarted(
         view: WebView,
