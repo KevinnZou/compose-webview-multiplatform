@@ -2,20 +2,16 @@ package com.multiplatform.webview.web
 
 import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.util.KLogger
+import dev.datlag.kcef.KCEFBrowser
 import org.cef.CefSettings
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
-import org.cef.callback.CefAuthCallback
-import org.cef.callback.CefCallback
 import org.cef.handler.CefDisplayHandler
 import org.cef.handler.CefLoadHandler
-import org.cef.handler.CefRequestHandler
-import org.cef.handler.CefResourceRequestHandler
-import org.cef.misc.BoolRef
+import org.cef.handler.CefRequestHandlerAdapter
 import org.cef.network.CefRequest
 import kotlin.math.abs
 import kotlin.math.ln
-import org.cef.security.CefSSLInfo
 
 /**
  * Created By Kevin Zou On 2023/9/12
@@ -163,12 +159,12 @@ internal fun CefBrowser.addLoadListener(
     )
 }
 
-internal fun CefBrowser.addRequestHandler(
+internal fun KCEFBrowser.addRequestHandler(
     state: WebViewState,
     navigator: WebViewNavigator,
 ) {
-    this.client.addRequestHandler(
-        object : CefRequestHandler {
+    client.addRequestHandler(
+        object : CefRequestHandlerAdapter() {
             override fun onBeforeBrowse(
                 browser: CefBrowser?,
                 frame: CefFrame?,
@@ -189,57 +185,7 @@ internal fun CefBrowser.addRequestHandler(
                         webRequest,
                         navigator,
                     )
-                return intercept ?: false
-            }
-
-            override fun onOpenURLFromTab(
-                p0: CefBrowser?,
-                p1: CefFrame?,
-                p2: String?,
-                p3: Boolean,
-            ): Boolean {
-                return false
-            }
-
-            override fun getResourceRequestHandler(
-                p0: CefBrowser?,
-                p1: CefFrame?,
-                p2: CefRequest?,
-                p3: Boolean,
-                p4: Boolean,
-                p5: String?,
-                p6: BoolRef?,
-            ): CefResourceRequestHandler? {
-                return null
-            }
-
-            override fun getAuthCredentials(
-                p0: CefBrowser?,
-                p1: String?,
-                p2: Boolean,
-                p3: String?,
-                p4: Int,
-                p5: String?,
-                p6: String?,
-                p7: CefAuthCallback?,
-            ): Boolean {
-                return false
-            }
-
-            override fun onCertificateError(
-                p0: CefBrowser?,
-                p1: CefLoadHandler.ErrorCode?,
-                p2: String?,
-                p3: CefSSLInfo?,
-                p4: CefCallback?,
-            ): Boolean {
-                return false
-            }
-
-            override fun onRenderProcessTerminated(
-                p0: CefBrowser?,
-                p1: CefRequestHandler.TerminationStatus?,
-            ) {
+                return intercept ?: super.onBeforeBrowse(browser, frame, request, userGesture, isRedirect)
             }
         },
     )
