@@ -36,6 +36,7 @@ import co.touchlab.kermit.Logger
 import com.multiplatform.webview.cookie.Cookie
 import com.multiplatform.webview.request.RequestInterceptor
 import com.multiplatform.webview.request.WebRequest
+import com.multiplatform.webview.request.WebRequestInterceptResult
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebView
@@ -74,13 +75,13 @@ internal fun BasicWebViewSample(navHostController: NavHostController? = null) {
                     override fun beforeRequest(
                         request: WebRequest,
                         navigator: WebViewNavigator,
-                    ): Boolean {
-                        request.url?.let {
+                    ): WebRequestInterceptResult {
+                        request.url.let {
                             Logger.i { "Sample beforeRequest: $it" }
                         }
-                        request.headers?.put("test", "test")
-                        navigator.loadUrl("https://kotlinlang.org/", request.headers?.toMap() ?: emptyMap())
-                        return true
+                        request.headers["info"] = "test"
+                        request.url = "https://kotlinlang.org/docs/multiplatform.html"
+                        return WebRequestInterceptResult.Redirect(request)
                     }
                 },
         )

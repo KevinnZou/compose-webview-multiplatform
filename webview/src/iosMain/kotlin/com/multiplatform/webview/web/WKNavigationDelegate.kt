@@ -1,6 +1,7 @@
 package com.multiplatform.webview.web
 
 import com.multiplatform.webview.request.WebRequest
+import com.multiplatform.webview.request.WebRequestInterceptResult
 import com.multiplatform.webview.util.KLogger
 import com.multiplatform.webview.util.getPlatformVersionDouble
 import com.multiplatform.webview.util.notZero
@@ -28,6 +29,7 @@ class WKNavigationDelegate(
     private val navigator: WebViewNavigator,
 ) : NSObject(), WKNavigationDelegateProtocol {
     private var lastUrl = ""
+    private var lastInterceptUrl = ""
 
     /**
      * Called when the web view begins to receive web content.
@@ -115,29 +117,47 @@ class WKNavigationDelegate(
         decidePolicyForNavigationAction: WKNavigationAction,
         decisionHandler: (WKNavigationActionPolicy) -> Unit,
     ) {
-        if (lastUrl != decidePolicyForNavigationAction.request.URL?.absoluteString) {
-            val request = decidePolicyForNavigationAction.request
-            val headerMap = mutableMapOf<String, String>()
-            request.allHTTPHeaderFields?.forEach {
-                headerMap[it.key.toString()] = it.value.toString()
-            }
-            KLogger.i {
-                "decidePolicyForNavigationAction: ${request.URL?.absoluteString}, $headerMap"
-            }
-            val webRequest =
-                WebRequest(
-                    request.URL?.absoluteString ?: "",
-                    headerMap,
-                )
-            val intercept =
-                navigator.requestInterceptor?.beforeRequest(
-                    webRequest, navigator,
-                ) ?: false
-            lastUrl = webRequest.url ?: ""
-            if (!intercept) {
-                decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
-            } else {
-                decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyCancel)
+        val url = decidePolicyForNavigationAction.request.URL?.absoluteString
+        if (url != null && lastUrl != url && lastInterceptUrl != url &&
+            navigator.requestInterceptor != null
+        ) {
+            lastInterceptUrl = url
+            navigator.requestInterceptor.apply {
+                val request = decidePolicyForNavigationAction.request
+                val headerMap = mutableMapOf<String, String>()
+                request.allHTTPHeaderFields?.forEach {
+                    headerMap[it.key.toString()] = it.value.toString()
+                }
+                KLogger.i {
+                    "decidePolicyForNavigationAction: ${request.URL?.absoluteString}, $headerMap"
+                }
+                val webRequest =
+                    WebRequest(
+                        request.URL?.absoluteString ?: "",
+                        headerMap,
+                    )
+                val interceptResult =
+                    navigator.requestInterceptor.beforeRequest(
+                        webRequest,
+                        navigator,
+                    )
+                return when (interceptResult) {
+                    is WebRequestInterceptResult.Allow -> {
+                        decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
+                    }
+
+                    is WebRequestInterceptResult.Reject -> {
+                        decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyCancel)
+                    }
+
+                    is WebRequestInterceptResult.Redirect -> {
+                        interceptResult.request.apply {
+                            navigator.loadUrl(this.url, this.headers)
+                            lastUrl = this.url
+                        }
+                        decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyCancel)
+                    }
+                }
             }
         } else {
             decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)

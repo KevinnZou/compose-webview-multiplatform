@@ -9,5 +9,5 @@ interface RequestInterceptor {
     fun beforeRequest(
         request: WebRequest,
         navigator: WebViewNavigator,
-    ): Boolean
+    ): WebRequestInterceptResult
 }
