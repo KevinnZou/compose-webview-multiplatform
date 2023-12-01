@@ -28,8 +28,7 @@ class WKNavigationDelegate(
     private val state: WebViewState,
     private val navigator: WebViewNavigator,
 ) : NSObject(), WKNavigationDelegateProtocol {
-    private var lastUrl = ""
-    private var lastInterceptUrl = ""
+    private var isRedirect = false
 
     /**
      * Called when the web view begins to receive web content.
@@ -118,10 +117,13 @@ class WKNavigationDelegate(
         decisionHandler: (WKNavigationActionPolicy) -> Unit,
     ) {
         val url = decidePolicyForNavigationAction.request.URL?.absoluteString
-        if (url != null && lastUrl != url && lastInterceptUrl != url &&
-            navigator.requestInterceptor != null
+        KLogger.d {
+            "Outer decidePolicyForNavigationAction: $url $isRedirect $decidePolicyForNavigationAction"
+        }
+        if (url != null && !isRedirect &&
+            navigator.requestInterceptor != null &&
+            decidePolicyForNavigationAction.targetFrame?.mainFrame == true
         ) {
-            lastInterceptUrl = url
             navigator.requestInterceptor.apply {
                 val request = decidePolicyForNavigationAction.request
                 val headerMap = mutableMapOf<String, String>()
@@ -151,15 +153,16 @@ class WKNavigationDelegate(
                     }
 
                     is WebRequestInterceptResult.Redirect -> {
+                        isRedirect = true
                         interceptResult.request.apply {
                             navigator.loadUrl(this.url, this.headers)
-                            lastUrl = this.url
                         }
                         decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyCancel)
                     }
                 }
             }
         } else {
+            isRedirect = false
             decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
         }
     }
