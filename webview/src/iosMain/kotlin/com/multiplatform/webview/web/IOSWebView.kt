@@ -8,11 +8,15 @@ import kotlinx.cinterop.memScoped
 import platform.Foundation.HTTPBody
 import platform.Foundation.HTTPMethod
 import platform.Foundation.NSBundle
+import platform.Foundation.NSCharacterSet
 import platform.Foundation.NSData
 import platform.Foundation.NSMutableURLRequest
+import platform.Foundation.NSString
 import platform.Foundation.NSURL
+import platform.Foundation.URLFragmentAllowedCharacterSet
 import platform.Foundation.create
 import platform.Foundation.setValue
+import platform.Foundation.stringByAddingPercentEncodingWithAllowedCharacters
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
 import platform.darwin.NSObjectMeta
@@ -33,10 +37,21 @@ class IOSWebView(private val wkWebView: WKWebView) : IWebView {
         url: String,
         additionalHttpHeaders: Map<String, String>,
     ) {
-        KLogger.d { "Load url: $url" }
+        KLogger.i { "Load url: $url" }
+        val encodedUrl =
+            (url as NSString).stringByAddingPercentEncodingWithAllowedCharacters(
+                NSCharacterSet.URLFragmentAllowedCharacterSet,
+            ) ?: url
+        val nsUrl = NSURL.URLWithString(encodedUrl)
+        if (nsUrl == null) {
+            KLogger.e {
+                "LoadUrl: NSURL cannot be created with url: $url"
+            }
+            return
+        }
         val request =
             NSMutableURLRequest.requestWithURL(
-                URL = NSURL(string = url),
+                URL = nsUrl,
             )
         additionalHttpHeaders.all { (key, value) ->
             request.setValue(
