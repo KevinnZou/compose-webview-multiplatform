@@ -42,7 +42,8 @@ import com.multiplatform.webview.web.rememberWebViewState
  */
 @Composable
 internal fun BasicWebViewSample() {
-    val initialUrl = "https://github.com/KevinnZou/compose-webview-multiplatform"
+    val initialUrl =
+        "https://docs.google.com/gview?embedded=true&url=http://www.expertagent.co.uk/asp/in4glestates/{16D968D6-198E-4E33-88F4-8A85731CE605}/{05c36123-4df0-4d7d-811c-8b6686fdd526}/external.pdf"
     val state = rememberWebViewState(url = initialUrl)
     state.webSettings.apply {
         logSeverity = KLogSeverity.Debug

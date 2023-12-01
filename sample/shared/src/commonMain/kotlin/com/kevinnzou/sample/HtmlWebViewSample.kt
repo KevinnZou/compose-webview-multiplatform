@@ -52,6 +52,7 @@ internal fun BasicWebViewWithHTMLSample() {
             </script>
             <h1>Compose WebView Multiplatform</h1>
             <h2 id="subtitle">Basic Html Test</h2>
+            <a href="https://docs.google.com/gview?embedded=true&url=http://www.expertagent.co.uk/asp/in4glestates/{16D968D6-198E-4E33-88F4-8A85731CE605}/{05c36123-4df0-4d7d-811c-8b6686fdd526}/external.pdf">Download PDF</a>
         </body>
         </html>
         """.trimIndent()
