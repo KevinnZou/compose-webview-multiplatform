@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -249,6 +250,7 @@ open class AccompanistWebViewClient : WebViewClient() {
         internal set
     open lateinit var navigator: WebViewNavigator
         internal set
+    private var isRedirect = false
 
     override fun onPageStarted(
         view: WebView,
@@ -322,12 +324,52 @@ open class AccompanistWebViewClient : WebViewClient() {
         }
     }
 
-    override fun shouldOverrideUrlLoading(
+//    override fun shouldOverrideUrlLoading(
+//        view: WebView?,
+//        request: WebResourceRequest?,
+//    ): Boolean {
+//        KLogger.d {
+//            "shouldOverrideUrlLoading: ${request?.url}"
+//        }
+//        navigator.requestInterceptor?.apply {
+//            val webRequest =
+//                WebRequest(
+//                    request?.url.toString(),
+//                    request?.requestHeaders?.toMutableMap() ?: mutableMapOf(),
+//                )
+//            val interceptResult =
+//                this.beforeRequest(
+//                    webRequest,
+//                    navigator,
+//                )
+//            return when (interceptResult) {
+//                is WebRequestInterceptResult.Allow -> {
+//                    super.shouldOverrideUrlLoading(view, request)
+//                }
+//
+//                is WebRequestInterceptResult.Reject -> {
+//                    true
+//                }
+//
+//                is WebRequestInterceptResult.Redirect -> {
+//                    interceptResult.request.apply {
+//                        navigator.loadUrl(this.url, this.headers)
+//                    }
+//                    true
+//                }
+//            }
+//        }
+//        return super.shouldOverrideUrlLoading(view, request)
+//    }
+
+    override fun shouldInterceptRequest(
         view: WebView?,
         request: WebResourceRequest?,
-    ): Boolean {
-        KLogger.d {
-            "shouldOverrideUrlLoading: ${request?.url}"
+    ): WebResourceResponse? {
+        KLogger.d { "shouldInterceptRequest: ${request?.url} ${request?.isForMainFrame} ${request?.isRedirect} ${request?.method}" }
+        if (request?.isForMainFrame == false || isRedirect) {
+            isRedirect = false
+            return super.shouldInterceptRequest(view, request)
         }
         navigator.requestInterceptor?.apply {
             val webRequest =
@@ -342,22 +384,25 @@ open class AccompanistWebViewClient : WebViewClient() {
                 )
             return when (interceptResult) {
                 is WebRequestInterceptResult.Allow -> {
-                    super.shouldOverrideUrlLoading(view, request)
+                    super.shouldInterceptRequest(view, request)
                 }
 
                 is WebRequestInterceptResult.Reject -> {
-                    true
+                    navigator.stopLoading()
+                    super.shouldInterceptRequest(view, request)
                 }
 
                 is WebRequestInterceptResult.Redirect -> {
+                    isRedirect = true
                     interceptResult.request.apply {
                         navigator.loadUrl(this.url, this.headers)
                     }
-                    true
+                    null
                 }
             }
         }
-        return super.shouldOverrideUrlLoading(view, request)
+        isRedirect = false
+        return super.shouldInterceptRequest(view, request)
     }
 }
 
