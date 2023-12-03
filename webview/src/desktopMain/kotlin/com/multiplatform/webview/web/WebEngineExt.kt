@@ -7,6 +7,7 @@ import org.cef.browser.CefFrame
 import org.cef.handler.CefDisplayHandler
 import org.cef.handler.CefLoadHandler
 import org.cef.network.CefRequest
+import kotlin.math.ln
 
 /**
  * Created By Kevin Zou On 2023/9/12
@@ -30,8 +31,10 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
                 browser: CefBrowser?,
                 title: String?,
             ) {
-                KLogger.d { "titleProperty: $title" }
-                zoomLevel = state.webSettings.zoomLevel
+                // https://magpcss.org/ceforum/viewtopic.php?t=11491
+                val realZoomLevel = ln(state.webSettings.zoomLevel) / ln(1.2)
+                KLogger.d { "titleProperty: $title $realZoomLevel" }
+                zoomLevel = realZoomLevel
                 state.pageTitle = title
             }
 
