@@ -216,6 +216,7 @@ open class AccompanistWebViewClient : WebViewClient() {
         request: WebResourceRequest?,
     ): WebResourceResponse? {
         if (request?.isForMainFrame == true) {
+            @Suppress("ktlint:standard:max-line-length")
             val script =
                 "javascript:var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=${state.webSettings.zoomLevel}, maximum-scale=10.0, minimum-scale=0.1,user-scalable=yes');document.getElementsByTagName('head')[0].appendChild(meta);"
             view?.post {
