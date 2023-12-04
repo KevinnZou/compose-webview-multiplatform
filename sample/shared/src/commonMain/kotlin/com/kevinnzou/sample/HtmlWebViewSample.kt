@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewNavigator
-import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
+import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
 
 /**
  * Created By Kevin Zou On 2023/9/8
@@ -50,16 +50,28 @@ internal fun BasicWebViewWithHTMLSample() {
                 function callJS() {
                     return 'Response from JS';
                 }
+                function callDesktop() {
+                    window.cefQuery({
+                            request: "{\"id\":\"1\",\"methodName\":\"callIOS\",\"params\":\"{\\\"type\\\":\\\"1\\\"}\"}",
+                            onSuccess: function(response) {
+                                // 处理Java应用程序的响应
+                            },
+                            onFailure: function(errorCode, errorMessage) {
+                                // 处理错误
+                            }
+                        });
+                }
             </script>
             <h1>Compose WebView Multiplatform</h1>
             <h2 id="subtitle">Basic Html Test</h2>
+            <button onclick="callDesktop()">callDesktop</button>
         </body>
         </html>
         """.trimIndent()
-    val webViewState = rememberWebViewStateWithHTMLFile(
-        fileName = "index.html",
-    )
-//    val webViewState = rememberWebViewStateWithHTMLData(html)
+//    val webViewState = rememberWebViewStateWithHTMLFile(
+//        fileName = "index.html",
+//    )
+    val webViewState = rememberWebViewStateWithHTMLData(html)
     LaunchedEffect(Unit) {
         webViewState.webSettings.apply {
             zoomLevel = 1.0
@@ -89,7 +101,7 @@ internal fun BasicWebViewWithHTMLSample() {
                     webViewNavigator.evaluateJavaScript(
                         """
                         document.getElementById("subtitle").innerText = "Hello from KMM!";
-                        callIOS();
+                        callDesktop();
                         callJS();
                         """.trimIndent(),
                     ) {
