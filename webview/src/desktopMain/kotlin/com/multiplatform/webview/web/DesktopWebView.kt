@@ -4,6 +4,11 @@ import com.multiplatform.webview.jsbridge.JsBridge
 import com.multiplatform.webview.util.KLogger
 import dev.datlag.kcef.KCEFBrowser
 import kotlinx.coroutines.CoroutineScope
+import org.cef.browser.CefBrowser
+import org.cef.browser.CefFrame
+import org.cef.browser.CefMessageRouter
+import org.cef.callback.CefQueryCallback
+import org.cef.handler.CefMessageRouterHandlerAdapter
 import org.cef.network.CefPostData
 import org.cef.network.CefPostDataElement
 import org.cef.network.CefRequest
@@ -16,6 +21,10 @@ class DesktopWebView(
     override var scope: CoroutineScope,
     override var jsBridge: JsBridge,
 ) : IWebView {
+    init {
+        initWebView()
+    }
+
     override fun canGoBack() = webView.canGoBack()
 
     override fun canGoForward() = webView.canGoForward()
@@ -97,5 +106,23 @@ class DesktopWebView(
     }
 
     override fun injectBridge(jsBridge: JsBridge) {
+        val router = CefMessageRouter.create()
+        val handler = object : CefMessageRouterHandlerAdapter() {
+            override fun onQuery(
+                browser: CefBrowser?,
+                frame: CefFrame?,
+                queryId: Long,
+                request: String?,
+                persistent: Boolean,
+                callback: CefQueryCallback?
+            ): Boolean {
+                KLogger.d {
+                    "onQuery: $request"
+                }
+                return super.onQuery(browser, frame, queryId, request, persistent, callback)
+            }
+        }
+        router.addHandler(handler, false)
+        webView.client.addMessageRouter(router)
     }
 }
