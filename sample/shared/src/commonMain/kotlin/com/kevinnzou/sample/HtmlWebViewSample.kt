@@ -17,7 +17,6 @@ import androidx.compose.ui.unit.dp
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewNavigator
-import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
 
 /**
@@ -90,6 +89,7 @@ internal fun BasicWebViewWithHTMLSample() {
                     webViewNavigator.evaluateJavaScript(
                         """
                         document.getElementById("subtitle").innerText = "Hello from KMM!";
+                        callIOS();
                         callJS();
                         """.trimIndent(),
                     ) {

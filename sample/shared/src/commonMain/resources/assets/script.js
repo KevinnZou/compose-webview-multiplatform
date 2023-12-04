@@ -2,6 +2,10 @@ function callJS() {
     return 'Response from JS';
 }
 
-function callNative() {
-    window.jsBridge.call('1', 'callNative', '{"name":"callNative"}');
+function callAndroid() {
+    window.jsBridge.call('1', 'callAndroid', '{"name":"callAndroid"}');
+}
+
+function callIOS() {
+    window.webkit.messageHandlers.jsBridge.postMessage("{\"id\":\"1\",\"methodName\":\"callIOS\",\"params\":\"{\\\"type\\\":\\\"1\\\"}\"}");
 }
