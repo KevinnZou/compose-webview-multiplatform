@@ -77,16 +77,8 @@ fun IOSWebView(
                 userInteractionEnabled = captureBackPresses
                 allowsBackForwardNavigationGestures = captureBackPresses
                 customUserAgent = state.webSettings.customUserAgentString
-                this.addObservers(
+                this.addProgressObservers(
                     observer = observer,
-                    properties =
-                        listOf(
-                            "estimatedProgress",
-                            "title",
-                            "URL",
-                            "canGoBack",
-                            "canGoForward",
-                        ),
                 )
                 this.navigationDelegate = navigationDelegate
                 onCreated()
@@ -98,16 +90,8 @@ fun IOSWebView(
         modifier = modifier,
         onRelease = {
             state.webView = null
-            it.removeObservers(
+            it.removeProgressObservers(
                 observer = observer,
-                properties =
-                    listOf(
-                        "estimatedProgress",
-                        "title",
-                        "URL",
-                        "canGoBack",
-                        "canGoForward",
-                    ),
             )
             it.navigationDelegate = null
             onDispose()

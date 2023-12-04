@@ -1,14 +1,13 @@
 package com.multiplatform.webview.web
 
 import com.multiplatform.webview.jsbridge.JsBridge
-import com.multiplatform.webview.jsbridge.JsMessage
+import com.multiplatform.webview.jsbridge.WKJsMessageHandler
 import com.multiplatform.webview.util.KLogger
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.memScoped
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.serialization.json.Json
 import platform.Foundation.HTTPBody
 import platform.Foundation.HTTPMethod
 import platform.Foundation.NSBundle
@@ -17,9 +16,6 @@ import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSURL
 import platform.Foundation.create
 import platform.Foundation.setValue
-import platform.WebKit.WKScriptMessage
-import platform.WebKit.WKScriptMessageHandlerProtocol
-import platform.WebKit.WKUserContentController
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
 import platform.darwin.NSObjectMeta
@@ -141,27 +137,11 @@ class IOSWebView(
     }
 
     override fun injectBridge(jsBridge: JsBridge) {
-        val userController =
-            WKUserContentController().apply {
-                addScriptMessageHandler(
-                    object : WKScriptMessageHandlerProtocol, NSObject() {
-                        override fun userContentController(
-                            userContentController: WKUserContentController,
-                            didReceiveScriptMessage: WKScriptMessage,
-                        ) {
-                            KLogger.d { "didReceiveScriptMessage: $didReceiveScriptMessage" }
-                            val body = didReceiveScriptMessage.body
-                            val method = didReceiveScriptMessage.name
-                            if (body is String) {
-                                val message = Json.decodeFromString<JsMessage>(body)
-                                jsBridge.dispatch(message)
-                            }
-                        }
-                    },
-                    "jsBridge",
-                )
-            }
-        wkWebView.configuration.userContentController = userController
+        KLogger.i { "injectBridge" }
+        val jsMessageHandler = WKJsMessageHandler(jsBridge)
+        wkWebView.configuration.userContentController.apply {
+            addScriptMessageHandler(jsMessageHandler, "jsBridge")
+        }
     }
 
     private class BundleMarker : NSObject() {
