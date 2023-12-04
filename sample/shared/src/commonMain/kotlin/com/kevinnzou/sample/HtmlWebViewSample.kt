@@ -52,7 +52,7 @@ internal fun BasicWebViewWithHTMLSample() {
                 }
                 function callDesktop() {
                     window.cefQuery({
-                            request: "{\"id\":\"1\",\"methodName\":\"callIOS\",\"params\":\"{\\\"type\\\":\\\"1\\\"}\"}",
+                            request: "1_callDesktop_{\"type\":\"1\"}",
                             onSuccess: function(response) {
                                 // 处理Java应用程序的响应
                             },
