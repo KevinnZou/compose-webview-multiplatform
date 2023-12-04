@@ -6,6 +6,7 @@ plugins {
     id("org.jetbrains.compose")
     id("org.jetbrains.dokka")
     id("com.vanniktech.maven.publish")
+    kotlin("plugin.serialization") version "1.9.10"
 }
 
 kotlin {
