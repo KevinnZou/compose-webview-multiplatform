@@ -126,12 +126,13 @@ class IOSWebView(
         callback: ((String) -> Unit)?,
     ) {
         wkWebView.evaluateJavaScript(script) { result, error ->
+            if (callback == null) return@evaluateJavaScript
             if (error != null) {
                 KLogger.e { "evaluateJavaScript error: $error" }
-                callback?.invoke(error.localizedDescription())
+                callback.invoke(error.localizedDescription())
             } else {
                 KLogger.info { "evaluateJavaScript result: $result" }
-                callback?.invoke(result?.toString() ?: "")
+                callback.invoke(result?.toString() ?: "")
             }
         }
     }
