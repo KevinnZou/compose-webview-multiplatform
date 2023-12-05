@@ -7,7 +7,7 @@ class JsDispatcher {
     private val jsHandlerMap = mutableMapOf<String, IJsHandler>()
 
     fun registerJSHandler(handler: IJsHandler) {
-        jsHandlerMap[handler.id()] = handler
+        jsHandlerMap[handler.methodName()] = handler
     }
 
     fun dispatch(
@@ -20,6 +20,6 @@ class JsDispatcher {
     fun canHandle(id: String) = jsHandlerMap.containsKey(id)
 
     fun unregisterJSHandler(handler: IJsHandler) {
-        jsHandlerMap.remove(handler.id())
+        jsHandlerMap.remove(handler.methodName())
     }
 }
