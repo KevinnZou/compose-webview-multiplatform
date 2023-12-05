@@ -80,7 +80,7 @@ class AndroidWebView(
         callback: ((String) -> Unit)?,
     ) {
         val androidScript = "javascript:$script"
-        KLogger.i {
+        KLogger.d {
             "evaluateJavaScript: $androidScript"
         }
         webView.post {
@@ -108,7 +108,7 @@ class AndroidWebView(
     ) {
         KLogger.d { "call from JS: $request" }
         val message = Json.decodeFromString<JsMessage>(request)
-        KLogger.i {
+        KLogger.d {
             "call from JS: $message"
         }
         jsBridge.dispatch(message)

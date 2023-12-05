@@ -130,6 +130,7 @@ internal fun CefBrowser.addLoadListener(
                 failedUrl: String?,
             ) {
                 state.loadingState = LoadingState.Finished
+                // TODO Error
                 KLogger.i {
                     "Failed to load url: $errorCode ${failedUrl}\n$errorText"
                 }

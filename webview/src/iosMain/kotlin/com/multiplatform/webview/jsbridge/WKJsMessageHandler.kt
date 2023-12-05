@@ -18,10 +18,10 @@ class WKJsMessageHandler(private val jsBridge: JsBridge) : WKScriptMessageHandle
     ) {
         val body = didReceiveScriptMessage.body
         val method = didReceiveScriptMessage.name
-        KLogger.i { "didReceiveScriptMessage: $body, $method" }
+        KLogger.info { "didReceiveScriptMessage: $body, $method" }
         (body as String).apply {
             val message = Json.decodeFromString<JsMessage>(body)
-            KLogger.i {
+            KLogger.info {
                 "WKJsMessageHandler: $message"
             }
             jsBridge.dispatch(message)

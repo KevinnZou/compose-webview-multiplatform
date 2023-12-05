@@ -130,7 +130,7 @@ class IOSWebView(
                 KLogger.e { "evaluateJavaScript error: $error" }
                 callback?.invoke(error.localizedDescription())
             } else {
-                KLogger.i { "evaluateJavaScript result: $result" }
+                KLogger.info { "evaluateJavaScript result: $result" }
                 callback?.invoke(result?.toString() ?: "")
             }
         }
@@ -147,7 +147,7 @@ class IOSWebView(
     }
 
     override fun injectBridge(jsBridge: JsBridge) {
-        KLogger.i { "injectBridge" }
+        KLogger.info { "injectBridge" }
         val jsMessageHandler = WKJsMessageHandler(jsBridge)
         wkWebView.configuration.userContentController.apply {
             addScriptMessageHandler(jsMessageHandler, "jsBridge")
