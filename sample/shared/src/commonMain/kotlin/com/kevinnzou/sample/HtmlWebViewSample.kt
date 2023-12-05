@@ -65,7 +65,7 @@ internal fun BasicWebViewWithHTMLSample() {
                         });
                 }
                 function callNative() {
-                    window.JsBridge.callNative("Greet","hello")
+                    window.JsBridge.callNative("Greet",JSON.stringify({type: "1"}));
                 }
             </script>
             <h1>Compose WebView Multiplatform</h1>
@@ -119,7 +119,7 @@ internal fun BasicWebViewWithHTMLSample() {
                     webViewNavigator.evaluateJavaScript(
                         """
                         document.getElementById("subtitle").innerText = "Hello from KMM!";
-                        window.JsBridge.callNative("Greet","hello")
+                        window.JsBridge.callNative("Greet",JSON.stringify({type: "1"}));
                         callJS();
                         """.trimIndent(),
                     ) {
