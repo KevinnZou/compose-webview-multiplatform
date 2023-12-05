@@ -107,6 +107,7 @@ internal fun CefBrowser.addLoadListener(
             ) {
                 KLogger.d { "Load Start ${browser?.url}" }
                 state.loadingState = LoadingState.Loading(0F)
+                state.errorsForCurrentRequest.clear()
             }
 
             override fun onLoadEnd(
@@ -129,8 +130,8 @@ internal fun CefBrowser.addLoadListener(
                 failedUrl: String?,
             ) {
                 state.loadingState = LoadingState.Finished
-                KLogger.e {
-                    "Failed to load url: ${failedUrl}\n$errorText"
+                KLogger.i {
+                    "Failed to load url: $errorCode ${failedUrl}\n$errorText"
                 }
                 state.errorsForCurrentRequest.add(
                     WebViewError(
