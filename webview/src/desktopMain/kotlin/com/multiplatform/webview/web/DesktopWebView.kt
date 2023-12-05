@@ -5,6 +5,7 @@ import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.util.KLogger
 import dev.datlag.kcef.KCEFBrowser
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.json.Json
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.browser.CefMessageRouter
@@ -117,17 +118,18 @@ class DesktopWebView(
                 persistent: Boolean,
                 callback: CefQueryCallback?
             ): Boolean {
+                if (request == null) return super.onQuery(
+                    browser,
+                    frame,
+                    queryId,
+                    request,
+                    persistent,
+                    callback
+                )
                 KLogger.d {
                     "onQuery: $request"
                 }
-                val id = request?.substringBefore('_')
-                val methodName = request?.substringAfter('_')?.substringBefore('_')
-                val params = request?.substringAfterLast('_')
-                val message = JsMessage(
-                    id?.toInt() ?: 0,
-                    methodName ?: "",
-                    params ?: "",
-                )
+                val message = Json.decodeFromString<JsMessage>(request)
                 KLogger.d {
                     "onQuery Message: $message"
                 }
