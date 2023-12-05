@@ -6,6 +6,7 @@ import com.multiplatform.webview.jsbridge.JsBridge
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.util.KLogger
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.json.Json
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -93,11 +94,23 @@ class AndroidWebView(
 
     @JavascriptInterface
     fun call(
+        request: String
+    ) {
+        KLogger.d { "call from JS: $request" }
+        val message = Json.decodeFromString<JsMessage>(request)
+        KLogger.i {
+            "call from JS: $message"
+        }
+//        jsBridge.dispatch(JsMessage(id, method, params))
+    }
+
+    @JavascriptInterface
+    fun callAndroid(
         id: Int,
         method: String,
         params: String,
     ) {
-        KLogger.d { "call from JS: $id, $method, $params" }
+        KLogger.d { "callAndroid call from JS: $id, $method, $params" }
         jsBridge.dispatch(JsMessage(id, method, params))
     }
 }
