@@ -88,6 +88,16 @@ class AndroidWebView(
         }
     }
 
+    override suspend fun injectInitJS() {
+        super.injectInitJS()
+        val callAndroid = """
+            window.JsBridge.postMessage = function (message) {
+                    window.jsBridge.call(message)
+                };
+        """.trimIndent()
+        evaluateJavaScript(callAndroid)
+    }
+
     override fun injectBridge(jsBridge: JsBridge) {
         webView.addJavascriptInterface(this, "jsBridge")
     }

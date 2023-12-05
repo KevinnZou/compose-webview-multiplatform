@@ -107,6 +107,19 @@ class DesktopWebView(
         }
     }
 
+    override suspend fun injectInitJS() {
+        super.injectInitJS()
+        KLogger.d {
+            "DesktopWebView injectInitJS"
+        }
+        val callDesktop = """
+            window.JsBridge.postMessage = function (message) {
+                    window.cefQuery({request:message});
+                };
+        """.trimIndent()
+        evaluateJavaScript(callDesktop)
+    }
+
     override fun injectBridge(jsBridge: JsBridge) {
         val router = CefMessageRouter.create()
         val handler = object : CefMessageRouterHandlerAdapter() {

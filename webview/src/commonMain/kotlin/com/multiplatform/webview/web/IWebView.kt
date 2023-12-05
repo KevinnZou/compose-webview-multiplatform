@@ -1,6 +1,7 @@
 package com.multiplatform.webview.web
 
 import com.multiplatform.webview.jsbridge.JsBridge
+import com.multiplatform.webview.util.KLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -155,8 +156,26 @@ interface IWebView {
 
     @OptIn(ExperimentalResourceApi::class)
     suspend fun injectInitJS() {
-        val res = resource("jsbridge.js")
-        val initJs = res.readBytes().decodeToString()
+        KLogger.d {
+            "IWebView injectInitJS"
+        }
+        val initJs = """
+            window.JsBridge = {
+                callbacks: {},
+                callbackId: 0,
+                callNative: function (methodName, params, callback) {
+                    var message = {
+                        methodName: methodName,
+                        params: params,
+                        id: callback ? window.JsBridge.callbackId++ : -1
+                    };
+                    if (callback) {
+                        window.JsBridge.callbacks[message.callbackId] = callback;
+                    }
+                    window.JsBridge.postMessage(JSON.stringify(message));
+                },
+            };
+        """.trimIndent()
         evaluateJavaScript(initJs)
     }
 
@@ -164,7 +183,6 @@ interface IWebView {
 
     fun initWebView() {
         scope.launch {
-//            injectInitJS()
             injectBridge(jsBridge)
         }
     }

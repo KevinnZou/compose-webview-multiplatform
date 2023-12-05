@@ -80,6 +80,12 @@ fun WebView(
         }
     }
 
+    LaunchedEffect(state.loadingState) {
+        if (state.loadingState is LoadingState.Finished) {
+            webView?.injectInitJS()
+        }
+    }
+
     ActualWebView(
         state = state,
         modifier = modifier,
