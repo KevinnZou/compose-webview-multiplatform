@@ -61,10 +61,13 @@ internal fun BasicWebViewWithHTMLSample() {
                             }
                         });
                 }
+                function callNative() {
+                    window.JsBridge.callNative("Greet","hello")
+                }
             </script>
             <h1>Compose WebView Multiplatform</h1>
             <h2 id="subtitle">Basic Html Test</h2>
-            <button onclick="callDesktop()">callDesktop</button>
+            <button onclick="callNative()">callNative</button>
         </body>
         </html>
         """.trimIndent()
@@ -101,7 +104,7 @@ internal fun BasicWebViewWithHTMLSample() {
                     webViewNavigator.evaluateJavaScript(
                         """
                         document.getElementById("subtitle").innerText = "Hello from KMM!";
-                        callDesktop();
+                        window.JsBridge.callNative("Greet","hello")
                         callJS();
                         """.trimIndent(),
                     ) {
