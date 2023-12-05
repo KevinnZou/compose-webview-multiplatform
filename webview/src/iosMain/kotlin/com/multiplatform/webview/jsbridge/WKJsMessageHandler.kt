@@ -24,7 +24,7 @@ class WKJsMessageHandler(private val jsBridge: JsBridge) : WKScriptMessageHandle
             KLogger.i {
                 "WKJsMessageHandler: $message"
             }
-//            jsBridge.dispatch(message)
+            jsBridge.dispatch(message)
         }
     }
 }

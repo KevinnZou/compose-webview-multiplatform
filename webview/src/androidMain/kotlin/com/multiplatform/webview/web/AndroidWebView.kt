@@ -111,7 +111,7 @@ class AndroidWebView(
         KLogger.i {
             "call from JS: $message"
         }
-//        jsBridge.dispatch(JsMessage(id, method, params))
+        jsBridge.dispatch(message)
     }
 
     @JavascriptInterface
