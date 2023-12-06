@@ -107,6 +107,7 @@ internal fun BasicWebViewWithHTMLSample() {
             Logger.i {
                 "Greet Handler Get Param: $param"
             }
+            callback("KMM ${param.type}")
         }
 
     })
@@ -125,7 +126,12 @@ internal fun BasicWebViewWithHTMLSample() {
                     webViewNavigator.evaluateJavaScript(
                         """
                         document.getElementById("subtitle").innerText = "Hello from KMM!";
-                        window.JsBridge.callNative("Greet",JSON.stringify({type: "1"}));
+                        window.JsBridge.callNative("Greet",JSON.stringify({type: "1"}),
+                            function (data) {
+                                document.getElementById("subtitle").innerText = data;
+                                console.log("Greet from Native: " + data);
+                            }
+                        );
                         callJS();
                         """.trimIndent(),
                     ) {

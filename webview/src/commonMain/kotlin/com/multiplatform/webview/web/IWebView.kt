@@ -170,10 +170,19 @@ interface IWebView {
                         id: callback ? window.JsBridge.callbackId++ : -1
                     };
                     if (callback) {
-                        window.JsBridge.callbacks[message.callbackId] = callback;
+                        window.JsBridge.callbacks[message.id] = callback;
+                        console.log('add callback: ' + message.id + ', ' + JSON.stringify(window.JsBridge.callbacks));
                     }
                     window.JsBridge.postMessage(JSON.stringify(message));
                 },
+                onCallback: function (callbackId, data) {
+                    var callback = window.JsBridge.callbacks[callbackId];
+                    console.log('onCallback: ' + callbackId + ', ' + data + ', ' + JSON.stringify(window.JsBridge.callbacks));
+                    if (callback) {
+                        callback(data);
+                        delete window.JsBridge.callbacks[callbackId];
+                    }
+                }
             };
         """.trimIndent()
         evaluateJavaScript(initJs)

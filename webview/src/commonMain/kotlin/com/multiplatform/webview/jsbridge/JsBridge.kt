@@ -1,8 +1,6 @@
 package com.multiplatform.webview.jsbridge
 
 import com.multiplatform.webview.web.IWebView
-import kotlinx.serialization.encodeToString
-import kotlinx.serialization.json.Json
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.resource
 
@@ -12,7 +10,7 @@ import org.jetbrains.compose.resources.resource
 class JsBridge {
     private val jsDispatcher = JsDispatcher()
     private var initJs = ""
-    private var webView: IWebView? = null
+    var webView: IWebView? = null
 
     fun register(handler: IJsHandler) {
         jsDispatcher.registerJSHandler(handler)
@@ -38,11 +36,12 @@ class JsBridge {
         }
     }
 
-    fun onCallback(
+    private fun onCallback(
         data: Any,
         callbackId: Int,
     ) {
-        val res = Json.encodeToString(data)
-        webView?.evaluateJavaScript("window.jsBridge.onCallback('$callbackId', $res)")
+//        val res = Json.encodeToString(data)
+        val res = data.toString()
+        webView?.evaluateJavaScript("window.JsBridge.onCallback($callbackId, '$res')")
     }
 }

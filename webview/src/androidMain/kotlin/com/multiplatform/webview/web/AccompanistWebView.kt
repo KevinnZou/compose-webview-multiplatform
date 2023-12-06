@@ -191,7 +191,11 @@ fun AccompanistWebView(
                         domStorageEnabled = it.domStorageEnabled
                     }
                 }
-            }.also { state.webView = AndroidWebView(it, scope, state.jsBridge) }
+            }.also {
+                val androidWebView = AndroidWebView(it, scope, state.jsBridge)
+                state.webView = androidWebView
+                state.jsBridge.webView = androidWebView
+            }
         },
         modifier = modifier,
         onRelease = {
