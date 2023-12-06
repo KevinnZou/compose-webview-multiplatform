@@ -24,6 +24,12 @@ class WebSettings {
     var customUserAgentString: String? = null
 
     /**
+     * Set the zoom level of the WebView.
+     * Default is 1.0.
+     */
+    var zoomLevel: Double = 1.0
+
+    /**
      * Whether cross-origin requests in the context of a file scheme URL should be allowed to
      * access content from other file scheme URLs. Note that some accesses such as image HTML
      * elements don't follow same-origin rules and aren't affected by this setting.

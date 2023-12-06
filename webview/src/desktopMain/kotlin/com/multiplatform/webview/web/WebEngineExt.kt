@@ -7,6 +7,8 @@ import org.cef.browser.CefFrame
 import org.cef.handler.CefDisplayHandler
 import org.cef.handler.CefLoadHandler
 import org.cef.network.CefRequest
+import kotlin.math.abs
+import kotlin.math.ln
 
 /**
  * Created By Kevin Zou On 2023/9/12
@@ -30,7 +32,17 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
                 browser: CefBrowser?,
                 title: String?,
             ) {
-                KLogger.d { "titleProperty: $title" }
+                // https://magpcss.org/ceforum/viewtopic.php?t=11491
+                // https://github.com/KevinnZou/compose-webview-multiplatform/issues/46
+                val givenZoomLevel = state.webSettings.zoomLevel
+                val realZoomLevel =
+                    if (givenZoomLevel >= 0.0) {
+                        ln(abs(givenZoomLevel)) / ln(1.2)
+                    } else {
+                        -ln(abs(givenZoomLevel)) / ln(1.2)
+                    }
+                KLogger.d { "titleProperty: $title $realZoomLevel" }
+                zoomLevel = realZoomLevel
                 state.pageTitle = title
             }
 
@@ -44,7 +56,8 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
             override fun onStatusMessage(
                 browser: CefBrowser?,
                 value: String?,
-            ) {}
+            ) {
+            }
 
             override fun onConsoleMessage(
                 browser: CefBrowser?,
