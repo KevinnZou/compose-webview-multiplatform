@@ -62,7 +62,7 @@ internal fun BasicWebViewWithHTMLSample() {
     val webViewState = rememberWebViewStateWithHTMLData(html)
     LaunchedEffect(Unit) {
         webViewState.webSettings.apply {
-            zoomLevel = 2.0
+            zoomLevel = 1.0
             isJavaScriptEnabled = true
             logSeverity = KLogSeverity.Debug
             allowFileAccessFromFileURLs = true

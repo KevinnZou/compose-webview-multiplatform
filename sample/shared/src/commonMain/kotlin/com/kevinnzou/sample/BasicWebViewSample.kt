@@ -46,7 +46,6 @@ internal fun BasicWebViewSample() {
     val state = rememberWebViewState(url = initialUrl)
     LaunchedEffect(Unit) {
         state.webSettings.apply {
-            zoomLevel = 1.0
             logSeverity = KLogSeverity.Debug
             customUserAgentString =
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1) AppleWebKit/625.20 (KHTML, like Gecko) Version/14.3.43 Safari/625.20"
