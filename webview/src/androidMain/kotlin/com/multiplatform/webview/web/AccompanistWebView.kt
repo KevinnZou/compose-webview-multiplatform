@@ -18,6 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import com.multiplatform.webview.jsbridge.JsBridge
 import com.multiplatform.webview.util.KLogger
 
 /**
@@ -55,6 +56,7 @@ fun AccompanistWebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
+    jsBridge: JsBridge? = null,
     onCreated: (WebView) -> Unit = {},
     onDispose: (WebView) -> Unit = {},
     client: AccompanistWebViewClient = remember { AccompanistWebViewClient() },
@@ -90,6 +92,7 @@ fun AccompanistWebView(
             Modifier,
             captureBackPresses,
             navigator,
+            jsBridge,
             onCreated,
             onDispose,
             client,
@@ -131,6 +134,7 @@ fun AccompanistWebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
+    jsBridge: JsBridge? = null,
     onCreated: (WebView) -> Unit = {},
     onDispose: (WebView) -> Unit = {},
     client: AccompanistWebViewClient = remember { AccompanistWebViewClient() },
@@ -192,9 +196,9 @@ fun AccompanistWebView(
                     }
                 }
             }.also {
-                val androidWebView = AndroidWebView(it, scope, state.jsBridge)
+                val androidWebView = AndroidWebView(it, scope, jsBridge)
                 state.webView = androidWebView
-                state.jsBridge.webView = androidWebView
+                jsBridge?.webView = androidWebView
             }
         },
         modifier = modifier,

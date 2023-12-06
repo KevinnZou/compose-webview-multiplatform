@@ -21,7 +21,7 @@ import org.cef.network.CefRequest
 class DesktopWebView(
     private val webView: KCEFBrowser,
     override var scope: CoroutineScope,
-    override var jsBridge: JsBridge,
+    override var jsBridge: JsBridge?,
 ) : IWebView {
     init {
         initWebView()

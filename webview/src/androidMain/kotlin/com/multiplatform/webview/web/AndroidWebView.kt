@@ -18,7 +18,7 @@ import kotlinx.serialization.json.Json
 class AndroidWebView(
     private val webView: WebView,
     override var scope: CoroutineScope,
-    override var jsBridge: JsBridge,
+    override var jsBridge: JsBridge?,
 ) : IWebView {
     init {
         initWebView()
@@ -111,7 +111,7 @@ class AndroidWebView(
         KLogger.d {
             "call from JS: $message"
         }
-        jsBridge.dispatch(message)
+        jsBridge?.dispatch(message)
     }
 
     @JavascriptInterface
@@ -121,6 +121,6 @@ class AndroidWebView(
         params: String,
     ) {
         KLogger.d { "callAndroid call from JS: $id, $method, $params" }
-        jsBridge.dispatch(JsMessage(id, method, params))
+        jsBridge?.dispatch(JsMessage(id, method, params))
     }
 }

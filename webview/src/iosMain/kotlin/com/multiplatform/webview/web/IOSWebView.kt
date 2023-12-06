@@ -30,7 +30,7 @@ import platform.darwin.NSObjectMeta
 class IOSWebView(
     private val wkWebView: WKWebView,
     override var scope: CoroutineScope,
-    override var jsBridge: JsBridge,
+    override var jsBridge: JsBridge?,
 ) : IWebView {
     init {
         initWebView()

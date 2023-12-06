@@ -2,6 +2,7 @@ package com.multiplatform.webview.web
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.multiplatform.webview.jsbridge.JsBridge
 
 /**
  * Android WebView implementation.
@@ -12,6 +13,7 @@ actual fun ActualWebView(
     modifier: Modifier,
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
+    jsBridge: JsBridge?,
     onCreated: () -> Unit,
     onDispose: () -> Unit,
 ) {
@@ -20,6 +22,7 @@ actual fun ActualWebView(
         modifier,
         captureBackPresses,
         navigator,
+        jsBridge,
         onCreated = { _ -> onCreated() },
         onDispose = { _ -> onDispose() },
     )

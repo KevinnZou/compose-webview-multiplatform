@@ -3,7 +3,6 @@ package com.multiplatform.webview.web
 import com.multiplatform.webview.jsbridge.JsBridge
 import com.multiplatform.webview.util.KLogger
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.resource
 
@@ -17,7 +16,7 @@ import org.jetbrains.compose.resources.resource
 interface IWebView {
     var scope: CoroutineScope
 
-    var jsBridge: JsBridge
+    var jsBridge: JsBridge?
 
     /**
      * True when the web view is able to navigate backwards, false otherwise.
@@ -171,13 +170,13 @@ interface IWebView {
                     };
                     if (callback) {
                         window.JsBridge.callbacks[message.id] = callback;
-                        console.log('add callback: ' + message.id + ', ' + JSON.stringify(window.JsBridge.callbacks));
+                        console.log('add callback: ' + message.id + ', ' + callback);
                     }
                     window.JsBridge.postMessage(JSON.stringify(message));
                 },
                 onCallback: function (callbackId, data) {
                     var callback = window.JsBridge.callbacks[callbackId];
-                    console.log('onCallback: ' + callbackId + ', ' + data + ', ' + JSON.stringify(window.JsBridge.callbacks));
+                    console.log('onCallback: ' + callbackId + ', ' + data + ', ' + callback);
                     if (callback) {
                         callback(data);
                         delete window.JsBridge.callbacks[callbackId];
@@ -191,8 +190,8 @@ interface IWebView {
     fun injectBridge(jsBridge: JsBridge)
 
     fun initWebView() {
-        scope.launch {
-            injectBridge(jsBridge)
+        jsBridge?.apply {
+            injectBridge(this)
         }
     }
 }

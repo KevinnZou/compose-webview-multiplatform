@@ -1,5 +1,7 @@
 package com.multiplatform.webview.jsbridge
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import com.multiplatform.webview.web.IWebView
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.resource
@@ -7,7 +9,7 @@ import org.jetbrains.compose.resources.resource
 /**
  * Created By Kevin Zou On 2023/10/31
  */
-class JsBridge {
+open class JsBridge {
     private val jsDispatcher = JsDispatcher()
     private var initJs = ""
     var webView: IWebView? = null
@@ -45,3 +47,7 @@ class JsBridge {
         webView?.evaluateJavaScript("window.JsBridge.onCallback($callbackId, '$res')")
     }
 }
+
+@Composable
+fun rememberWebViewJsBridge(): JsBridge =
+    remember { JsBridge() }

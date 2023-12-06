@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import com.multiplatform.webview.jsbridge.JsBridge
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
@@ -31,6 +32,7 @@ fun WebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
+    jsBridge: JsBridge? = null,
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
 ) {
@@ -81,7 +83,7 @@ fun WebView(
     }
 
     LaunchedEffect(state.loadingState) {
-        if (state.loadingState is LoadingState.Finished) {
+        if (state.loadingState is LoadingState.Finished && jsBridge != null) {
             webView?.injectInitJS()
         }
     }
@@ -91,6 +93,7 @@ fun WebView(
         modifier = modifier,
         captureBackPresses = captureBackPresses,
         navigator = navigator,
+        jsBridge = jsBridge,
         onCreated = onCreated,
         onDispose = onDispose,
     )
@@ -105,6 +108,7 @@ expect fun ActualWebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
+    jsBridge: JsBridge? = null,
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
 )

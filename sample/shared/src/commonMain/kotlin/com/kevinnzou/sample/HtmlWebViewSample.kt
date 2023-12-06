@@ -17,10 +17,13 @@ import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
 import com.kevinnzou.sample.model.GreetModel
 import com.multiplatform.webview.jsbridge.IJsHandler
+import com.multiplatform.webview.jsbridge.JsBridge
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.jsbridge.processParams
+import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
 
@@ -80,37 +83,11 @@ internal fun BasicWebViewWithHTMLSample() {
 //        fileName = "index.html",
 //    )
     val webViewState = rememberWebViewStateWithHTMLData(html)
+    val jsBridge = rememberWebViewJsBridge()
     LaunchedEffect(Unit) {
-        webViewState.webSettings.apply {
-            zoomLevel = 1.0
-            isJavaScriptEnabled = true
-            logSeverity = KLogSeverity.Debug
-            allowFileAccessFromFileURLs = true
-            allowUniversalAccessFromFileURLs = true
-            androidWebSettings.apply {
-                isAlgorithmicDarkeningAllowed = true
-                safeBrowsingEnabled = true
-                allowFileAccess = true
-            }
-        }
+        initWebView(webViewState)
+        initJsBridge(jsBridge)
     }
-    webViewState.jsBridge.register(object : IJsHandler {
-        override fun methodName(): String {
-            return "Greet"
-        }
-
-        override fun handle(message: JsMessage, callback: (Any) -> Unit) {
-            Logger.i {
-                "Greet Handler Get Message: $message"
-            }
-            val param = processParams<GreetModel>(message)
-            Logger.i {
-                "Greet Handler Get Param: $param"
-            }
-            callback("KMM ${param.type}")
-        }
-
-    })
     val webViewNavigator = rememberWebViewNavigator()
     var jsRes by mutableStateOf("Evaluate JavaScript")
     MaterialTheme {
@@ -120,6 +97,7 @@ internal fun BasicWebViewWithHTMLSample() {
                 modifier = Modifier.fillMaxSize(),
                 captureBackPresses = false,
                 navigator = webViewNavigator,
+                jsBridge = jsBridge,
             )
             Button(
                 onClick = {
@@ -144,4 +122,36 @@ internal fun BasicWebViewWithHTMLSample() {
             }
         }
     }
+}
+
+fun initWebView(webViewState: WebViewState) {
+    webViewState.webSettings.apply {
+        zoomLevel = 1.0
+        isJavaScriptEnabled = true
+        logSeverity = KLogSeverity.Debug
+        allowFileAccessFromFileURLs = true
+        allowUniversalAccessFromFileURLs = true
+        androidWebSettings.apply {
+            isAlgorithmicDarkeningAllowed = true
+            safeBrowsingEnabled = true
+            allowFileAccess = true
+        }
+    }
+}
+
+fun initJsBridge(jsBridge: JsBridge) {
+    jsBridge.register(object : IJsHandler {
+        override fun methodName(): String {
+            return "Greet"
+        }
+
+        override fun handle(message: JsMessage, callback: (Any) -> Unit) {
+            Logger.i {
+                "Greet Handler Get Message: $message"
+            }
+            val param = processParams<GreetModel>(message)
+            callback("KMM ${param.type}")
+        }
+
+    })
 }
