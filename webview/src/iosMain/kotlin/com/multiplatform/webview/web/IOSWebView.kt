@@ -137,7 +137,7 @@ class IOSWebView(
         }
     }
 
-    override suspend fun injectInitJS() {
+    override fun injectInitJS() {
         super.injectInitJS()
         val callIOS = """
             window.JsBridge.postMessage = function (message) {

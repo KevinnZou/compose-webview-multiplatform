@@ -70,7 +70,12 @@ internal fun BasicWebViewWithHTMLSample() {
                         });
                 }
                 function callNative() {
-                    window.JsBridge.callNative("Greet",JSON.stringify({type: "1"}));
+                    window.JsBridge.callNative("Greet",JSON.stringify({type: "1"}),
+                            function (data) {
+                                document.getElementById("subtitle").innerText = data;
+                                console.log("Greet from Native: " + data);
+                            }
+                        );
                 }
             </script>
             <h1>Compose WebView Multiplatform</h1>

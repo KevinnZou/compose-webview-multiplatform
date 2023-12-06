@@ -2,9 +2,15 @@ package com.multiplatform.webview.web
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.multiplatform.webview.jsbridge.JsBridge
+import com.multiplatform.webview.util.Platform
+import com.multiplatform.webview.util.getPlatform
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
@@ -37,6 +43,9 @@ fun WebView(
     onDispose: () -> Unit = {},
 ) {
     val webView = state.webView
+    var isJsBridgeInjected by remember {
+        mutableStateOf(false)
+    }
 
     webView?.let { wv ->
         LaunchedEffect(wv, navigator) {
@@ -82,9 +91,13 @@ fun WebView(
         }
     }
 
-    LaunchedEffect(state.loadingState) {
-        if (state.loadingState is LoadingState.Finished && jsBridge != null) {
-            webView?.injectInitJS()
+    // TODO WorkAround for Desktop not working issue.
+    if (jsBridge != null && !isJsBridgeInjected && getPlatform() != Platform.Desktop) {
+        LaunchedEffect(state.loadingState, jsBridge) {
+            if (state.loadingState is LoadingState.Finished && !isJsBridgeInjected) {
+                webView?.injectInitJS()
+                isJsBridgeInjected = true
+            }
         }
     }
 

@@ -120,6 +120,7 @@ internal fun CefBrowser.addLoadListener(
                 navigator.canGoBack = canGoBack()
                 navigator.canGoBack = canGoForward()
                 state.lastLoadedUrl = getCurrentUrl()
+                state.webView?.injectInitJS()
             }
 
             override fun onLoadError(

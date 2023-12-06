@@ -107,7 +107,7 @@ class DesktopWebView(
         }
     }
 
-    override suspend fun injectInitJS() {
+    override fun injectInitJS() {
         super.injectInitJS()
         KLogger.d {
             "DesktopWebView injectInitJS"

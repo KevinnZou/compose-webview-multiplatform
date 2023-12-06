@@ -153,8 +153,8 @@ interface IWebView {
         callback: ((String) -> Unit)? = null,
     )
 
-    @OptIn(ExperimentalResourceApi::class)
-    suspend fun injectInitJS() {
+    fun injectInitJS() {
+        if (jsBridge == null) return
         KLogger.d {
             "IWebView injectInitJS"
         }
