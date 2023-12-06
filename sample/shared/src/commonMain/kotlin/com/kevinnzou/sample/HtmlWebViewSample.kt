@@ -15,8 +15,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
+import com.kevinnzou.sample.model.GreetModel
 import com.multiplatform.webview.jsbridge.IJsHandler
 import com.multiplatform.webview.jsbridge.JsMessage
+import com.multiplatform.webview.jsbridge.processParams
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewNavigator
@@ -100,6 +102,10 @@ internal fun BasicWebViewWithHTMLSample() {
         override fun handle(message: JsMessage, callback: (Any) -> Unit) {
             Logger.i {
                 "Greet Handler Get Message: $message"
+            }
+            val param = processParams<GreetModel>(message)
+            Logger.i {
+                "Greet Handler Get Param: $param"
             }
         }
 

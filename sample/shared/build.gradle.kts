@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
     id("com.android.library")
     id("org.jetbrains.compose")
+    kotlin("plugin.serialization") version "1.9.10"
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -38,6 +39,7 @@ kotlin {
                 implementation(compose.components.resources)
                 implementation("co.touchlab:kermit:2.0.0-RC5")
                 api(project(":webview"))
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
             }
         }
         val androidMain by getting {
