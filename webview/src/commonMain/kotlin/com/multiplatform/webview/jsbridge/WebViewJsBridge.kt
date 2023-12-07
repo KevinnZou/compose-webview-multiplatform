@@ -9,7 +9,6 @@ import com.multiplatform.webview.web.IWebView
  */
 open class WebViewJsBridge {
     private val jsMessageDispatcher = JsMessageDispatcher()
-    private var initJs = ""
     var webView: IWebView? = null
 
     fun register(handler: IJsMessageHandler) {
@@ -18,6 +17,10 @@ open class WebViewJsBridge {
 
     fun unregister(handler: IJsMessageHandler) {
         jsMessageDispatcher.unregisterJSHandler(handler)
+    }
+
+    fun clear() {
+        jsMessageDispatcher.clear()
     }
 
     fun dispatch(message: JsMessage) {

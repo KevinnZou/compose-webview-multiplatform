@@ -22,4 +22,8 @@ class JsMessageDispatcher {
     fun unregisterJSHandler(handler: IJsMessageHandler) {
         jsHandlerMap.remove(handler.methodName())
     }
+
+    fun clear() {
+        jsHandlerMap.clear()
+    }
 }

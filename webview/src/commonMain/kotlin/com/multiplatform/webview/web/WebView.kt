@@ -108,7 +108,10 @@ fun WebView(
         navigator = navigator,
         webViewJsBridge = webViewJsBridge,
         onCreated = onCreated,
-        onDispose = onDispose,
+        onDispose = {
+            webViewJsBridge?.clear()
+            onDispose()
+        },
     )
 }
 
