@@ -8,20 +8,20 @@ import com.multiplatform.webview.web.IWebView
  * Created By Kevin Zou On 2023/10/31
  */
 open class WebViewJsBridge {
-    private val jsDispatcher = JsDispatcher()
+    private val jsMessageDispatcher = JsMessageDispatcher()
     private var initJs = ""
     var webView: IWebView? = null
 
-    fun register(handler: IJsHandler) {
-        jsDispatcher.registerJSHandler(handler)
+    fun register(handler: IJsMessageHandler) {
+        jsMessageDispatcher.registerJSHandler(handler)
     }
 
-    fun unregister(handler: IJsHandler) {
-        jsDispatcher.unregisterJSHandler(handler)
+    fun unregister(handler: IJsMessageHandler) {
+        jsMessageDispatcher.unregisterJSHandler(handler)
     }
 
     fun dispatch(message: JsMessage) {
-        jsDispatcher.dispatch(message) {
+        jsMessageDispatcher.dispatch(message) {
             onCallback(it, message.callbackId)
         }
     }

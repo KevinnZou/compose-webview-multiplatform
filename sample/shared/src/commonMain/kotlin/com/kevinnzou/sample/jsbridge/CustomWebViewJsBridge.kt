@@ -7,6 +7,6 @@ import com.multiplatform.webview.jsbridge.WebViewJsBridge
  */
 class CustomWebViewJsBridge : WebViewJsBridge() {
     init {
-        register(GreetJsHandler())
+        register(GreetJsMessageHandler())
     }
 }

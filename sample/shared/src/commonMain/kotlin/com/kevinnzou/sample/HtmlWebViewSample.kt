@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
 import com.kevinnzou.sample.model.GreetModel
-import com.multiplatform.webview.jsbridge.IJsHandler
+import com.multiplatform.webview.jsbridge.IJsMessageHandler
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.jsbridge.processParams
@@ -145,7 +145,7 @@ fun initWebView(webViewState: WebViewState) {
 }
 
 fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
-    webViewJsBridge.register(object : IJsHandler {
+    webViewJsBridge.register(object : IJsMessageHandler {
         override fun methodName(): String {
             return "Greet"
         }

@@ -3,10 +3,10 @@ package com.multiplatform.webview.jsbridge
 /**
  * Created By Kevin Zou On 2023/10/31
  */
-class JsDispatcher {
-    private val jsHandlerMap = mutableMapOf<String, IJsHandler>()
+class JsMessageDispatcher {
+    private val jsHandlerMap = mutableMapOf<String, IJsMessageHandler>()
 
-    fun registerJSHandler(handler: IJsHandler) {
+    fun registerJSHandler(handler: IJsMessageHandler) {
         jsHandlerMap[handler.methodName()] = handler
     }
 
@@ -19,7 +19,7 @@ class JsDispatcher {
 
     fun canHandle(id: String) = jsHandlerMap.containsKey(id)
 
-    fun unregisterJSHandler(handler: IJsHandler) {
+    fun unregisterJSHandler(handler: IJsMessageHandler) {
         jsHandlerMap.remove(handler.methodName())
     }
 }

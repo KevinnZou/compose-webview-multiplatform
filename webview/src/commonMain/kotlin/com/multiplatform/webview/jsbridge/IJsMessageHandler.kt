@@ -5,7 +5,7 @@ import kotlinx.serialization.json.Json
 /**
  * Created By Kevin Zou On 2023/10/31
  */
-interface IJsHandler {
+interface IJsMessageHandler {
     fun methodName(): String
 
     fun canHandle(methodName: String) = methodName() == methodName
@@ -17,6 +17,6 @@ interface IJsHandler {
 
 }
 
-inline fun <reified T : Any> IJsHandler.processParams(message: JsMessage): T {
+inline fun <reified T : Any> IJsMessageHandler.processParams(message: JsMessage): T {
     return Json.decodeFromString(message.params)
 }
