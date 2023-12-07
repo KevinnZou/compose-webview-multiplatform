@@ -2,8 +2,8 @@ package com.multiplatform.webview.web
 
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
-import com.multiplatform.webview.jsbridge.JsBridge
 import com.multiplatform.webview.jsbridge.JsMessage
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
@@ -18,7 +18,7 @@ import kotlinx.serialization.json.Json
 class AndroidWebView(
     private val webView: WebView,
     override var scope: CoroutineScope,
-    override var jsBridge: JsBridge?,
+    override var webViewJsBridge: WebViewJsBridge?,
 ) : IWebView {
     init {
         initWebView()
@@ -98,7 +98,7 @@ class AndroidWebView(
         evaluateJavaScript(callAndroid)
     }
 
-    override fun injectJsBridge(jsBridge: JsBridge) {
+    override fun injectJsBridge(webViewJsBridge: WebViewJsBridge) {
         webView.addJavascriptInterface(this, "jsBridge")
     }
 
@@ -111,7 +111,7 @@ class AndroidWebView(
         KLogger.d {
             "call from JS: $message"
         }
-        jsBridge?.dispatch(message)
+        webViewJsBridge?.dispatch(message)
     }
 
     @JavascriptInterface
@@ -121,6 +121,6 @@ class AndroidWebView(
         params: String,
     ) {
         KLogger.d { "callAndroid call from JS: $id, $method, $params" }
-        jsBridge?.dispatch(JsMessage(id, method, params))
+        webViewJsBridge?.dispatch(JsMessage(id, method, params))
     }
 }

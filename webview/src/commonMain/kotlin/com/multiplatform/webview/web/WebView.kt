@@ -8,7 +8,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
-import com.multiplatform.webview.jsbridge.JsBridge
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.Platform
 import com.multiplatform.webview.util.getPlatform
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -38,7 +38,7 @@ fun WebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
-    jsBridge: JsBridge? = null,
+    webViewJsBridge: WebViewJsBridge? = null,
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
 ) {
@@ -92,8 +92,8 @@ fun WebView(
     }
 
     // TODO WorkAround for Desktop not working issue.
-    if (jsBridge != null && !isJsBridgeInjected && getPlatform() != Platform.Desktop) {
-        LaunchedEffect(state.loadingState, jsBridge) {
+    if (webViewJsBridge != null && !isJsBridgeInjected && getPlatform() != Platform.Desktop) {
+        LaunchedEffect(state.loadingState, webViewJsBridge) {
             if (state.loadingState is LoadingState.Finished && !isJsBridgeInjected) {
                 webView?.injectInitJS()
                 isJsBridgeInjected = true
@@ -106,7 +106,7 @@ fun WebView(
         modifier = modifier,
         captureBackPresses = captureBackPresses,
         navigator = navigator,
-        jsBridge = jsBridge,
+        webViewJsBridge = webViewJsBridge,
         onCreated = onCreated,
         onDispose = onDispose,
     )
@@ -121,7 +121,7 @@ expect fun ActualWebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
-    jsBridge: JsBridge? = null,
+    webViewJsBridge: WebViewJsBridge? = null,
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
 )

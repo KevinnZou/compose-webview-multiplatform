@@ -7,7 +7,7 @@ import com.multiplatform.webview.web.IWebView
 /**
  * Created By Kevin Zou On 2023/10/31
  */
-open class JsBridge {
+open class WebViewJsBridge {
     private val jsDispatcher = JsDispatcher()
     private var initJs = ""
     var webView: IWebView? = null
@@ -37,5 +37,5 @@ open class JsBridge {
 }
 
 @Composable
-fun rememberWebViewJsBridge(): JsBridge =
-    remember { JsBridge() }
+fun rememberWebViewJsBridge(): WebViewJsBridge =
+    remember { WebViewJsBridge() }

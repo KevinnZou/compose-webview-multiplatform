@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
 import com.kevinnzou.sample.model.GreetModel
 import com.multiplatform.webview.jsbridge.IJsHandler
-import com.multiplatform.webview.jsbridge.JsBridge
 import com.multiplatform.webview.jsbridge.JsMessage
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.jsbridge.processParams
 import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
 import com.multiplatform.webview.util.KLogSeverity
@@ -102,7 +102,7 @@ internal fun BasicWebViewWithHTMLSample() {
                 modifier = Modifier.fillMaxSize(),
                 captureBackPresses = false,
                 navigator = webViewNavigator,
-                jsBridge = jsBridge,
+                webViewJsBridge = jsBridge,
             )
             Button(
                 onClick = {
@@ -144,8 +144,8 @@ fun initWebView(webViewState: WebViewState) {
     }
 }
 
-fun initJsBridge(jsBridge: JsBridge) {
-    jsBridge.register(object : IJsHandler {
+fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
+    webViewJsBridge.register(object : IJsHandler {
         override fun methodName(): String {
             return "Greet"
         }

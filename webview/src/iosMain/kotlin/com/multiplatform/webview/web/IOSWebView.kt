@@ -1,7 +1,7 @@
 package com.multiplatform.webview.web
 
-import com.multiplatform.webview.jsbridge.JsBridge
 import com.multiplatform.webview.jsbridge.WKJsMessageHandler
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -30,7 +30,7 @@ import platform.darwin.NSObjectMeta
 class IOSWebView(
     private val wkWebView: WKWebView,
     override var scope: CoroutineScope,
-    override var jsBridge: JsBridge?,
+    override var webViewJsBridge: WebViewJsBridge?,
 ) : IWebView {
     init {
         initWebView()
@@ -147,9 +147,9 @@ class IOSWebView(
         evaluateJavaScript(callIOS)
     }
 
-    override fun injectJsBridge(jsBridge: JsBridge) {
+    override fun injectJsBridge(webViewJsBridge: WebViewJsBridge) {
         KLogger.info { "injectBridge" }
-        val jsMessageHandler = WKJsMessageHandler(jsBridge)
+        val jsMessageHandler = WKJsMessageHandler(webViewJsBridge)
         wkWebView.configuration.userContentController.apply {
             addScriptMessageHandler(jsMessageHandler, "jsBridge")
         }

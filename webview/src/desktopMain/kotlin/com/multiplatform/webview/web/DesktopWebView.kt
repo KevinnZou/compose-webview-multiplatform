@@ -1,7 +1,7 @@
 package com.multiplatform.webview.web
 
-import com.multiplatform.webview.jsbridge.JsBridge
 import com.multiplatform.webview.jsbridge.JsMessage
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 import dev.datlag.kcef.KCEFBrowser
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +21,7 @@ import org.cef.network.CefRequest
 class DesktopWebView(
     private val webView: KCEFBrowser,
     override var scope: CoroutineScope,
-    override var jsBridge: JsBridge?,
+    override var webViewJsBridge: WebViewJsBridge?,
 ) : IWebView {
     init {
         initWebView()
@@ -120,7 +120,7 @@ class DesktopWebView(
         evaluateJavaScript(callDesktop)
     }
 
-    override fun injectJsBridge(jsBridge: JsBridge) {
+    override fun injectJsBridge(webViewJsBridge: WebViewJsBridge) {
         val router = CefMessageRouter.create()
         val handler = object : CefMessageRouterHandlerAdapter() {
             override fun onQuery(
@@ -143,7 +143,7 @@ class DesktopWebView(
                 KLogger.d {
                     "onQuery Message: $message"
                 }
-                jsBridge.dispatch(message)
+                webViewJsBridge.dispatch(message)
                 return true
             }
         }

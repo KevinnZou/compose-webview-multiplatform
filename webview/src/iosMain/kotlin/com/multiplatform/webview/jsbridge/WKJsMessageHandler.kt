@@ -10,7 +10,8 @@ import platform.darwin.NSObject
 /**
  * Created By Kevin Zou On 2023/11/1
  */
-class WKJsMessageHandler(private val jsBridge: JsBridge) : WKScriptMessageHandlerProtocol,
+class WKJsMessageHandler(private val webViewJsBridge: WebViewJsBridge) :
+    WKScriptMessageHandlerProtocol,
     NSObject() {
     override fun userContentController(
         userContentController: WKUserContentController,
@@ -24,7 +25,7 @@ class WKJsMessageHandler(private val jsBridge: JsBridge) : WKScriptMessageHandle
             KLogger.info {
                 "WKJsMessageHandler: $message"
             }
-            jsBridge.dispatch(message)
+            webViewJsBridge.dispatch(message)
         }
     }
 }

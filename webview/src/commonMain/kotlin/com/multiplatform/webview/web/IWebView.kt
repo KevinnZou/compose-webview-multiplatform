@@ -1,6 +1,6 @@
 package com.multiplatform.webview.web
 
-import com.multiplatform.webview.jsbridge.JsBridge
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -16,7 +16,7 @@ import org.jetbrains.compose.resources.resource
 interface IWebView {
     var scope: CoroutineScope
 
-    var jsBridge: JsBridge?
+    var webViewJsBridge: WebViewJsBridge?
 
     /**
      * True when the web view is able to navigate backwards, false otherwise.
@@ -154,7 +154,7 @@ interface IWebView {
     )
 
     fun injectInitJS() {
-        if (jsBridge == null) return
+        if (webViewJsBridge == null) return
         KLogger.d {
             "IWebView injectInitJS"
         }
@@ -187,10 +187,10 @@ interface IWebView {
         evaluateJavaScript(initJs)
     }
 
-    fun injectJsBridge(jsBridge: JsBridge)
+    fun injectJsBridge(webViewJsBridge: WebViewJsBridge)
 
     fun initWebView() {
-        jsBridge?.apply {
+        webViewJsBridge?.apply {
             injectJsBridge(this)
         }
     }

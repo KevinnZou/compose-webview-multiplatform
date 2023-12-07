@@ -5,7 +5,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.interop.UIKitView
-import com.multiplatform.webview.jsbridge.JsBridge
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.readValue
 import platform.CoreGraphics.CGRectZero
@@ -23,7 +23,7 @@ actual fun ActualWebView(
     modifier: Modifier,
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
-    jsBridge: JsBridge?,
+    webViewJsBridge: WebViewJsBridge?,
     onCreated: () -> Unit,
     onDispose: () -> Unit,
 ) {
@@ -32,7 +32,7 @@ actual fun ActualWebView(
         modifier = modifier,
         captureBackPresses = captureBackPresses,
         navigator = navigator,
-        jsBridge = jsBridge,
+        webViewJsBridge = webViewJsBridge,
         onCreated = onCreated,
         onDispose = onDispose,
     )
@@ -48,7 +48,7 @@ fun IOSWebView(
     modifier: Modifier,
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
-    jsBridge: JsBridge?,
+    webViewJsBridge: WebViewJsBridge?,
     onCreated: () -> Unit,
     onDispose: () -> Unit,
 ) {
@@ -87,9 +87,9 @@ fun IOSWebView(
                 this.navigationDelegate = navigationDelegate
                 onCreated()
             }.also {
-                val iosWebView = IOSWebView(it, scope, jsBridge)
+                val iosWebView = IOSWebView(it, scope, webViewJsBridge)
                 state.webView = iosWebView
-                jsBridge?.webView = iosWebView
+                webViewJsBridge?.webView = iosWebView
             }
         },
         modifier = modifier,

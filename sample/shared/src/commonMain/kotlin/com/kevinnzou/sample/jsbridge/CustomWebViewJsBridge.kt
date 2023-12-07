@@ -1,11 +1,11 @@
 package com.kevinnzou.sample.jsbridge
 
-import com.multiplatform.webview.jsbridge.JsBridge
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
 
 /**
  * Created By Kevin Zou On 2023/12/6
  */
-class CustomJsBridge : JsBridge() {
+class CustomWebViewJsBridge : WebViewJsBridge() {
     init {
         register(GreetJsHandler())
     }
