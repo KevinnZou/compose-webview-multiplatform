@@ -187,11 +187,11 @@ interface IWebView {
         evaluateJavaScript(initJs)
     }
 
-    fun injectBridge(jsBridge: JsBridge)
+    fun injectJsBridge(jsBridge: JsBridge)
 
     fun initWebView() {
         jsBridge?.apply {
-            injectBridge(this)
+            injectJsBridge(this)
         }
     }
 }

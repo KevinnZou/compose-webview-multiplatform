@@ -3,8 +3,6 @@ package com.multiplatform.webview.jsbridge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.multiplatform.webview.web.IWebView
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.resource
 
 /**
  * Created By Kevin Zou On 2023/10/31
@@ -20,16 +18,6 @@ open class JsBridge {
 
     fun unregister(handler: IJsHandler) {
         jsDispatcher.unregisterJSHandler(handler)
-    }
-
-    @OptIn(ExperimentalResourceApi::class)
-    private suspend fun injectInitJS() {
-        if (initJs.isEmpty())
-            {
-                val res = resource("jsbridge.js")
-                initJs = res.readBytes().decodeToString()
-            }
-        webView?.evaluateJavaScript(initJs)
     }
 
     fun dispatch(message: JsMessage) {

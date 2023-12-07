@@ -98,7 +98,7 @@ class AndroidWebView(
         evaluateJavaScript(callAndroid)
     }
 
-    override fun injectBridge(jsBridge: JsBridge) {
+    override fun injectJsBridge(jsBridge: JsBridge) {
         webView.addJavascriptInterface(this, "jsBridge")
     }
 

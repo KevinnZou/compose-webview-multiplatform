@@ -120,7 +120,7 @@ class DesktopWebView(
         evaluateJavaScript(callDesktop)
     }
 
-    override fun injectBridge(jsBridge: JsBridge) {
+    override fun injectJsBridge(jsBridge: JsBridge) {
         val router = CefMessageRouter.create()
         val handler = object : CefMessageRouterHandlerAdapter() {
             override fun onQuery(
@@ -139,15 +139,12 @@ class DesktopWebView(
                     persistent,
                     callback
                 )
-                KLogger.d {
-                    "onQuery: $request"
-                }
                 val message = Json.decodeFromString<JsMessage>(request)
                 KLogger.d {
                     "onQuery Message: $message"
                 }
                 jsBridge.dispatch(message)
-                return super.onQuery(browser, frame, queryId, request, persistent, callback)
+                return true
             }
         }
         router.addHandler(handler, false)
