@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -211,21 +210,6 @@ open class AccompanistWebViewClient : WebViewClient() {
     open lateinit var navigator: WebViewNavigator
         internal set
 
-    override fun shouldInterceptRequest(
-        view: WebView?,
-        request: WebResourceRequest?,
-    ): WebResourceResponse? {
-        if (request?.isForMainFrame == true) {
-            @Suppress("ktlint:standard:max-line-length")
-            val script =
-                "javascript:var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=${state.webSettings.zoomLevel}, maximum-scale=10.0, minimum-scale=0.1,user-scalable=yes');document.getElementsByTagName('head')[0].appendChild(meta);"
-            view?.post {
-                view.evaluateJavascript(script) {}
-            }
-        }
-        return super.shouldInterceptRequest(view, request)
-    }
-
     override fun onPageStarted(
         view: WebView,
         url: String?,
@@ -238,9 +222,13 @@ open class AccompanistWebViewClient : WebViewClient() {
         state.loadingState = LoadingState.Loading(0.0f)
         state.errorsForCurrentRequest.clear()
         state.pageTitle = null
-//        state.pageIcon = null
-
         state.lastLoadedUrl = url
+
+        // set scale level
+        @Suppress("ktlint:standard:max-line-length")
+        val script =
+            "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=${state.webSettings.zoomLevel}, maximum-scale=10.0, minimum-scale=0.1,user-scalable=yes');document.getElementsByTagName('head')[0].appendChild(meta);"
+        navigator.evaluateJavaScript(script)
     }
 
     override fun onPageFinished(

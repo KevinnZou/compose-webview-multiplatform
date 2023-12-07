@@ -71,6 +71,8 @@ class AndroidWebView(private val webView: WebView) : IWebView {
         KLogger.i {
             "evaluateJavaScript: $androidScript"
         }
-        webView.evaluateJavascript(androidScript, callback)
+        webView.post {
+            webView.evaluateJavascript(androidScript, callback)
+        }
     }
 }

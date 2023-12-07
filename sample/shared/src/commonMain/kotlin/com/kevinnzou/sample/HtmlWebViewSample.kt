@@ -7,6 +7,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -59,15 +60,18 @@ internal fun BasicWebViewWithHTMLSample() {
 //        fileName = "index.html",
 //    )
     val webViewState = rememberWebViewStateWithHTMLData(html)
-    webViewState.webSettings.apply {
-        isJavaScriptEnabled = true
-        logSeverity = KLogSeverity.Debug
-        allowFileAccessFromFileURLs = true
-        allowUniversalAccessFromFileURLs = true
-        androidWebSettings.apply {
-            isAlgorithmicDarkeningAllowed = true
-            safeBrowsingEnabled = true
-            allowFileAccess = true
+    LaunchedEffect(Unit) {
+        webViewState.webSettings.apply {
+            zoomLevel = 1.0
+            isJavaScriptEnabled = true
+            logSeverity = KLogSeverity.Debug
+            allowFileAccessFromFileURLs = true
+            allowUniversalAccessFromFileURLs = true
+            androidWebSettings.apply {
+                isAlgorithmicDarkeningAllowed = true
+                safeBrowsingEnabled = true
+                allowFileAccess = true
+            }
         }
     }
     val webViewNavigator = rememberWebViewNavigator()
