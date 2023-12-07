@@ -30,12 +30,10 @@ open class WebViewJsBridge {
     }
 
     private fun onCallback(
-        data: Any,
+        data: String,
         callbackId: Int,
     ) {
-//        val res = Json.encodeToString(data)
-        val res = data.toString()
-        webView?.evaluateJavaScript("window.JsBridge.onCallback($callbackId, '$res')")
+        webView?.evaluateJavaScript("window.JsBridge.onCallback($callbackId, '$data')")
     }
 }
 

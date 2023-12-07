@@ -4,6 +4,7 @@ import co.touchlab.kermit.Logger
 import com.kevinnzou.sample.model.GreetModel
 import com.multiplatform.webview.jsbridge.IJsMessageHandler
 import com.multiplatform.webview.jsbridge.JsMessage
+import com.multiplatform.webview.jsbridge.dataToJsonString
 import com.multiplatform.webview.jsbridge.processParams
 
 /**
@@ -14,11 +15,12 @@ class GreetJsMessageHandler : IJsMessageHandler {
         return "Greet"
     }
 
-    override fun handle(message: JsMessage, callback: (Any) -> Unit) {
+    override fun handle(message: JsMessage, callback: (String) -> Unit) {
         Logger.i {
             "Greet Handler Get Message: $message"
         }
         val param = processParams<GreetModel>(message)
-        callback("KMM ${param.type}")
+        val data = GreetModel("KMM ${param.message}")
+        callback(dataToJsonString(data))
     }
 }

@@ -14,12 +14,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import co.touchlab.kermit.Logger
-import com.kevinnzou.sample.model.GreetModel
-import com.multiplatform.webview.jsbridge.IJsMessageHandler
-import com.multiplatform.webview.jsbridge.JsMessage
+import com.kevinnzou.sample.jsbridge.GreetJsMessageHandler
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
-import com.multiplatform.webview.jsbridge.processParams
 import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
@@ -60,7 +56,7 @@ internal fun BasicWebViewWithHTMLSample() {
                 }
                 function callDesktop() {
                     window.cefQuery({
-                            request: "1_callDesktop_{\"type\":\"1\"}",
+                            request: "1_callDesktop_{\"message\":\"1\"}",
                             onSuccess: function(response) {
                                 // 处理Java应用程序的响应
                             },
@@ -70,7 +66,7 @@ internal fun BasicWebViewWithHTMLSample() {
                         });
                 }
                 function callNative() {
-                    window.JsBridge.callNative("Greet",JSON.stringify({type: "1"}),
+                    window.JsBridge.callNative("Greet",JSON.stringify({message: "1"}),
                             function (data) {
                                 document.getElementById("subtitle").innerText = data;
                                 console.log("Greet from Native: " + data);
@@ -109,7 +105,7 @@ internal fun BasicWebViewWithHTMLSample() {
                     webViewNavigator.evaluateJavaScript(
                         """
                         document.getElementById("subtitle").innerText = "Hello from KMM!";
-                        window.JsBridge.callNative("Greet",JSON.stringify({type: "1"}),
+                        window.JsBridge.callNative("Greet",JSON.stringify({message: "1"}),
                             function (data) {
                                 document.getElementById("subtitle").innerText = data;
                                 console.log("Greet from Native: " + data);
@@ -145,18 +141,5 @@ fun initWebView(webViewState: WebViewState) {
 }
 
 fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
-    webViewJsBridge.register(object : IJsMessageHandler {
-        override fun methodName(): String {
-            return "Greet"
-        }
-
-        override fun handle(message: JsMessage, callback: (Any) -> Unit) {
-            Logger.i {
-                "Greet Handler Get Message: $message"
-            }
-            val param = processParams<GreetModel>(message)
-            callback("KMM ${param.type}")
-        }
-
-    })
+    webViewJsBridge.register(GreetJsMessageHandler())
 }

@@ -12,7 +12,7 @@ class JsMessageDispatcher {
 
     fun dispatch(
         message: JsMessage,
-        callback: (Any) -> Unit,
+        callback: (String) -> Unit,
     ) {
         jsHandlerMap[message.methodName]?.handle(message, callback)
     }
