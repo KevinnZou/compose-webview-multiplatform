@@ -166,11 +166,11 @@ interface IWebView {
                     var message = {
                         methodName: methodName,
                         params: params,
-                        id: callback ? window.JsBridge.callbackId++ : -1
+                        callbackId: callback ? window.JsBridge.callbackId++ : -1
                     };
                     if (callback) {
-                        window.JsBridge.callbacks[message.id] = callback;
-                        console.log('add callback: ' + message.id + ', ' + callback);
+                        window.JsBridge.callbacks[message.callbackId] = callback;
+                        console.log('add callback: ' + message.callbackId + ', ' + callback);
                     }
                     window.JsBridge.postMessage(JSON.stringify(message));
                 },

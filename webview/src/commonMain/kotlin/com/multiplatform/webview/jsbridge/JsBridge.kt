@@ -34,7 +34,7 @@ open class JsBridge {
 
     fun dispatch(message: JsMessage) {
         jsDispatcher.dispatch(message) {
-            onCallback(it, message.id)
+            onCallback(it, message.callbackId)
         }
     }
 

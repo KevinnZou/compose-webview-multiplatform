@@ -7,7 +7,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 data class JsMessage(
-    val id: Int,
+    val callbackId: Int,
     val methodName: String,
     val params: String,
 )
