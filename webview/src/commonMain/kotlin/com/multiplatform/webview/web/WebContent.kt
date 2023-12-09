@@ -71,7 +71,7 @@ sealed class WebContent {
         }
     }
 
-    object NavigatorOnly : WebContent()
+    data object NavigatorOnly : WebContent()
 }
 
 /**

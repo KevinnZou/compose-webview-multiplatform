@@ -155,9 +155,12 @@ fun AccompanistWebView(
 
                 this.layoutParams = layoutParams
 
-//                state.viewState?.let {
-//                    this.restoreState(it)
-//                }
+                state.viewState?.let {
+                    KLogger.d {
+                        "restoreState: $it"
+                    }
+                    this.restoreState(it)
+                }
 
                 webChromeClient = chromeClient
                 webViewClient = client
@@ -240,6 +243,7 @@ open class AccompanistWebViewClient : WebViewClient() {
             "onPageFinished: $url"
         }
         state.loadingState = LoadingState.Finished
+        view.scrollTo(state.scrollOffset.first, state.scrollOffset.second)
     }
 
     override fun doUpdateVisitedHistory(

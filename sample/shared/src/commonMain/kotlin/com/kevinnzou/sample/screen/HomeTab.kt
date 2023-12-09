@@ -3,13 +3,16 @@ package com.kevinnzou.sample.screen
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
 import co.touchlab.kermit.Logger
+import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
-import com.multiplatform.webview.web.rememberWebViewState
+import com.multiplatform.webview.web.rememberSaveableWebViewState
+import com.multiplatform.webview.web.rememberWebViewNavigator
 
 /**
  * Created By Kevin Zou On 2023/12/8
@@ -17,10 +20,23 @@ import com.multiplatform.webview.web.rememberWebViewState
 object HomeTab : Tab {
     @Composable
     override fun Content() {
-        val state =
-            rememberWebViewState("https://github.com/KevinnZou/compose-webview-multiplatform")
-        WebView(state = state, onDispose = {
-            Logger.d { "WebView onDispose" }
+        val webViewState =
+            rememberSaveableWebViewState().apply {
+                webSettings.logSeverity = KLogSeverity.Debug
+            }
+
+        val navigator = rememberWebViewNavigator()
+
+        LaunchedEffect(navigator) {
+            val bundle = webViewState.viewState
+            if (bundle == null) {
+                // This is the first time load, so load the home page.
+                navigator.loadUrl("https://github.com/KevinnZou/compose-webview-multiplatform")
+            }
+        }
+
+        WebView(state = webViewState, navigator = navigator, onDispose = {
+            Logger.d(tag = "ComposeWebView") { "WebView onDispose" }
         })
     }
 
