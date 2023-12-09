@@ -158,4 +158,12 @@ class DesktopWebView(
         router.addHandler(handler, false)
         webView.client.addMessageRouter(router)
     }
+
+    override fun saveState(outState: WebViewBundle) {
+        // TODO
+    }
+
+    override fun scrollOffset(): Pair<Int, Int> {
+        return Pair(0, 0)
+    }
 }

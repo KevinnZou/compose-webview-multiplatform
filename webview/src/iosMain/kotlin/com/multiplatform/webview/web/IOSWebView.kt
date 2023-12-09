@@ -160,6 +160,16 @@ class IOSWebView(
         }
     }
 
+    override fun saveState(outState: WebViewBundle) {
+        // TODO
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    override fun scrollOffset(): Pair<Int, Int> {
+        val offset = wkWebView.scrollView.contentOffset
+        return Pair(0, 0)
+    }
+
     private class BundleMarker : NSObject() {
         companion object : NSObjectMeta()
     }
