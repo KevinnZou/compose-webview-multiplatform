@@ -29,6 +29,7 @@ kotlin {
     }
 
     sourceSets {
+        val voyagerVersion = "1.0.0-rc10"
         val commonMain by getting {
             dependencies {
                 implementation(compose.runtime)
@@ -37,6 +38,8 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation("co.touchlab:kermit:2.0.0-RC5")
+                implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
+                implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
                 api(project(":webview"))
             }
         }
