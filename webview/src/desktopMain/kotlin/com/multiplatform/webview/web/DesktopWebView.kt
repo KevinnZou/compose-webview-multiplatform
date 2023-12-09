@@ -89,4 +89,12 @@ class DesktopWebView(private val webView: KCEFBrowser) : IWebView {
             }
         }
     }
+
+    override fun saveState(outState: WebViewBundle) {
+        // TODO
+    }
+
+    override fun scrollOffset(): Pair<Int, Int> {
+        return Pair(0, 0)
+    }
 }

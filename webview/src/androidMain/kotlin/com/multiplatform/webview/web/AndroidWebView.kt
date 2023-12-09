@@ -68,11 +68,19 @@ class AndroidWebView(private val webView: WebView) : IWebView {
         callback: ((String) -> Unit)?,
     ) {
         val androidScript = "javascript:$script"
-        KLogger.i {
+        KLogger.d {
             "evaluateJavaScript: $androidScript"
         }
         webView.post {
             webView.evaluateJavascript(androidScript, callback)
         }
+    }
+
+    override fun scrollOffset(): Pair<Int, Int> {
+        return Pair(webView.scrollX, webView.scrollY)
+    }
+
+    override fun saveState(outState: WebViewBundle) {
+        webView.saveState(outState)
     }
 }

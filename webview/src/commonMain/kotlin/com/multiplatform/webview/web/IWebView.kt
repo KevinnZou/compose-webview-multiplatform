@@ -145,4 +145,8 @@ interface IWebView {
         script: String,
         callback: ((String) -> Unit)? = null,
     )
+
+    fun saveState(outState: WebViewBundle)
+
+    fun scrollOffset(): Pair<Int, Int>
 }
