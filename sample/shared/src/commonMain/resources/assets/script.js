@@ -2,6 +2,15 @@ function callJS() {
     return 'Response from JS';
 }
 
+function callNative() {
+    window.kmpJsBridge.callNative("Greet",JSON.stringify({message: "1"}),
+            function (data) {
+                document.getElementById("subtitle").innerText = data;
+                console.log("Greet from Native: " + data);
+            }
+        );
+}
+
 function callAndroid() {
     window.androidJsBridge.call('1', 'callAndroid', '{"name":"callAndroid"}');
 }
