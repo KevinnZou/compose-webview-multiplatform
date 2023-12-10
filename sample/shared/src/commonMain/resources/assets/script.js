@@ -3,11 +3,11 @@ function callJS() {
 }
 
 function callAndroid() {
-    window.jsBridge.call('1', 'callAndroid', '{"name":"callAndroid"}');
+    window.androidJsBridge.call('1', 'callAndroid', '{"name":"callAndroid"}');
 }
 
 function callIOS() {
-    window.webkit.messageHandlers.jsBridge.postMessage("{\"id\":\"1\",\"methodName\":\"callIOS\",\"params\":\"{\\\"type\\\":\\\"1\\\"}\"}");
+    window.webkit.messageHandlers.iosJsBridge.postMessage("{\"id\":\"1\",\"methodName\":\"callIOS\",\"params\":\"{\\\"type\\\":\\\"1\\\"}\"}");
 }
 
 function callDesktop() {

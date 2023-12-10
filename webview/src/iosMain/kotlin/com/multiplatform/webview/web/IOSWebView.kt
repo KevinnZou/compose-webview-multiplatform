@@ -141,7 +141,7 @@ class IOSWebView(
         super.injectInitJS()
         val callIOS = """
             window.JsBridge.postMessage = function (message) {
-                    window.webkit.messageHandlers.jsBridge.postMessage(message);
+                    window.webkit.messageHandlers.iosJsBridge.postMessage(message);
                 };
         """.trimIndent()
         evaluateJavaScript(callIOS)
@@ -151,7 +151,7 @@ class IOSWebView(
         KLogger.info { "injectBridge" }
         val jsMessageHandler = WKJsMessageHandler(webViewJsBridge)
         wkWebView.configuration.userContentController.apply {
-            addScriptMessageHandler(jsMessageHandler, "jsBridge")
+            addScriptMessageHandler(jsMessageHandler, "iosJsBridge")
         }
     }
 
