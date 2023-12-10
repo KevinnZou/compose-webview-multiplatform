@@ -159,27 +159,27 @@ interface IWebView {
             "IWebView injectInitJS"
         }
         val initJs = """
-            window.JsBridge = {
+            window.kmpJsBridge = {
                 callbacks: {},
                 callbackId: 0,
                 callNative: function (methodName, params, callback) {
                     var message = {
                         methodName: methodName,
                         params: params,
-                        callbackId: callback ? window.JsBridge.callbackId++ : -1
+                        callbackId: callback ? window.kmpJsBridge.callbackId++ : -1
                     };
                     if (callback) {
-                        window.JsBridge.callbacks[message.callbackId] = callback;
+                        window.kmpJsBridge.callbacks[message.callbackId] = callback;
                         console.log('add callback: ' + message.callbackId + ', ' + callback);
                     }
-                    window.JsBridge.postMessage(JSON.stringify(message));
+                    window.kmpJsBridge.postMessage(JSON.stringify(message));
                 },
                 onCallback: function (callbackId, data) {
-                    var callback = window.JsBridge.callbacks[callbackId];
+                    var callback = window.kmpJsBridge.callbacks[callbackId];
                     console.log('onCallback: ' + callbackId + ', ' + data + ', ' + callback);
                     if (callback) {
                         callback(data);
-                        delete window.JsBridge.callbacks[callbackId];
+                        delete window.kmpJsBridge.callbacks[callbackId];
                     }
                 }
             };

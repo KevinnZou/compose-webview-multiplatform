@@ -113,7 +113,7 @@ class DesktopWebView(
             "DesktopWebView injectInitJS"
         }
         val callDesktop = """
-            window.JsBridge.postMessage = function (message) {
+            window.kmpJsBridge.postMessage = function (message) {
                     window.cefQuery({request:message});
                 };
         """.trimIndent()

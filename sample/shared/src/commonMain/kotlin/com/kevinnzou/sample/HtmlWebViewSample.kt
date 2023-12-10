@@ -66,7 +66,7 @@ internal fun BasicWebViewWithHTMLSample() {
                         });
                 }
                 function callNative() {
-                    window.JsBridge.callNative("Greet",JSON.stringify({message: "1"}),
+                    window.kmpJsBridge.callNative("Greet",JSON.stringify({message: "1"}),
                             function (data) {
                                 document.getElementById("subtitle").innerText = data;
                                 console.log("Greet from Native: " + data);
@@ -105,7 +105,7 @@ internal fun BasicWebViewWithHTMLSample() {
                     webViewNavigator.evaluateJavaScript(
                         """
                         document.getElementById("subtitle").innerText = "Hello from KMM!";
-                        window.JsBridge.callNative("Greet",JSON.stringify({message: "1"}),
+                        window.kmpJsBridge.callNative("Greet",JSON.stringify({message: "1"}),
                             function (data) {
                                 document.getElementById("subtitle").innerText = data;
                                 console.log("Greet from Native: " + data);

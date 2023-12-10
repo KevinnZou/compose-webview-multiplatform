@@ -140,7 +140,7 @@ class IOSWebView(
     override fun injectInitJS() {
         super.injectInitJS()
         val callIOS = """
-            window.JsBridge.postMessage = function (message) {
+            window.kmpJsBridge.postMessage = function (message) {
                     window.webkit.messageHandlers.iosJsBridge.postMessage(message);
                 };
         """.trimIndent()

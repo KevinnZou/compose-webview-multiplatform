@@ -33,7 +33,7 @@ open class WebViewJsBridge {
         data: String,
         callbackId: Int,
     ) {
-        webView?.evaluateJavaScript("window.JsBridge.onCallback($callbackId, '$data')")
+        webView?.evaluateJavaScript("window.kmpJsBridge.onCallback($callbackId, '$data')")
     }
 }
 
