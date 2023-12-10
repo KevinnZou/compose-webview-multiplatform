@@ -20,7 +20,7 @@ class GreetJsMessageHandler : IJsMessageHandler {
             "Greet Handler Get Message: $message"
         }
         val param = processParams<GreetModel>(message)
-        val data = GreetModel("KMM ${param.message}")
+        val data = GreetModel("KMM Received ${param.message}")
         callback(dataToJsonString(data))
     }
 }
