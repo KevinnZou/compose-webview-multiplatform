@@ -55,7 +55,7 @@ internal fun BasicWebViewWithHTMLSample() {
                     webViewNavigator.evaluateJavaScript(
                         """
                         document.getElementById("subtitle").innerText = "Hello from KMM!";
-                        window.kmpJsBridge.callNative("Greet",JSON.stringify({message: "1"}),
+                        window.kmpJsBridge.callNative("Greet",JSON.stringify({message: "Hello"}),
                             function (data) {
                                 document.getElementById("subtitle").innerText = data;
                                 console.log("Greet from Native: " + data);
