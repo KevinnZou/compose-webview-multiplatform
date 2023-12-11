@@ -3,7 +3,7 @@ package com.multiplatform.webview.jsbridge
 /**
  * Created By Kevin Zou On 2023/10/31
  */
-class JsMessageDispatcher {
+internal class JsMessageDispatcher {
     private val jsHandlerMap = mutableMapOf<String, IJsMessageHandler>()
 
     fun registerJSHandler(handler: IJsMessageHandler) {
