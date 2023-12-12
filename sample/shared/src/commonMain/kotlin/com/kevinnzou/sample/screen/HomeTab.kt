@@ -20,24 +20,7 @@ import com.multiplatform.webview.web.rememberWebViewNavigator
 object HomeTab : Tab {
     @Composable
     override fun Content() {
-        val webViewState =
-            rememberSaveableWebViewState().apply {
-                webSettings.logSeverity = KLogSeverity.Debug
-            }
-
-        val navigator = rememberWebViewNavigator()
-
-        LaunchedEffect(navigator) {
-            val bundle = webViewState.viewState
-            if (bundle == null) {
-                // This is the first time load, so load the home page.
-                navigator.loadUrl("https://github.com/KevinnZou/compose-webview-multiplatform")
-            }
-        }
-
-        WebView(state = webViewState, navigator = navigator, onDispose = {
-            Logger.d(tag = "ComposeWebView") { "WebView onDispose" }
-        })
+        Home()
     }
 
     override val options: TabOptions
@@ -54,4 +37,32 @@ object HomeTab : Tab {
                 )
             }
         }
+}
+
+@Composable
+fun Home() {
+    val webViewState =
+        rememberSaveableWebViewState().apply {
+            webSettings.logSeverity = KLogSeverity.Debug
+        }
+
+    val navigator = rememberWebViewNavigator()
+
+    LaunchedEffect(navigator) {
+        val bundle = webViewState.viewState
+        if (bundle == null) {
+            // This is the first time load, so load the home page.
+            navigator.loadUrl("https://github.com/KevinnZou/compose-webview-multiplatform")
+        }
+    }
+
+    WebView(
+        state = webViewState,
+        navigator = navigator,
+        onDispose = {
+            Logger.d(tag = "ComposeWebView") {
+                "WebView onDispose"
+            }
+        },
+    )
 }
