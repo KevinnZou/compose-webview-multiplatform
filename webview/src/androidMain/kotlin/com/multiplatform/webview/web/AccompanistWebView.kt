@@ -3,6 +3,7 @@ package com.multiplatform.webview.web
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Build
+import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -161,11 +162,12 @@ fun AccompanistWebView(
 
                 webChromeClient = chromeClient
                 webViewClient = client
+                // Avoid covering other components
+                this.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 settings.apply {
                     state.webSettings.let {
                         javaScriptEnabled = it.isJavaScriptEnabled
                         userAgentString = it.customUserAgentString
-//                        setInitialScale((it.zoomLevel * 100).toInt())
                         allowFileAccessFromFileURLs = it.allowFileAccessFromFileURLs
                         allowUniversalAccessFromFileURLs = it.allowUniversalAccessFromFileURLs
                     }
