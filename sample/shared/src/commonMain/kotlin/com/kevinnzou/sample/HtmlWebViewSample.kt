@@ -34,12 +34,12 @@ internal fun BasicWebViewWithHTMLSample() {
 //        fileName = "index.html",
 //    )
     val webViewState = rememberWebViewStateWithHTMLData(html)
-    val jsBridge = rememberWebViewJsBridge()
+    val webViewNavigator = rememberWebViewNavigator()
+    val jsBridge = rememberWebViewJsBridge(webViewNavigator)
     LaunchedEffect(Unit) {
         initWebView(webViewState)
         initJsBridge(jsBridge)
     }
-    val webViewNavigator = rememberWebViewNavigator()
     var jsRes by mutableStateOf("Evaluate JavaScript")
     MaterialTheme {
         Box(Modifier.fillMaxSize()) {

@@ -1,5 +1,7 @@
 package com.multiplatform.webview.jsbridge
 
+import com.multiplatform.webview.web.WebViewNavigator
+
 /**
  * Created By Kevin Zou On 2023/10/31
  */
@@ -12,9 +14,10 @@ internal class JsMessageDispatcher {
 
     fun dispatch(
         message: JsMessage,
+        navigator: WebViewNavigator? = null,
         callback: (String) -> Unit,
     ) {
-        jsHandlerMap[message.methodName]?.handle(message, callback)
+        jsHandlerMap[message.methodName]?.handle(message, navigator, callback)
     }
 
     fun canHandle(id: String) = jsHandlerMap.containsKey(id)

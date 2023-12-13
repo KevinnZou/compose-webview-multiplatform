@@ -1,5 +1,6 @@
 package com.multiplatform.webview.jsbridge
 
+import com.multiplatform.webview.web.WebViewNavigator
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 
@@ -13,9 +14,9 @@ interface IJsMessageHandler {
 
     fun handle(
         message: JsMessage,
+        navigator: WebViewNavigator?,
         callback: (String) -> Unit,
     )
-
 }
 
 inline fun <reified T : Any> IJsMessageHandler.processParams(message: JsMessage): T {

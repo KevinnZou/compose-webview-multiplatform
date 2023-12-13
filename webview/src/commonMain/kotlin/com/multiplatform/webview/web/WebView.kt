@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
+import com.multiplatform.webview.util.KLogger
 import com.multiplatform.webview.util.Platform
 import com.multiplatform.webview.util.getPlatform
 import org.jetbrains.compose.resources.ExperimentalResourceApi
@@ -50,6 +51,9 @@ fun WebView(
     webView?.let { wv ->
         LaunchedEffect(wv, navigator) {
             with(navigator) {
+                KLogger.d {
+                    "wv.handleNavigationEvents()"
+                }
                 wv.handleNavigationEvents()
             }
         }

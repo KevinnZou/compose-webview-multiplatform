@@ -3,11 +3,12 @@ package com.multiplatform.webview.jsbridge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import com.multiplatform.webview.web.IWebView
+import com.multiplatform.webview.web.WebViewNavigator
 
 /**
  * Created By Kevin Zou On 2023/10/31
  */
-open class WebViewJsBridge {
+open class WebViewJsBridge(val navigator: WebViewNavigator? = null) {
     private val jsMessageDispatcher = JsMessageDispatcher()
     var webView: IWebView? = null
 
@@ -24,7 +25,7 @@ open class WebViewJsBridge {
     }
 
     fun dispatch(message: JsMessage) {
-        jsMessageDispatcher.dispatch(message) {
+        jsMessageDispatcher.dispatch(message, navigator) {
             onCallback(it, message.callbackId)
         }
     }
@@ -38,5 +39,4 @@ open class WebViewJsBridge {
 }
 
 @Composable
-fun rememberWebViewJsBridge(): WebViewJsBridge =
-    remember { WebViewJsBridge() }
+fun rememberWebViewJsBridge(navigator: WebViewNavigator? = null): WebViewJsBridge = remember { WebViewJsBridge(navigator) }

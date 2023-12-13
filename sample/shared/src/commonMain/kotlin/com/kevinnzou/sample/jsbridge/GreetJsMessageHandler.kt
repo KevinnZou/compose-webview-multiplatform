@@ -6,6 +6,7 @@ import com.multiplatform.webview.jsbridge.IJsMessageHandler
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.jsbridge.dataToJsonString
 import com.multiplatform.webview.jsbridge.processParams
+import com.multiplatform.webview.web.WebViewNavigator
 
 /**
  * Created By Kevin Zou On 2023/12/6
@@ -15,7 +16,11 @@ class GreetJsMessageHandler : IJsMessageHandler {
         return "Greet"
     }
 
-    override fun handle(message: JsMessage, callback: (String) -> Unit) {
+    override fun handle(
+        message: JsMessage,
+        navigator: WebViewNavigator?,
+        callback: (String) -> Unit,
+    ) {
         Logger.i {
             "Greet Handler Get Message: $message"
         }
