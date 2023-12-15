@@ -2,6 +2,7 @@ package com.multiplatform.webview.web
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -132,6 +133,15 @@ fun DesktopWebView(
             },
             modifier = modifier,
         )
+    }
+
+    // Handle navigation events. Workaround for navigator not working issue.
+    LaunchedEffect(state.webView, navigator) {
+        state.webView?.let { wv ->
+            with(navigator) {
+                wv.handleNavigationEvents()
+            }
+        }
     }
 
     DisposableEffect(Unit) {
