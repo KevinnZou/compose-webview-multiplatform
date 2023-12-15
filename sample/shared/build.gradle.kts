@@ -3,6 +3,7 @@ plugins {
     id("com.android.library")
     id("org.jetbrains.compose")
     kotlin("plugin.serialization")
+    id("org.jetbrains.kotlin.plugin.atomicfu")
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -40,6 +41,7 @@ kotlin {
                 implementation("co.touchlab:kermit:2.0.0-RC5")
                 api(project(":webview"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+                implementation("org.jetbrains.kotlinx:atomicfu:0.21.0")
             }
         }
         val androidMain by getting {

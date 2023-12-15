@@ -9,6 +9,7 @@ plugins {
     id("org.jetbrains.dokka")
     id("com.vanniktech.maven.publish") version "0.25.3" apply false
     id("org.jlleitschuh.gradle.ktlint") version "11.6.1"
+    id("org.jetbrains.kotlin.plugin.atomicfu") version "1.9.20"
 }
 
 subprojects {
