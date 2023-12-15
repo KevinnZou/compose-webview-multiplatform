@@ -1,6 +1,8 @@
 package com.kevinnzou.sample.jsbridge
 
 import co.touchlab.kermit.Logger
+import com.kevinnzou.sample.eventbus.EventBus
+import com.kevinnzou.sample.eventbus.NavigationEvent
 import com.kevinnzou.sample.model.GreetModel
 import com.multiplatform.webview.jsbridge.IJsMessageHandler
 import com.multiplatform.webview.jsbridge.JsMessage
@@ -27,5 +29,6 @@ class GreetJsMessageHandler : IJsMessageHandler {
         val param = processParams<GreetModel>(message)
         val data = GreetModel("KMM Received ${param.message}")
         callback(dataToJsonString(data))
+        EventBus.post(NavigationEvent())
     }
 }

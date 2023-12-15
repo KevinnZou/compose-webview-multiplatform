@@ -14,6 +14,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import co.touchlab.kermit.Logger
+import com.kevinnzou.sample.eventbus.EventBus
+import com.kevinnzou.sample.eventbus.NavigationEvent
 import com.kevinnzou.sample.jsbridge.GreetJsMessageHandler
 import com.kevinnzou.sample.res.HtmlRes
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
@@ -36,11 +39,16 @@ internal fun BasicWebViewWithHTMLSample() {
     val webViewState = rememberWebViewStateWithHTMLData(html)
     val webViewNavigator = rememberWebViewNavigator()
     val jsBridge = rememberWebViewJsBridge(webViewNavigator)
+    var jsRes by mutableStateOf("Evaluate JavaScript")
     LaunchedEffect(Unit) {
         initWebView(webViewState)
         initJsBridge(jsBridge)
+        EventBus.observe<NavigationEvent> {
+            Logger.d {
+                "Received NavigationEvent"
+            }
+        }
     }
-    var jsRes by mutableStateOf("Evaluate JavaScript")
     MaterialTheme {
         Box(Modifier.fillMaxSize()) {
             WebView(
