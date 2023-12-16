@@ -23,6 +23,7 @@ class AndroidWebView(
     init {
         initWebView()
     }
+
     override fun canGoBack() = webView.canGoBack()
 
     override fun canGoForward() = webView.canGoForward()
@@ -89,12 +90,14 @@ class AndroidWebView(
     }
 
     override fun injectInitJS() {
+        if (webViewJsBridge == null) return
         super.injectInitJS()
-        val callAndroid = """
+        val callAndroid =
+            """
             window.kmpJsBridge.postMessage = function (message) {
                     window.androidJsBridge.call(message)
                 };
-        """.trimIndent()
+            """.trimIndent()
         evaluateJavaScript(callAndroid)
     }
 
@@ -103,9 +106,7 @@ class AndroidWebView(
     }
 
     @JavascriptInterface
-    fun call(
-        request: String
-    ) {
+    fun call(request: String) {
         KLogger.d { "call from JS: $request" }
         val message = Json.decodeFromString<JsMessage>(request)
         KLogger.d {

@@ -108,45 +108,50 @@ class DesktopWebView(
     }
 
     override fun injectInitJS() {
+        if (webViewJsBridge == null) return
         super.injectInitJS()
         KLogger.d {
             "DesktopWebView injectInitJS"
         }
-        val callDesktop = """
+        val callDesktop =
+            """
             window.kmpJsBridge.postMessage = function (message) {
                     window.cefQuery({request:message});
                 };
-        """.trimIndent()
+            """.trimIndent()
         evaluateJavaScript(callDesktop)
     }
 
     override fun injectJsBridge(webViewJsBridge: WebViewJsBridge) {
         val router = CefMessageRouter.create()
-        val handler = object : CefMessageRouterHandlerAdapter() {
-            override fun onQuery(
-                browser: CefBrowser?,
-                frame: CefFrame?,
-                queryId: Long,
-                request: String?,
-                persistent: Boolean,
-                callback: CefQueryCallback?
-            ): Boolean {
-                if (request == null) return super.onQuery(
-                    browser,
-                    frame,
-                    queryId,
-                    request,
-                    persistent,
-                    callback
-                )
-                val message = Json.decodeFromString<JsMessage>(request)
-                KLogger.d {
-                    "onQuery Message: $message"
+        val handler =
+            object : CefMessageRouterHandlerAdapter() {
+                override fun onQuery(
+                    browser: CefBrowser?,
+                    frame: CefFrame?,
+                    queryId: Long,
+                    request: String?,
+                    persistent: Boolean,
+                    callback: CefQueryCallback?,
+                ): Boolean {
+                    if (request == null) {
+                        return super.onQuery(
+                            browser,
+                            frame,
+                            queryId,
+                            request,
+                            persistent,
+                            callback,
+                        )
+                    }
+                    val message = Json.decodeFromString<JsMessage>(request)
+                    KLogger.d {
+                        "onQuery Message: $message"
+                    }
+                    webViewJsBridge.dispatch(message)
+                    return true
                 }
-                webViewJsBridge.dispatch(message)
-                return true
             }
-        }
         router.addHandler(handler, false)
         webView.client.addMessageRouter(router)
     }
