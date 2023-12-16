@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import co.touchlab.kermit.Logger
-import com.kevinnzou.sample.eventbus.EventBus
+import com.kevinnzou.sample.eventbus.FlowEventBus
 import com.kevinnzou.sample.eventbus.NavigationEvent
 import com.kevinnzou.sample.jsbridge.GreetJsMessageHandler
 import com.kevinnzou.sample.res.HtmlRes
@@ -26,6 +26,7 @@ import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
+import kotlinx.coroutines.flow.filter
 
 /**
  * Created By Kevin Zou On 2023/9/8
@@ -43,7 +44,12 @@ internal fun BasicWebViewWithHTMLSample() {
     LaunchedEffect(Unit) {
         initWebView(webViewState)
         initJsBridge(jsBridge)
-        EventBus.observe<NavigationEvent> {
+//        EventBus.observe<NavigationEvent> {
+//            Logger.d {
+//                "Received NavigationEvent"
+//            }
+//        }
+        FlowEventBus.events.filter { it is NavigationEvent }.collect {
             Logger.d {
                 "Received NavigationEvent"
             }
