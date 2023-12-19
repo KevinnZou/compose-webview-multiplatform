@@ -252,6 +252,7 @@ open class AccompanistWebViewClient : WebViewClient() {
             "onPageFinished: $url"
         }
         state.loadingState = LoadingState.Finished
+        state.lastLoadedUrl = url
     }
 
     override fun doUpdateVisitedHistory(
@@ -296,6 +297,7 @@ open class AccompanistWebViewClient : WebViewClient() {
 open class AccompanistWebChromeClient : WebChromeClient() {
     open lateinit var state: WebViewState
         internal set
+    private var lastLoadedUrl = ""
 
     override fun onReceivedTitle(
         view: WebView,
@@ -303,9 +305,10 @@ open class AccompanistWebChromeClient : WebChromeClient() {
     ) {
         super.onReceivedTitle(view, title)
         KLogger.d {
-            "onReceivedTitle: $title"
+            "onReceivedTitle: $title url:${view.url}"
         }
         state.pageTitle = title
+        state.lastLoadedUrl = view.url ?: ""
     }
 
     override fun onReceivedIcon(
@@ -321,7 +324,13 @@ open class AccompanistWebChromeClient : WebChromeClient() {
         newProgress: Int,
     ) {
         super.onProgressChanged(view, newProgress)
-        if (state.loadingState is LoadingState.Finished) return
-        state.loadingState = LoadingState.Loading(newProgress / 100.0f)
+        if (state.loadingState is LoadingState.Finished && view.url == lastLoadedUrl) return
+        state.loadingState =
+            if (newProgress == 100) {
+                LoadingState.Finished
+            } else {
+                LoadingState.Loading(newProgress / 100.0f)
+            }
+        lastLoadedUrl = view.url ?: ""
     }
 }
