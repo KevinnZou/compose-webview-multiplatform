@@ -25,6 +25,7 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
                 frame: CefFrame?,
                 url: String?,
             ) {
+                KLogger.d { "onAddressChange: $url" }
                 state.lastLoadedUrl = getCurrentUrl()
             }
 
