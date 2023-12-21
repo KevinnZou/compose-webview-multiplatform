@@ -116,6 +116,7 @@ internal fun CefBrowser.addLoadListener(
                 transitionType: CefRequest.TransitionType?,
             ) {
                 KLogger.d { "Load Start ${browser?.url}" }
+                lastLoadedUrl = "" // clean last loaded url for reload to work
                 state.loadingState = LoadingState.Loading(0F)
                 state.errorsForCurrentRequest.clear()
             }
