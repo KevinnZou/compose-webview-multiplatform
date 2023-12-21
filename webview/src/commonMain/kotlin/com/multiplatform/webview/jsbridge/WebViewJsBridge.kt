@@ -1,6 +1,7 @@
 package com.multiplatform.webview.jsbridge
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import com.multiplatform.webview.web.IWebView
 import com.multiplatform.webview.web.WebViewNavigator
@@ -8,6 +9,7 @@ import com.multiplatform.webview.web.WebViewNavigator
 /**
  * Created By Kevin Zou On 2023/10/31
  */
+@Immutable
 open class WebViewJsBridge(val navigator: WebViewNavigator? = null) {
     private val jsMessageDispatcher = JsMessageDispatcher()
     var webView: IWebView? = null
