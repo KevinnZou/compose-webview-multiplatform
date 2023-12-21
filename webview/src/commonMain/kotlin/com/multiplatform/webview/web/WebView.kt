@@ -90,7 +90,7 @@ fun WebView(
 
     // TODO WorkAround for Desktop not working issue.
     if (webViewJsBridge != null && !getPlatform().isDesktop()) {
-        LaunchedEffect(state.loadingState, webViewJsBridge, state.lastLoadedUrl) {
+        LaunchedEffect(state.loadingState, state.lastLoadedUrl) {
             if (state.loadingState is LoadingState.Finished) {
                 webView?.injectInitJS()
             }
