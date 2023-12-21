@@ -1,12 +1,12 @@
 package com.multiplatform.webview.web
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
-import com.multiplatform.webview.util.Platform
 import com.multiplatform.webview.util.getPlatform
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
@@ -89,7 +89,7 @@ fun WebView(
     }
 
     // TODO WorkAround for Desktop not working issue.
-    if (webViewJsBridge != null && getPlatform() != Platform.Desktop) {
+    if (webViewJsBridge != null && !getPlatform().isDesktop()) {
         LaunchedEffect(state.loadingState, webViewJsBridge, state.lastLoadedUrl) {
             if (state.loadingState is LoadingState.Finished) {
                 webView?.injectInitJS()
@@ -104,11 +104,17 @@ fun WebView(
         navigator = navigator,
         webViewJsBridge = webViewJsBridge,
         onCreated = onCreated,
-        onDispose = {
-            webViewJsBridge?.clear()
-            onDispose()
-        },
+        onDispose = onDispose,
     )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            KLogger.d {
+                "WebView DisposableEffect"
+            }
+            webViewJsBridge?.clear()
+        }
+    }
 }
 
 /**

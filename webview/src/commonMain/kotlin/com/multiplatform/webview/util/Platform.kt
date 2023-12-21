@@ -5,8 +5,16 @@ package com.multiplatform.webview.util
  */
 internal sealed class Platform {
     data object Android : Platform()
+
     data object Desktop : Platform()
+
     data object IOS : Platform()
+
+    fun isAndroid() = this is Android
+
+    fun isDesktop() = this is Desktop
+
+    fun isIOS() = this is IOS
 }
 
 internal expect fun getPlatform(): Platform
