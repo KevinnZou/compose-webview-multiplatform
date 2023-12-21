@@ -42,7 +42,7 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
                     } else {
                         -ln(abs(givenZoomLevel)) / ln(1.2)
                     }
-                KLogger.d { "titleProperty: $title $realZoomLevel" }
+                KLogger.d { "titleProperty: $title" }
                 zoomLevel = realZoomLevel
                 state.pageTitle = title
             }
@@ -86,16 +86,25 @@ internal fun CefBrowser.addLoadListener(
 ) {
     this.client.addLoadHandler(
         object : CefLoadHandler {
+            private var lastLoadedUrl = ""
+
             override fun onLoadingStateChange(
                 browser: CefBrowser?,
                 isLoading: Boolean,
                 canGoBack: Boolean,
                 canGoForward: Boolean,
             ) {
+                KLogger.d {
+                    "onLoadingStateChange: $url, $isLoading $canGoBack $canGoForward"
+                }
                 if (isLoading) {
                     state.loadingState = LoadingState.Initializing
                 } else {
                     state.loadingState = LoadingState.Finished
+                    if (url != null && url != lastLoadedUrl) {
+                        state.webView?.injectInitJS()
+                        lastLoadedUrl = url
+                    }
                 }
                 navigator.canGoBack = canGoBack
                 navigator.canGoForward = canGoForward
@@ -121,7 +130,6 @@ internal fun CefBrowser.addLoadListener(
                 navigator.canGoBack = canGoBack()
                 navigator.canGoBack = canGoForward()
                 state.lastLoadedUrl = getCurrentUrl()
-                state.webView?.injectInitJS()
             }
 
             override fun onLoadError(
