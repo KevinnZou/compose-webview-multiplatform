@@ -139,6 +139,9 @@ class IOSWebView(
 
     override fun injectInitJS() {
         if (webViewJsBridge == null) return
+        KLogger.info {
+            "iOS WebView injectInitJS"
+        }
         super.injectInitJS()
         val callIOS =
             """
