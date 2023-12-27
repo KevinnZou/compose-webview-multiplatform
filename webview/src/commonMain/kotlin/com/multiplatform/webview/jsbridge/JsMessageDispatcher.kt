@@ -6,6 +6,10 @@ import com.multiplatform.webview.web.WebViewNavigator
 /**
  * Created By Kevin Zou On 2023/10/31
  */
+
+/**
+ * A message dispatched from JS to native.
+ */
 @Immutable
 internal class JsMessageDispatcher {
     private val jsHandlerMap = mutableMapOf<String, IJsMessageHandler>()

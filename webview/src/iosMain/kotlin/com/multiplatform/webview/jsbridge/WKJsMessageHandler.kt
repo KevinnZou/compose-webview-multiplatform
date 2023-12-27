@@ -10,6 +10,10 @@ import platform.darwin.NSObject
 /**
  * Created By Kevin Zou On 2023/11/1
  */
+
+/**
+ * A JS message handler for WKWebView.
+ */
 class WKJsMessageHandler(private val webViewJsBridge: WebViewJsBridge) :
     WKScriptMessageHandlerProtocol,
     NSObject() {

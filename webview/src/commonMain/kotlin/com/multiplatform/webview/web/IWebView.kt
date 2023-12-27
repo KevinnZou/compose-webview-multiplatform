@@ -153,6 +153,10 @@ interface IWebView {
         callback: ((String) -> Unit)? = null,
     )
 
+    /**
+     * Injects the initialization JavaScript code for JSBridge setup
+     * into the currently displayed page.
+     */
     fun injectInitJS() {
         if (webViewJsBridge == null) return
         KLogger.d {
@@ -188,8 +192,14 @@ interface IWebView {
         evaluateJavaScript(initJs)
     }
 
+    /**
+     * Inject the JSBridge into the WebView.
+     */
     fun injectJsBridge(webViewJsBridge: WebViewJsBridge)
 
+    /**
+     * Initialize the WebView.
+     */
     fun initWebView() {
         webViewJsBridge?.apply {
             injectJsBridge(this)
