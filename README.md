@@ -245,27 +245,94 @@ Column {
     val loadingState = state.loadingState
     if (loadingState is LoadingState.Loading) {
         LinearProgressIndicator(
-            progress = loadingState.progress,
-            modifier = Modifier.fillMaxWidth()
+          progress = loadingState.progress,
+          modifier = Modifier.fillMaxWidth()
         )
     }
-    WebView(
-        state = state,
-        navigator = navigator
-    )
+  WebView(
+    state = state,
+    navigator = navigator
+  )
 }
 ```
 
+## Communication between WebView and Native
+
+Starting from version 1.8.0, this library provides a `WebViewJsBridge` to allow developers to
+communicate between the WebView and Native.
+Developers can use the JsBridge to register a handler to handle the message from the WebView.
+
+```kotlin
+val jsBridge = rememberWebViewJsBridge()
+
+LaunchedEffect(jsBridge) {
+  jsBridge.register(GreetJsMessageHandler())
+}
+```
+
+The handler should implement the `IJsMessageHandler` interface.
+
+```kotlin
+interface IJsMessageHandler {
+  fun methodName(): String
+
+  fun canHandle(methodName: String) = methodName() == methodName
+
+  fun handle(
+    message: JsMessage,
+    callback: (String) -> Unit,
+  )
+
+}
+
+class GreetJsMessageHandler : IJsMessageHandler {
+  override fun methodName(): String {
+    return "Greet"
+  }
+
+  override fun handle(message: JsMessage, callback: (String) -> Unit) {
+    Logger.i {
+      "Greet Handler Get Message: $message"
+    }
+    val param = processParams<GreetModel>(message)
+    val data = GreetModel("KMM Received ${param.message}")
+    callback(dataToJsonString(data))
+  }
+}
+```
+
+Developers can use the `window.kmpJsBridge.callNative` to send a message to the Native.
+It receives three parameters:
+
+* methodName: the name of the handler registered in the Native.
+* params: the parameters to send to the Native. It needs to be a JSON string.
+* callback: the callback function to handle the response from the Native. It receives a JSON string
+  as the parameter. Pass null if no callback is needed.
+
+```javascript
+window.kmpJsBridge.callNative = function (methodName, params, callback) {}
+
+window.kmpJsBridge.callNative("Greet",JSON.stringify({message:"Hello"}),
+  function (data) {
+    document.getElementById("subtitle").innerText = data;
+    console.log("Greet from Native: " + data);
+  }
+);
+```
+
 ## WebSettings
-Starting from version 1.3.0, this library allows users to customize web settings. 
-There are some common web settings that can be shared across different platforms, such as isJavaScriptEnabled and userAgent.
+
+Starting from version 1.3.0, this library allows users to customize web settings.
+There are some common web settings that can be shared across different platforms, such as
+isJavaScriptEnabled and userAgent.
+
 ```kotlin
 class WebSettings {
-    var isJavaScriptEnabled = true
+  var isJavaScriptEnabled = true
 
-    var customUserAgentString: String? = null
+  var customUserAgentString: String? = null
 
-    /**
+  /**
      * Android platform specific settings
      */
     val androidWebSettings = PlatformWebSettings.AndroidWebSettings()

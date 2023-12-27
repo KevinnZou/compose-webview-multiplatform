@@ -1,7 +1,16 @@
 package com.multiplatform.webview.web
 
+import com.multiplatform.webview.jsbridge.JsMessage
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 import dev.datlag.kcef.KCEFBrowser
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.json.Json
+import org.cef.browser.CefBrowser
+import org.cef.browser.CefFrame
+import org.cef.browser.CefMessageRouter
+import org.cef.callback.CefQueryCallback
+import org.cef.handler.CefMessageRouterHandlerAdapter
 import org.cef.network.CefPostData
 import org.cef.network.CefPostDataElement
 import org.cef.network.CefRequest
@@ -9,7 +18,15 @@ import org.cef.network.CefRequest
 /**
  * Created By Kevin Zou On 2023/9/12
  */
-class DesktopWebView(private val webView: KCEFBrowser) : IWebView {
+class DesktopWebView(
+    private val webView: KCEFBrowser,
+    override var scope: CoroutineScope,
+    override var webViewJsBridge: WebViewJsBridge?,
+) : IWebView {
+    init {
+        initWebView()
+    }
+
     override fun canGoBack() = webView.canGoBack()
 
     override fun canGoForward() = webView.canGoForward()
@@ -88,5 +105,57 @@ class DesktopWebView(private val webView: KCEFBrowser) : IWebView {
                 callback?.invoke(it)
             }
         }
+    }
+
+    override fun injectInitJS() {
+        if (webViewJsBridge == null) return
+        super.injectInitJS()
+        KLogger.d {
+            "DesktopWebView injectInitJS"
+        }
+        val callDesktop =
+            """
+            window.kmpJsBridge.postMessage = function (message) {
+                    window.cefQuery({request:message});
+                };
+            """.trimIndent()
+        evaluateJavaScript(callDesktop)
+    }
+
+    override fun injectJsBridge(webViewJsBridge: WebViewJsBridge) {
+        KLogger.d {
+            "DesktopWebView injectJsBridge"
+        }
+        val router = CefMessageRouter.create()
+        val handler =
+            object : CefMessageRouterHandlerAdapter() {
+                override fun onQuery(
+                    browser: CefBrowser?,
+                    frame: CefFrame?,
+                    queryId: Long,
+                    request: String?,
+                    persistent: Boolean,
+                    callback: CefQueryCallback?,
+                ): Boolean {
+                    if (request == null) {
+                        return super.onQuery(
+                            browser,
+                            frame,
+                            queryId,
+                            request,
+                            persistent,
+                            callback,
+                        )
+                    }
+                    val message = Json.decodeFromString<JsMessage>(request)
+                    KLogger.d {
+                        "onQuery Message: $message"
+                    }
+                    webViewJsBridge.dispatch(message)
+                    return true
+                }
+            }
+        router.addHandler(handler, false)
+        webView.client.addMessageRouter(router)
     }
 }

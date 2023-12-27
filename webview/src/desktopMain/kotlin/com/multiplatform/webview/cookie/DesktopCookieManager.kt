@@ -28,11 +28,11 @@ object DesktopCookieManager : CookieManager {
                 Date(cookie.expiresDate ?: System.currentTimeMillis()),
             )
         val addedCookie = KCEFCookieManager.instance.setCookie(url, cefCookie)
-        KLogger.i(tag = "DesktopCookieManager") { "Added Cookie: $addedCookie" }
+        KLogger.d(tag = "DesktopCookieManager") { "Added Cookie: $addedCookie" }
     }
 
     override suspend fun getCookies(url: String): List<Cookie> {
-        KLogger.i(tag = "DesktopCookieManager") { "DesktopCookieManager getCookies: $url" }
+        KLogger.d(tag = "DesktopCookieManager") { "DesktopCookieManager getCookies: $url" }
 
         return KCEFCookieManager.instance.getCookiesWhile(url, true).map {
             Cookie(

@@ -20,6 +20,11 @@ internal object KLogger : Logger(
     fun setMinSeverity(severity: KLogSeverity) {
         mutableConfig.minSeverity = severity.toKermitSeverity()
     }
+
+    // For iOS, it will not print out the log if the severity is upper than Debug in AS.
+    fun info(msg: () -> String) {
+        d { msg() }
+    }
 }
 
 enum class KLogSeverity {

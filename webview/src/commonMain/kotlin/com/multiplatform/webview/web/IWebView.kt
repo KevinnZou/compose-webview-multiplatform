@@ -1,5 +1,8 @@
 package com.multiplatform.webview.web
 
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
+import com.multiplatform.webview.util.KLogger
+import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.resource
 
@@ -11,6 +14,10 @@ import org.jetbrains.compose.resources.resource
  * Interface for WebView
  */
 interface IWebView {
+    var scope: CoroutineScope
+
+    var webViewJsBridge: WebViewJsBridge?
+
     /**
      * True when the web view is able to navigate backwards, false otherwise.
      */
@@ -145,4 +152,47 @@ interface IWebView {
         script: String,
         callback: ((String) -> Unit)? = null,
     )
+
+    fun injectInitJS() {
+        if (webViewJsBridge == null) return
+        KLogger.d {
+            "IWebView injectInitJS"
+        }
+        val initJs =
+            """
+            window.kmpJsBridge = {
+                callbacks: {},
+                callbackId: 0,
+                callNative: function (methodName, params, callback) {
+                    var message = {
+                        methodName: methodName,
+                        params: params,
+                        callbackId: callback ? window.kmpJsBridge.callbackId++ : -1
+                    };
+                    if (callback) {
+                        window.kmpJsBridge.callbacks[message.callbackId] = callback;
+                        console.log('add callback: ' + message.callbackId + ', ' + callback);
+                    }
+                    window.kmpJsBridge.postMessage(JSON.stringify(message));
+                },
+                onCallback: function (callbackId, data) {
+                    var callback = window.kmpJsBridge.callbacks[callbackId];
+                    console.log('onCallback: ' + callbackId + ', ' + data + ', ' + callback);
+                    if (callback) {
+                        callback(data);
+                        delete window.kmpJsBridge.callbacks[callbackId];
+                    }
+                }
+            };
+            """.trimIndent()
+        evaluateJavaScript(initJs)
+    }
+
+    fun injectJsBridge(webViewJsBridge: WebViewJsBridge)
+
+    fun initWebView() {
+        webViewJsBridge?.apply {
+            injectJsBridge(this)
+        }
+    }
 }

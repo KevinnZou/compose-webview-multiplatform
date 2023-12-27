@@ -1,9 +1,13 @@
 package com.multiplatform.webview.web
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
+import com.multiplatform.webview.util.KLogger
+import com.multiplatform.webview.util.getPlatform
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
@@ -31,6 +35,7 @@ fun WebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
+    webViewJsBridge: WebViewJsBridge? = null,
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
 ) {
@@ -39,6 +44,9 @@ fun WebView(
     webView?.let { wv ->
         LaunchedEffect(wv, navigator) {
             with(navigator) {
+                KLogger.d {
+                    "wv.handleNavigationEvents()"
+                }
                 wv.handleNavigationEvents()
             }
         }
@@ -80,14 +88,33 @@ fun WebView(
         }
     }
 
+    // TODO WorkAround for Desktop not working issue.
+    if (webViewJsBridge != null && !getPlatform().isDesktop()) {
+        LaunchedEffect(state.loadingState, state.lastLoadedUrl) {
+            if (state.loadingState is LoadingState.Finished) {
+                webView?.injectInitJS()
+            }
+        }
+    }
+
     ActualWebView(
         state = state,
         modifier = modifier,
         captureBackPresses = captureBackPresses,
         navigator = navigator,
+        webViewJsBridge = webViewJsBridge,
         onCreated = onCreated,
         onDispose = onDispose,
     )
+
+    DisposableEffect(Unit) {
+        onDispose {
+            KLogger.d {
+                "WebView DisposableEffect"
+            }
+            webViewJsBridge?.clear()
+        }
+    }
 }
 
 /**
@@ -99,6 +126,7 @@ expect fun ActualWebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
+    webViewJsBridge: WebViewJsBridge? = null,
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
 )

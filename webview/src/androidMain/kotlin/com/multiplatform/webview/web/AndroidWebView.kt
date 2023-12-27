@@ -1,7 +1,12 @@
 package com.multiplatform.webview.web
 
+import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import com.multiplatform.webview.jsbridge.JsMessage
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.serialization.json.Json
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -10,7 +15,15 @@ import com.multiplatform.webview.util.KLogger
 /**
  * Android implementation of [IWebView]
  */
-class AndroidWebView(private val webView: WebView) : IWebView {
+class AndroidWebView(
+    private val webView: WebView,
+    override var scope: CoroutineScope,
+    override var webViewJsBridge: WebViewJsBridge?,
+) : IWebView {
+    init {
+        initWebView()
+    }
+
     override fun canGoBack() = webView.canGoBack()
 
     override fun canGoForward() = webView.canGoForward()
@@ -68,11 +81,47 @@ class AndroidWebView(private val webView: WebView) : IWebView {
         callback: ((String) -> Unit)?,
     ) {
         val androidScript = "javascript:$script"
-        KLogger.i {
+        KLogger.d {
             "evaluateJavaScript: $androidScript"
         }
         webView.post {
             webView.evaluateJavascript(androidScript, callback)
         }
+    }
+
+    override fun injectInitJS() {
+        if (webViewJsBridge == null) return
+        super.injectInitJS()
+        val callAndroid =
+            """
+            window.kmpJsBridge.postMessage = function (message) {
+                    window.androidJsBridge.call(message)
+                };
+            """.trimIndent()
+        evaluateJavaScript(callAndroid)
+    }
+
+    override fun injectJsBridge(webViewJsBridge: WebViewJsBridge) {
+        webView.addJavascriptInterface(this, "androidJsBridge")
+    }
+
+    @JavascriptInterface
+    fun call(request: String) {
+        KLogger.d { "call from JS: $request" }
+        val message = Json.decodeFromString<JsMessage>(request)
+        KLogger.d {
+            "call from JS: $message"
+        }
+        webViewJsBridge?.dispatch(message)
+    }
+
+    @JavascriptInterface
+    fun callAndroid(
+        id: Int,
+        method: String,
+        params: String,
+    ) {
+        KLogger.d { "callAndroid call from JS: $id, $method, $params" }
+        webViewJsBridge?.dispatch(JsMessage(id, method, params))
     }
 }

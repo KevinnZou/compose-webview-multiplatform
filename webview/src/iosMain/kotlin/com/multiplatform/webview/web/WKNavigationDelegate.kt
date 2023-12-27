@@ -29,7 +29,7 @@ class WKNavigationDelegate(
         state.loadingState = LoadingState.Loading(0f)
         state.lastLoadedUrl = webView.URL.toString()
         state.errorsForCurrentRequest.clear()
-        KLogger.d {
+        KLogger.info {
             "didStartProvisionalNavigation"
         }
     }
@@ -44,7 +44,7 @@ class WKNavigationDelegate(
         @Suppress("ktlint:standard:max-line-length")
         val script = "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=${state.webSettings.zoomLevel}, maximum-scale=10.0, minimum-scale=0.1,user-scalable=yes');document.getElementsByTagName('head')[0].appendChild(meta);"
         webView.evaluateJavaScript(script) { _, _ -> }
-        KLogger.d { "didCommitNavigation" }
+        KLogger.info { "didCommitNavigation" }
     }
 
     /**
@@ -59,7 +59,7 @@ class WKNavigationDelegate(
         state.loadingState = LoadingState.Finished
         navigator.canGoBack = webView.canGoBack
         navigator.canGoForward = webView.canGoForward
-        KLogger.d { "didFinishNavigation" }
+        KLogger.info { "didFinishNavigation" }
     }
 
     /**

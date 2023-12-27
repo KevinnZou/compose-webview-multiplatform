@@ -36,13 +36,13 @@ class WKWebViewObserver(private val state: WebViewState, private val navigator: 
             }
         } else if (keyPath == "title") {
             val title = change?.get("new") as? String
-            KLogger.d { "Observe title Changed $title" }
+            KLogger.info { "Observe title Changed $title" }
             if (title != null) {
                 state.pageTitle = title
             }
         } else if (keyPath == "URL") {
             val url = change?.get("new") as? NSURL
-            KLogger.d { "Observe URL Changed ${url?.absoluteString}" }
+            KLogger.info { "Observe URL Changed ${url?.absoluteString}" }
             if (url != null) {
                 state.lastLoadedUrl = url.absoluteString
             }

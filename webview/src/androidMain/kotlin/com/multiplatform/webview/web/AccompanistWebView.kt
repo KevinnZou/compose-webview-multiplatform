@@ -15,8 +15,10 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 
 /**
@@ -54,6 +56,7 @@ fun AccompanistWebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
+    webViewJsBridge: WebViewJsBridge? = null,
     onCreated: (WebView) -> Unit = {},
     onDispose: (WebView) -> Unit = {},
     client: AccompanistWebViewClient = remember { AccompanistWebViewClient() },
@@ -89,6 +92,7 @@ fun AccompanistWebView(
             Modifier,
             captureBackPresses,
             navigator,
+            webViewJsBridge,
             onCreated,
             onDispose,
             client,
@@ -130,6 +134,7 @@ fun AccompanistWebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
+    webViewJsBridge: WebViewJsBridge? = null,
     onCreated: (WebView) -> Unit = {},
     onDispose: (WebView) -> Unit = {},
     client: AccompanistWebViewClient = remember { AccompanistWebViewClient() },
@@ -137,6 +142,7 @@ fun AccompanistWebView(
     factory: ((Context) -> WebView)? = null,
 ) {
     val webView = state.webView
+    val scope = rememberCoroutineScope()
 
     BackHandler(captureBackPresses && navigator.canGoBack) {
         webView?.goBack()
@@ -189,7 +195,11 @@ fun AccompanistWebView(
                         domStorageEnabled = it.domStorageEnabled
                     }
                 }
-            }.also { state.webView = AndroidWebView(it) }
+            }.also {
+                val androidWebView = AndroidWebView(it, scope, webViewJsBridge)
+                state.webView = androidWebView
+                webViewJsBridge?.webView = androidWebView
+            }
         },
         modifier = modifier,
         onRelease = {
@@ -242,6 +252,7 @@ open class AccompanistWebViewClient : WebViewClient() {
             "onPageFinished: $url"
         }
         state.loadingState = LoadingState.Finished
+        state.lastLoadedUrl = url
     }
 
     override fun doUpdateVisitedHistory(
@@ -286,6 +297,7 @@ open class AccompanistWebViewClient : WebViewClient() {
 open class AccompanistWebChromeClient : WebChromeClient() {
     open lateinit var state: WebViewState
         internal set
+    private var lastLoadedUrl = ""
 
     override fun onReceivedTitle(
         view: WebView,
@@ -293,9 +305,10 @@ open class AccompanistWebChromeClient : WebChromeClient() {
     ) {
         super.onReceivedTitle(view, title)
         KLogger.d {
-            "onReceivedTitle: $title"
+            "onReceivedTitle: $title url:${view.url}"
         }
         state.pageTitle = title
+        state.lastLoadedUrl = view.url ?: ""
     }
 
     override fun onReceivedIcon(
@@ -311,7 +324,13 @@ open class AccompanistWebChromeClient : WebChromeClient() {
         newProgress: Int,
     ) {
         super.onProgressChanged(view, newProgress)
-        if (state.loadingState is LoadingState.Finished) return
-        state.loadingState = LoadingState.Loading(newProgress / 100.0f)
+        if (state.loadingState is LoadingState.Finished && view.url == lastLoadedUrl) return
+        state.loadingState =
+            if (newProgress == 100) {
+                LoadingState.Finished
+            } else {
+                LoadingState.Loading(newProgress / 100.0f)
+            }
+        lastLoadedUrl = view.url ?: ""
     }
 }

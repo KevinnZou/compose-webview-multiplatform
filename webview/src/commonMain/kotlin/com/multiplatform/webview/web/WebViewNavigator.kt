@@ -24,7 +24,7 @@ import kotlinx.coroutines.withContext
  * @see [rememberWebViewNavigator]
  */
 @Stable
-class WebViewNavigator(private val coroutineScope: CoroutineScope) {
+class WebViewNavigator(val coroutineScope: CoroutineScope) {
     /**
      * Sealed class for constraining possible navigation events.
      */
