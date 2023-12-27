@@ -9,13 +9,14 @@ import platform.darwin.NSObject
 /**
  * Created By Kevin Zou On 2023/9/13
  */
-val observedProgressList = listOf(
-    "estimatedProgress",
-    "title",
-    "URL",
-    "canGoBack",
-    "canGoForward",
-)
+val observedProgressList =
+    listOf(
+        "estimatedProgress",
+        "title",
+        "URL",
+        "canGoBack",
+        "canGoForward",
+    )
 
 /**
  * Adds observers for the given properties
@@ -48,9 +49,7 @@ fun WKWebView.removeObservers(
 }
 
 @OptIn(ExperimentalForeignApi::class)
-fun WKWebView.addProgressObservers(
-    observer: NSObject,
-) {
+fun WKWebView.addProgressObservers(observer: NSObject) {
     this.addObservers(
         observer = observer,
         properties = observedProgressList,
@@ -60,9 +59,7 @@ fun WKWebView.addProgressObservers(
 /**
  * Removes observers for the given properties
  */
-fun WKWebView.removeProgressObservers(
-    observer: NSObject,
-) {
+fun WKWebView.removeProgressObservers(observer: NSObject) {
     this.removeObservers(
         observer = observer,
         properties = observedProgressList,

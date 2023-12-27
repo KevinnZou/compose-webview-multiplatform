@@ -15,7 +15,7 @@ class WKJsMessageHandler(private val webViewJsBridge: WebViewJsBridge) :
     NSObject() {
     override fun userContentController(
         userContentController: WKUserContentController,
-        didReceiveScriptMessage: WKScriptMessage
+        didReceiveScriptMessage: WKScriptMessage,
     ) {
         val body = didReceiveScriptMessage.body
         val method = didReceiveScriptMessage.name

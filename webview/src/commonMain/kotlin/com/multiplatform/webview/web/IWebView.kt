@@ -158,7 +158,8 @@ interface IWebView {
         KLogger.d {
             "IWebView injectInitJS"
         }
-        val initJs = """
+        val initJs =
+            """
             window.kmpJsBridge = {
                 callbacks: {},
                 callbackId: 0,
@@ -183,7 +184,7 @@ interface IWebView {
                     }
                 }
             };
-        """.trimIndent()
+            """.trimIndent()
         evaluateJavaScript(initJs)
     }
 
