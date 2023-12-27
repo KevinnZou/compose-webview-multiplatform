@@ -23,7 +23,7 @@ internal object KLogger : Logger(
 
     // For iOS, it will not print out the log if the severity is upper than Debug in AS.
     fun info(msg: () -> String) {
-        i { msg() }
+        d { msg() }
     }
 }
 

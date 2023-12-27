@@ -44,16 +44,6 @@ internal fun BasicWebViewWithHTMLSample() {
     LaunchedEffect(Unit) {
         initWebView(webViewState)
         initJsBridge(jsBridge)
-//        EventBus.observe<NavigationEvent> {
-//            Logger.d {
-//                "Received NavigationEvent"
-//            }
-//        }
-        FlowEventBus.events.filter { it is NavigationEvent }.collect {
-            Logger.d {
-                "Received NavigationEvent"
-            }
-        }
     }
     MaterialTheme {
         Box(Modifier.fillMaxSize()) {
@@ -104,6 +94,16 @@ fun initWebView(webViewState: WebViewState) {
     }
 }
 
-fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
+suspend fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
     webViewJsBridge.register(GreetJsMessageHandler())
+    //        EventBus.observe<NavigationEvent> {
+//            Logger.d {
+//                "Received NavigationEvent"
+//            }
+//        }
+    FlowEventBus.events.filter { it is NavigationEvent }.collect {
+        Logger.d {
+            "Received NavigationEvent"
+        }
+    }
 }
