@@ -3,6 +3,7 @@ $dokka.linkExtension:html
 
 module:webview
 com.multiplatform.webview.cookie
+com.multiplatform.webview.jsbridge
 com.multiplatform.webview.setting
 com.multiplatform.webview.util
 com.multiplatform.webview.web
