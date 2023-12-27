@@ -170,7 +170,18 @@ sealed class PlatformWebSettings {
          * Whether the DOM storage API is enabled. The default value is {@code false}.
          */
         var domStorageEnabled: Boolean = false,
-    ) : PlatformWebSettings()
+        /**
+         * The Layer Type of the WebView.
+         * Default is [LayerType.HARDWARE]
+         */
+        var layerType: Int = LayerType.HARDWARE,
+    ) : PlatformWebSettings() {
+        object LayerType {
+            const val NONE = 0
+            const val SOFTWARE = 1
+            const val HARDWARE = 2
+        }
+    }
 
     /**
      * Desktop web settings
