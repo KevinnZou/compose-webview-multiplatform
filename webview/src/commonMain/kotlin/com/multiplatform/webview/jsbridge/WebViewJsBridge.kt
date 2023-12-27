@@ -9,6 +9,10 @@ import com.multiplatform.webview.web.WebViewNavigator
 /**
  * Created By Kevin Zou On 2023/10/31
  */
+
+/**
+ * A bridge that can be used to communicate between native and web.
+ */
 @Immutable
 open class WebViewJsBridge(val navigator: WebViewNavigator? = null) {
     private val jsMessageDispatcher = JsMessageDispatcher()
@@ -40,5 +44,8 @@ open class WebViewJsBridge(val navigator: WebViewNavigator? = null) {
     }
 }
 
+/**
+ * Create a [WebViewJsBridge] that is remembered across Compositions.
+ */
 @Composable
 fun rememberWebViewJsBridge(navigator: WebViewNavigator? = null): WebViewJsBridge = remember { WebViewJsBridge(navigator) }
