@@ -137,12 +137,12 @@ class IOSWebView(
         }
     }
 
-    override fun injectInitJS() {
+    override fun injectJsBridge() {
         if (webViewJsBridge == null) return
         KLogger.info {
-            "iOS WebView injectInitJS"
+            "iOS WebView injectJsBridge"
         }
-        super.injectInitJS()
+        super.injectJsBridge()
         val callIOS =
             """
             window.kmpJsBridge.postMessage = function (message) {
@@ -152,7 +152,7 @@ class IOSWebView(
         evaluateJavaScript(callIOS)
     }
 
-    override fun injectJsBridge(webViewJsBridge: WebViewJsBridge) {
+    override fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
         KLogger.info { "injectBridge" }
         val jsMessageHandler = WKJsMessageHandler(webViewJsBridge)
         wkWebView.configuration.userContentController.apply {

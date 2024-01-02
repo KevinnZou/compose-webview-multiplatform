@@ -157,10 +157,10 @@ interface IWebView {
      * Injects the initialization JavaScript code for JSBridge setup
      * into the currently displayed page.
      */
-    fun injectInitJS() {
+    fun injectJsBridge() {
         if (webViewJsBridge == null) return
         KLogger.d {
-            "IWebView injectInitJS"
+            "IWebView injectJsBridge"
         }
         val initJs =
             """
@@ -195,14 +195,14 @@ interface IWebView {
     /**
      * Inject the JSBridge into the WebView.
      */
-    fun injectJsBridge(webViewJsBridge: WebViewJsBridge)
+    fun initJsBridge(webViewJsBridge: WebViewJsBridge)
 
     /**
      * Initialize the WebView.
      */
     fun initWebView() {
         webViewJsBridge?.apply {
-            injectJsBridge(this)
+            initJsBridge(this)
         }
     }
 }
