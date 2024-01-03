@@ -97,6 +97,7 @@ fun WebView(
                 val lastLoadedUrFlow =
                     snapshotFlow { state.lastLoadedUrl }.filter { !it.isNullOrEmpty() }
 
+                // Only inject the js bridge when url is changed and the loading state is finished.
                 merge(loadingStateFlow, lastLoadedUrFlow).collect {
                     // double check the loading state to make sure the WebView is loaded.
                     if (state.loadingState is LoadingState.Finished) {
