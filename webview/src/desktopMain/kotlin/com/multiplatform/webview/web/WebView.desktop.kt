@@ -82,6 +82,7 @@ fun DesktopWebView(
             client,
             state.webSettings.desktopWebSettings.offScreenRendering,
             state.webSettings.desktopWebSettings.transparent,
+            state.webSettings,
             fileContent,
         ) {
             val rendering =
@@ -97,6 +98,7 @@ fun DesktopWebView(
                         current.url,
                         rendering,
                         state.webSettings.desktopWebSettings.transparent,
+                        createModifiedRequestContext(state.webSettings)
                     )
 
                 is WebContent.Data ->
@@ -120,6 +122,7 @@ fun DesktopWebView(
                         KCEFBrowser.BLANK_URI,
                         rendering,
                         state.webSettings.desktopWebSettings.transparent,
+                        createModifiedRequestContext(state.webSettings)
                     )
                 }
             }
