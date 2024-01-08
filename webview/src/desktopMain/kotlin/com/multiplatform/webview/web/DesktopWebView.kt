@@ -107,11 +107,11 @@ class DesktopWebView(
         }
     }
 
-    override fun injectInitJS() {
+    override fun injectJsBridge() {
         if (webViewJsBridge == null) return
-        super.injectInitJS()
+        super.injectJsBridge()
         KLogger.d {
-            "DesktopWebView injectInitJS"
+            "DesktopWebView injectJsBridge"
         }
         val callDesktop =
             """
@@ -122,7 +122,7 @@ class DesktopWebView(
         evaluateJavaScript(callDesktop)
     }
 
-    override fun injectJsBridge(webViewJsBridge: WebViewJsBridge) {
+    override fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
         KLogger.d {
             "DesktopWebView injectJsBridge"
         }

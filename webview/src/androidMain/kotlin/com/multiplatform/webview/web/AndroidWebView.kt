@@ -89,9 +89,9 @@ class AndroidWebView(
         }
     }
 
-    override fun injectInitJS() {
+    override fun injectJsBridge() {
         if (webViewJsBridge == null) return
-        super.injectInitJS()
+        super.injectJsBridge()
         val callAndroid =
             """
             window.kmpJsBridge.postMessage = function (message) {
@@ -101,7 +101,7 @@ class AndroidWebView(
         evaluateJavaScript(callAndroid)
     }
 
-    override fun injectJsBridge(webViewJsBridge: WebViewJsBridge) {
+    override fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
         webView.addJavascriptInterface(this, "androidJsBridge")
     }
 
