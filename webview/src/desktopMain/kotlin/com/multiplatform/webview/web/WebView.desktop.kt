@@ -98,7 +98,7 @@ fun DesktopWebView(
                         current.url,
                         rendering,
                         state.webSettings.desktopWebSettings.transparent,
-                        createModifiedRequestContext(state.webSettings)
+                        createModifiedRequestContext(state.webSettings),
                     )
 
                 is WebContent.Data ->
@@ -122,7 +122,7 @@ fun DesktopWebView(
                         KCEFBrowser.BLANK_URI,
                         rendering,
                         state.webSettings.desktopWebSettings.transparent,
-                        createModifiedRequestContext(state.webSettings)
+                        createModifiedRequestContext(state.webSettings),
                     )
                 }
             }
