@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 import com.multiplatform.webview.util.getPlatform
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.merge
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
@@ -86,13 +88,22 @@ fun WebView(
                 }
             }
         }
-    }
 
-    // TODO WorkAround for Desktop not working issue.
-    if (webViewJsBridge != null && !getPlatform().isDesktop()) {
-        LaunchedEffect(state.loadingState, state.lastLoadedUrl) {
-            if (state.loadingState is LoadingState.Finished) {
-                webView?.injectInitJS()
+        // inject the js bridge when the webview is loaded.
+        if (webViewJsBridge != null && !getPlatform().isDesktop()) {
+            LaunchedEffect(wv, state) {
+                val loadingStateFlow =
+                    snapshotFlow { state.loadingState }.filter { it is LoadingState.Finished }
+                val lastLoadedUrFlow =
+                    snapshotFlow { state.lastLoadedUrl }.filter { !it.isNullOrEmpty() }
+
+                // Only inject the js bridge when url is changed and the loading state is finished.
+                merge(loadingStateFlow, lastLoadedUrFlow).collect {
+                    // double check the loading state to make sure the WebView is loaded.
+                    if (state.loadingState is LoadingState.Finished) {
+                        wv.injectJsBridge()
+                    }
+                }
             }
         }
     }

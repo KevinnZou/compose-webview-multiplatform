@@ -102,7 +102,7 @@ internal fun CefBrowser.addLoadListener(
                 } else {
                     state.loadingState = LoadingState.Finished
                     if (url != null && url != lastLoadedUrl) {
-                        state.webView?.injectInitJS()
+                        state.webView?.injectJsBridge()
                         lastLoadedUrl = url
                     }
                 }
