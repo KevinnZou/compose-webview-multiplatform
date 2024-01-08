@@ -499,7 +499,7 @@ kotlin {
         commonMain {
             dependencies {
               // use api since the desktop app need to access the Cef to initialize it.
-              api("io.github.kevinnzou:compose-webview-multiplatform:1.8.0")
+              api("io.github.kevinnzou:compose-webview-multiplatform:1.8.2")
             }
         }
     }
