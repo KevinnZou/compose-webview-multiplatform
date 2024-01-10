@@ -2,7 +2,6 @@ package com.multiplatform.webview.web
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -11,6 +10,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
+import com.theapache64.rebugger.Rebugger
 import dev.datlag.kcef.KCEF
 import dev.datlag.kcef.KCEFBrowser
 import org.cef.browser.CefRendering
@@ -77,6 +77,21 @@ fun DesktopWebView(
             }
     }
 
+    Rebugger(
+        trackMap =
+            mapOf(
+                "WebViewState" to state,
+                "Modifier" to modifier,
+                "WebViewNavigator" to navigator,
+                "WebViewJsBridge" to webViewJsBridge,
+                "onCreated" to onCreated,
+                "onDispose" to onDispose,
+                "Client" to client,
+                "FileContent" to fileContent,
+                "Scope" to scope,
+            ),
+    )
+
     val browser: KCEFBrowser? =
         remember(
             client,
@@ -126,15 +141,21 @@ fun DesktopWebView(
                     )
                 }
             }
-        }?.also {
-            val desktopWebView = DesktopWebView(it, scope, webViewJsBridge)
-            state.webView = desktopWebView
-            webViewJsBridge?.webView = desktopWebView
+        }
+    val desktopWebView =
+        remember(browser) {
+            if (browser != null) {
+                DesktopWebView(browser, scope, webViewJsBridge)
+            } else {
+                null
+            }
         }
 
     browser?.let {
         SwingPanel(
             factory = {
+                state.webView = desktopWebView
+                webViewJsBridge?.webView = desktopWebView
                 browser.apply {
                     addDisplayHandler(state)
                     addLoadListener(state, navigator)
@@ -144,15 +165,6 @@ fun DesktopWebView(
             },
             modifier = modifier,
         )
-    }
-
-    // Handle navigation events. Workaround for navigator not working issue.
-    LaunchedEffect(state.webView, navigator) {
-        state.webView?.let { wv ->
-            with(navigator) {
-                wv.handleNavigationEvents()
-            }
-        }
     }
 
     DisposableEffect(Unit) {
