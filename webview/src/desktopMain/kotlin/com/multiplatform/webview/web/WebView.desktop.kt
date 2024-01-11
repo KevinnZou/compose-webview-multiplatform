@@ -10,7 +10,6 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
-import com.theapache64.rebugger.Rebugger
 import dev.datlag.kcef.KCEF
 import dev.datlag.kcef.KCEFBrowser
 import org.cef.browser.CefRendering
@@ -76,21 +75,6 @@ fun DesktopWebView(
                 ""
             }
     }
-
-    Rebugger(
-        trackMap =
-            mapOf(
-                "WebViewState" to state,
-                "Modifier" to modifier,
-                "WebViewNavigator" to navigator,
-                "WebViewJsBridge" to webViewJsBridge,
-                "onCreated" to onCreated,
-                "onDispose" to onDispose,
-                "Client" to client,
-                "FileContent" to fileContent,
-                "Scope" to scope,
-            ),
-    )
 
     val browser: KCEFBrowser? =
         remember(
