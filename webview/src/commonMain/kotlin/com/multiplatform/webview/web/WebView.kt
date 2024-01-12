@@ -53,6 +53,7 @@ fun WebView(
             }
         }
 
+        // Desktop will handle the first load by itself
         if (!getPlatform().isDesktop()) {
             LaunchedEffect(wv, state) {
                 snapshotFlow { state.content }.collect { content ->
