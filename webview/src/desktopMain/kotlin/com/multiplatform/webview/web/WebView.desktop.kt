@@ -2,7 +2,6 @@ package com.multiplatform.webview.web
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
@@ -126,15 +125,21 @@ fun DesktopWebView(
                     )
                 }
             }
-        }?.also {
-            val desktopWebView = DesktopWebView(it, scope, webViewJsBridge)
-            state.webView = desktopWebView
-            webViewJsBridge?.webView = desktopWebView
+        }
+    val desktopWebView =
+        remember(browser) {
+            if (browser != null) {
+                DesktopWebView(browser, scope, webViewJsBridge)
+            } else {
+                null
+            }
         }
 
     browser?.let {
         SwingPanel(
             factory = {
+                state.webView = desktopWebView
+                webViewJsBridge?.webView = desktopWebView
                 browser.apply {
                     addDisplayHandler(state)
                     addLoadListener(state, navigator)
@@ -144,15 +149,6 @@ fun DesktopWebView(
             },
             modifier = modifier,
         )
-    }
-
-    // Handle navigation events. Workaround for navigator not working issue.
-    LaunchedEffect(state.webView, navigator) {
-        state.webView?.let { wv ->
-            with(navigator) {
-                wv.handleNavigationEvents()
-            }
-        }
     }
 
     DisposableEffect(Unit) {

@@ -53,37 +53,40 @@ fun WebView(
             }
         }
 
-        LaunchedEffect(wv, state) {
-            snapshotFlow { state.content }.collect { content ->
-                when (content) {
-                    is WebContent.Url -> {
-                        state.lastLoadedUrl = content.url
-                        wv.loadUrl(content.url, content.additionalHttpHeaders)
-                    }
+        // Desktop will handle the first load by itself
+        if (!getPlatform().isDesktop()) {
+            LaunchedEffect(wv, state) {
+                snapshotFlow { state.content }.collect { content ->
+                    when (content) {
+                        is WebContent.Url -> {
+                            state.lastLoadedUrl = content.url
+                            wv.loadUrl(content.url, content.additionalHttpHeaders)
+                        }
 
-                    is WebContent.Data -> {
-                        wv.loadHtml(
-                            content.data,
-                            content.baseUrl,
-                            content.mimeType,
-                            content.encoding,
-                            content.historyUrl,
-                        )
-                    }
+                        is WebContent.Data -> {
+                            wv.loadHtml(
+                                content.data,
+                                content.baseUrl,
+                                content.mimeType,
+                                content.encoding,
+                                content.historyUrl,
+                            )
+                        }
 
-                    is WebContent.File -> {
-                        wv.loadHtmlFile(content.fileName)
-                    }
+                        is WebContent.File -> {
+                            wv.loadHtmlFile(content.fileName)
+                        }
 
-                    is WebContent.Post -> {
-                        wv.postUrl(
-                            content.url,
-                            content.postData,
-                        )
-                    }
+                        is WebContent.Post -> {
+                            wv.postUrl(
+                                content.url,
+                                content.postData,
+                            )
+                        }
 
-                    is WebContent.NavigatorOnly -> {
-                        // NO-OP
+                        is WebContent.NavigatorOnly -> {
+                            // NO-OP
+                        }
                     }
                 }
             }

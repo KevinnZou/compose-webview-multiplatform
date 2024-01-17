@@ -86,7 +86,7 @@ internal fun CefBrowser.addLoadListener(
 ) {
     this.client.addLoadHandler(
         object : CefLoadHandler {
-            private var lastLoadedUrl = ""
+            private var lastLoadedUrl = "null"
 
             override fun onLoadingStateChange(
                 browser: CefBrowser?,
@@ -116,7 +116,7 @@ internal fun CefBrowser.addLoadListener(
                 transitionType: CefRequest.TransitionType?,
             ) {
                 KLogger.d { "Load Start ${browser?.url}" }
-                lastLoadedUrl = "" // clean last loaded url for reload to work
+                lastLoadedUrl = "null" // clean last loaded url for reload to work
                 state.loadingState = LoadingState.Loading(0F)
                 state.errorsForCurrentRequest.clear()
             }

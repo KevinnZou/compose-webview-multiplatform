@@ -124,7 +124,7 @@ class DesktopWebView(
 
     override fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
         KLogger.d {
-            "DesktopWebView injectJsBridge"
+            "DesktopWebView initJsBridge"
         }
         val router = CefMessageRouter.create()
         val handler =
