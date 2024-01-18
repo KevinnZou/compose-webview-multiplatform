@@ -181,6 +181,9 @@ internal fun KCEFBrowser.addRequestHandler(
                         WebRequest(
                             request?.url.toString(),
                             map,
+                            isForMainFrame = frame?.isMain ?: false,
+                            isRedirect = isRedirect,
+                            request?.method ?: "GET",
                         )
                     val interceptResult =
                         this.onInterceptRequest(
