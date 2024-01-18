@@ -69,12 +69,16 @@ internal fun BasicWebViewSample() {
                         request.let {
                             Logger.i { "Sample onInterceptRequest: $it" }
                         }
-                        return WebRequestInterceptResult.Modify(
-                            WebRequest(
-                                url = "https://kotlinlang.org/docs/multiplatform.html",
-                                headers = mutableMapOf("info" to "test"),
-                            ),
-                        )
+                        return if (request.isForMainFrame && request.url.contains("github")) {
+                            WebRequestInterceptResult.Modify(
+                                WebRequest(
+                                    url = "https://kotlinlang.org/docs/multiplatform.html",
+                                    headers = mutableMapOf("info" to "test"),
+                                ),
+                            )
+                        } else {
+                            WebRequestInterceptResult.Allow
+                        }
                     }
                 },
         )
