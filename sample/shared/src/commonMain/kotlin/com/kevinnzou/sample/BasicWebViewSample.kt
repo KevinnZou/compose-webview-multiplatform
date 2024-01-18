@@ -76,8 +76,8 @@ internal fun BasicWebViewSample(navHostController: NavHostController? = null) {
                         request: WebRequest,
                         navigator: WebViewNavigator,
                     ): WebRequestInterceptResult {
-                        request.url.let {
-                            Logger.i { "Sample beforeRequest: $it" }
+                        request.let {
+                            Logger.i { "Sample onInterceptRequest: $it" }
                         }
                         return WebRequestInterceptResult.Modify(
                             WebRequest(
