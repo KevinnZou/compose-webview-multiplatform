@@ -40,8 +40,8 @@ import com.multiplatform.webview.request.WebRequestInterceptResult
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.LoadingState
 import com.multiplatform.webview.web.WebView
-import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.WebViewNavigator
+import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewState
 import kotlinx.coroutines.flow.filter
@@ -72,7 +72,7 @@ internal fun BasicWebViewSample(navHostController: NavHostController? = null) {
         rememberWebViewNavigator(
             requestInterceptor =
                 object : RequestInterceptor {
-                    override fun beforeRequest(
+                    override fun onInterceptRequest(
                         request: WebRequest,
                         navigator: WebViewNavigator,
                     ): WebRequestInterceptResult {

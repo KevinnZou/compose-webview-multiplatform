@@ -378,7 +378,7 @@ open class AccompanistWebViewClient : WebViewClient() {
                     request?.requestHeaders?.toMutableMap() ?: mutableMapOf(),
                 )
             val interceptResult =
-                this.beforeRequest(
+                this.onInterceptRequest(
                     webRequest,
                     navigator,
                 )
