@@ -69,9 +69,12 @@ internal fun BasicWebViewSample() {
                         request.url.let {
                             Logger.i { "Sample beforeRequest: $it" }
                         }
-                        request.headers["info"] = "test"
-                        request.url = "https://kotlinlang.org/docs/multiplatform.html"
-                        return WebRequestInterceptResult.Modify(request)
+                        return WebRequestInterceptResult.Modify(
+                            WebRequest(
+                                url = "https://kotlinlang.org/docs/multiplatform.html",
+                                headers = mutableMapOf("info" to "test"),
+                            ),
+                        )
                     }
                 },
         )
