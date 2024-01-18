@@ -183,7 +183,7 @@ internal fun KCEFBrowser.addRequestHandler(
                             map,
                         )
                     val interceptResult =
-                        this.beforeRequest(
+                        this.onInterceptRequest(
                             webRequest,
                             navigator,
                         )

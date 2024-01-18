@@ -119,7 +119,7 @@ class WKNavigationDelegate(
                         headerMap,
                     )
                 val interceptResult =
-                    navigator.requestInterceptor.beforeRequest(
+                    navigator.requestInterceptor.onInterceptRequest(
                         webRequest,
                         navigator,
                     )
