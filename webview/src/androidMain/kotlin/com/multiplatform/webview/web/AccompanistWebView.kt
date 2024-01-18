@@ -367,7 +367,7 @@ open class AccompanistWebViewClient : WebViewClient() {
         request: WebResourceRequest?,
     ): WebResourceResponse? {
         KLogger.d { "shouldInterceptRequest: ${request?.url} ${request?.isForMainFrame} ${request?.isRedirect} ${request?.method}" }
-        if (request?.isForMainFrame == false || isRedirect) {
+        if (isRedirect) {
             isRedirect = false
             return super.shouldInterceptRequest(view, request)
         }
@@ -398,6 +398,7 @@ open class AccompanistWebViewClient : WebViewClient() {
                 is WebRequestInterceptResult.Modify -> {
                     isRedirect = true
                     interceptResult.request.apply {
+                        navigator.stopLoading()
                         navigator.loadUrl(this.url, this.headers)
                     }
                     null
