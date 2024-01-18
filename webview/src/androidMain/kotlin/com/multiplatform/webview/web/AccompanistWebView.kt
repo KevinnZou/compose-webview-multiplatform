@@ -392,7 +392,7 @@ open class AccompanistWebViewClient : WebViewClient() {
                     super.shouldInterceptRequest(view, request)
                 }
 
-                is WebRequestInterceptResult.Redirect -> {
+                is WebRequestInterceptResult.Modify -> {
                     isRedirect = true
                     interceptResult.request.apply {
                         navigator.loadUrl(this.url, this.headers)

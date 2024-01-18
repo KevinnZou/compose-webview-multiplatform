@@ -196,7 +196,7 @@ internal fun KCEFBrowser.addRequestHandler(
                             true
                         }
 
-                        is WebRequestInterceptResult.Redirect -> {
+                        is WebRequestInterceptResult.Modify -> {
                             interceptResult.request.apply {
                                 navigator.loadUrl(this.url, this.headers)
                             }
