@@ -376,6 +376,9 @@ open class AccompanistWebViewClient : WebViewClient() {
                 WebRequest(
                     request?.url.toString(),
                     request?.requestHeaders?.toMutableMap() ?: mutableMapOf(),
+                    request?.isForMainFrame ?: false,
+                    request?.isRedirect ?: false,
+                    request?.method ?: "GET",
                 )
             val interceptResult =
                 this.onInterceptRequest(

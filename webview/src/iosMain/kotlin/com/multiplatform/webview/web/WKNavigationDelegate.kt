@@ -3,6 +3,7 @@ package com.multiplatform.webview.web
 import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.request.WebRequestInterceptResult
 import com.multiplatform.webview.util.KLogger
+import platform.Foundation.HTTPMethod
 import com.multiplatform.webview.util.getPlatformVersionDouble
 import com.multiplatform.webview.util.notZero
 import kotlinx.cinterop.ExperimentalForeignApi
@@ -137,6 +138,9 @@ class WKNavigationDelegate(
                     WebRequest(
                         request.URL?.absoluteString ?: "",
                         headerMap,
+                        decidePolicyForNavigationAction.targetFrame?.mainFrame ?: false,
+                        isRedirect,
+                        request.HTTPMethod ?: "GET",
                     )
                 val interceptResult =
                     navigator.requestInterceptor.onInterceptRequest(
