@@ -118,8 +118,8 @@ class WKNavigationDelegate(
         decisionHandler: (WKNavigationActionPolicy) -> Unit,
     ) {
         val url = decidePolicyForNavigationAction.request.URL?.absoluteString
-        KLogger.d {
-            "Outer decidePolicyForNavigationAction: $url $isRedirect $decidePolicyForNavigationAction"
+        KLogger.info {
+            "Outer decidePolicyForNavigationAction: $url $isRedirect $decidePolicyForNavigationAction ${decidePolicyForNavigationAction.request.allHTTPHeaderFields}"
         }
         if (url != null && !isRedirect &&
             navigator.requestInterceptor != null
