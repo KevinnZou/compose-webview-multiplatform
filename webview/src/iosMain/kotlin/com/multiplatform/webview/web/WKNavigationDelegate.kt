@@ -142,7 +142,7 @@ class WKNavigationDelegate(
                         request.HTTPMethod ?: "GET",
                     )
                 val interceptResult =
-                    navigator.requestInterceptor.onInterceptRequest(
+                    navigator.requestInterceptor.onInterceptUrlRequest(
                         webRequest,
                         navigator,
                     )

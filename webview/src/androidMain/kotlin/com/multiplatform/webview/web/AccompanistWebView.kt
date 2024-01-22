@@ -381,7 +381,7 @@ open class AccompanistWebViewClient : WebViewClient() {
                     request?.method ?: "GET",
                 )
             val interceptResult =
-                this.onInterceptRequest(
+                this.onInterceptUrlRequest(
                     webRequest,
                     navigator,
                 )
