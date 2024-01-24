@@ -1,7 +1,7 @@
-# WebView State
+# State
+This library provides a *WebViewState* class as a state holder to hold the state for the WebView.
 
 ## WebViewState
-This library provides a *WebViewState* class as a state holder to hold the state for the WebView.
 ```kotlin
 class WebViewState(webContent: WebContent) {
     var lastLoadedUrl: String? by mutableStateOf(null)
