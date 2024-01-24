@@ -16,3 +16,4 @@ nav:
   - 'Api': api.md
   - 'Communication': communication.md
   - 'WebViewState': webviewstate.md
+  - 'Navigation': navigation.md
