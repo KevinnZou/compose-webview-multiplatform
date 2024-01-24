@@ -13,3 +13,4 @@ nav:
   - 'Overview': index.md
   - 'Installation': installation.md
   - 'Usage': usage.md
+  - 'Api': api.md
