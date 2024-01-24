@@ -12,3 +12,4 @@ theme:
 nav:
   - 'Overview': index.md
   - 'Installation': installation.md
+  - 'Usage': usage.md
