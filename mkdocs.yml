@@ -1,1 +1,14 @@
-site_name: My Docs
+# Project information
+site_name: Compose Multiplatform WebView
+site_description: 'WebView for JetBrains Compose Multiplatform'
+site_author: 'Kevin Zou'
+repo_url: 'https://github.com/KevinnZou/compose-webview-multiplatform'
+
+# Configuration
+theme:
+  name: material
+
+# Navigation
+nav:
+  - 'Overview': index.md
+  - 'Installation': installation.md
