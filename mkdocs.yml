@@ -15,3 +15,4 @@ nav:
   - 'Usage': usage.md
   - 'Api': api.md
   - 'Communication': communication.md
+  - 'WebViewState': webviewstate.md
