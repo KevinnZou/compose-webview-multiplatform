@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
-import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -324,90 +323,97 @@ open class AccompanistWebViewClient : WebViewClient() {
         }
     }
 
-//    override fun shouldOverrideUrlLoading(
+    override fun shouldOverrideUrlLoading(
+        view: WebView?,
+        request: WebResourceRequest?,
+    ): Boolean {
+        KLogger.d {
+            "shouldOverrideUrlLoading: ${request?.url} ${request?.isForMainFrame} ${request?.isRedirect} ${request?.method}"
+        }
+        if (isRedirect || request == null || navigator.requestInterceptor == null) {
+            isRedirect = false
+            return super.shouldOverrideUrlLoading(view, request)
+        }
+        val webRequest =
+            WebRequest(
+                request.url.toString(),
+                request.requestHeaders?.toMutableMap() ?: mutableMapOf(),
+                request.isForMainFrame,
+                request.isRedirect,
+                request.method ?: "GET",
+            )
+        val interceptResult =
+            navigator.requestInterceptor!!.onInterceptUrlRequest(
+                webRequest,
+                navigator,
+            )
+        return when (interceptResult) {
+            is WebRequestInterceptResult.Allow -> {
+                false
+            }
+
+            is WebRequestInterceptResult.Reject -> {
+                navigator.stopLoading()
+                true
+            }
+
+            is WebRequestInterceptResult.Modify -> {
+                isRedirect = true
+                interceptResult.request.apply {
+                    navigator.stopLoading()
+                    navigator.loadUrl(this.url, this.headers)
+                }
+                true
+            }
+        }
+    }
+
+//    override fun shouldInterceptRequest(
 //        view: WebView?,
 //        request: WebResourceRequest?,
-//    ): Boolean {
-//        KLogger.d {
-//            "shouldOverrideUrlLoading: ${request?.url}"
+//    ): WebResourceResponse? {
+//        KLogger.d { "shouldInterceptRequest: ${request?.url} ${request?.isForMainFrame} ${request?.isRedirect} ${request?.method}" }
+//        if (isRedirect || request == null || navigator.requestInterceptor == null) {
+//            isRedirect = false
+//            return super.shouldInterceptRequest(view, request)
 //        }
-//        navigator.requestInterceptor?.apply {
+//        if (request.isForMainFrame) {
 //            val webRequest =
 //                WebRequest(
-//                    request?.url.toString(),
-//                    request?.requestHeaders?.toMutableMap() ?: mutableMapOf(),
+//                    request.url.toString(),
+//                    request.requestHeaders.toMutableMap(),
+//                    request.isForMainFrame,
+//                    request.isRedirect,
+//                    request.method ?: "GET",
 //                )
 //            val interceptResult =
-//                this.beforeRequest(
+//                navigator.requestInterceptor!!.onInterceptUrlRequest(
 //                    webRequest,
 //                    navigator,
 //                )
 //            return when (interceptResult) {
 //                is WebRequestInterceptResult.Allow -> {
-//                    super.shouldOverrideUrlLoading(view, request)
+//                    super.shouldInterceptRequest(view, request)
 //                }
 //
 //                is WebRequestInterceptResult.Reject -> {
-//                    true
+//                    navigator.stopLoading()
+//                    super.shouldInterceptRequest(view, request)
 //                }
 //
-//                is WebRequestInterceptResult.Redirect -> {
+//                is WebRequestInterceptResult.Modify -> {
+//                    isRedirect = true
 //                    interceptResult.request.apply {
+//                        navigator.stopLoading()
 //                        navigator.loadUrl(this.url, this.headers)
 //                    }
-//                    true
+//                    null
 //                }
 //            }
 //        }
-//        return super.shouldOverrideUrlLoading(view, request)
+//        isRedirect = false
+//        return super.shouldInterceptRequest(view, request)
 //    }
-
-    override fun shouldInterceptRequest(
-        view: WebView?,
-        request: WebResourceRequest?,
-    ): WebResourceResponse? {
-        KLogger.d { "shouldInterceptRequest: ${request?.url} ${request?.isForMainFrame} ${request?.isRedirect} ${request?.method}" }
-        if (isRedirect) {
-            isRedirect = false
-            return super.shouldInterceptRequest(view, request)
-        }
-        navigator.requestInterceptor?.apply {
-            val webRequest =
-                WebRequest(
-                    request?.url.toString(),
-                    request?.requestHeaders?.toMutableMap() ?: mutableMapOf(),
-                    request?.isForMainFrame ?: false,
-                    request?.isRedirect ?: false,
-                    request?.method ?: "GET",
-                )
-            val interceptResult =
-                this.onInterceptUrlRequest(
-                    webRequest,
-                    navigator,
-                )
-            return when (interceptResult) {
-                is WebRequestInterceptResult.Allow -> {
-                    super.shouldInterceptRequest(view, request)
-                }
-
-                is WebRequestInterceptResult.Reject -> {
-                    navigator.stopLoading()
-                    super.shouldInterceptRequest(view, request)
-                }
-
-                is WebRequestInterceptResult.Modify -> {
-                    isRedirect = true
-                    interceptResult.request.apply {
-                        navigator.stopLoading()
-                        navigator.loadUrl(this.url, this.headers)
-                    }
-                    null
-                }
-            }
-        }
-        isRedirect = false
-        return super.shouldInterceptRequest(view, request)
-    }
 }
 
 /**
