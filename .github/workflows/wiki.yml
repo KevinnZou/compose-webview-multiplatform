@@ -2,7 +2,6 @@ name: Publish Wiki
 on:
   push:
     branches:
-      - main
       - feature/wiki_improvement
     paths-ignore:
       - sample
@@ -40,5 +39,5 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: ./build/dokka/htmlMultiModule
-          branch: gh-pages
+          branch: gh-pages-api
           force: true
