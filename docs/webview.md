@@ -1,6 +1,6 @@
-# API
+# WebView
 
-The complete API of this library is as follows:
+This library provides a WebView composable that can be used in your Compose UI to display web content.
 
 ```kotlin
 /**

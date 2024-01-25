@@ -12,9 +12,9 @@ theme:
 nav:
   - 'Overview': index.md
   - 'Installation': installation.md
+  - 'WebView': webview.md
   - 'Usage': usage.md
-  - 'Api': api.md
   - 'State': state.md
   - 'Navigation': navigation.md
-  - 'Communication': communication.md
   - 'Setting': setting.md
+  - 'Communication': communication.md
