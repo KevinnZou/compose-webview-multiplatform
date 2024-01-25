@@ -1,8 +1,8 @@
 # Setting
 Starting from version 1.3.0, this library allows users to customize web settings.
 
-There are some common web settings that can be shared across different platforms, such as
-isJavaScriptEnabled and userAgent.
+There are some common [WebSettings](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/webview/src/commonMain/kotlin/com/multiplatform/webview/setting/WebSettings.kt) 
+that can be shared across different platforms, such as `isJavaScriptEnabled` and `userAgent`.
 
 ## WebSettings
 
@@ -32,7 +32,7 @@ class WebSettings {
 
 ## PlatformWebSettings
 
-For platform specific settings, this library provides the PlatformWebSettings.
+For platform specific settings, this library provides the [PlatformWebSettings](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/webview/src/commonMain/kotlin/com/multiplatform/webview/setting/PlatformWebSettings.kt).
 
 These settings will only be applied to the respective platforms and do not affect other platforms.
 ```kotlin

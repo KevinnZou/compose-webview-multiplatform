@@ -1,7 +1,9 @@
 # State
-This library provides a *WebViewState* class as a state holder to hold the state for the WebView.
+This library provides a [WebViewState](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/webview/src/commonMain/kotlin/com/multiplatform/webview/web/WebViewState.kt) class as a state holder to hold the state for the WebView.
 
 ## WebViewState
+[API Docs](https://kevinnzou.github.io/compose-webview-multiplatform/webview/com.multiplatform.webview.web/-web-view-state/index.html)
+
 ```kotlin
 class WebViewState(webContent: WebContent) {
     var lastLoadedUrl: String? by mutableStateOf(null)
@@ -51,8 +53,9 @@ class WebViewState(webContent: WebContent) {
 
 ## rememberWebViewState
 
-It can be created using the *rememberWebViewState* function, which can be remembered across Compositions.
+It can be created using the [rememberWebViewState](https://github.com/KevinnZou/compose-webview-multiplatform/blob/c1104c4458277423ec0ee3386140e06950483cb4/webview/src/commonMain/kotlin/com/multiplatform/webview/web/WebViewState.kt#L87) function, which can be remembered across Compositions.
 
+[API Docs](https://kevinnzou.github.io/compose-webview-multiplatform/webview/com.multiplatform.webview.web/remember-web-view-state.html)
 ```kotlin
 val state = rememberWebViewState("https://github.com/KevinnZou/compose-webview-multiplatform")
 
@@ -99,7 +102,7 @@ fun rememberWebViewStateWithHTMLFile(
 ```
 
 ## Usage
-Developers can use the *WebViewState* to get the loading information of the WebView, such as the loading progress, the loading status, and the URL of the current page.
+Developers can use the `WebViewState` to get the loading information of the WebView, such as the loading progress, the loading status, and the URL of the current page.
 ```kotlin
 Column {
     val state = rememberWebViewState("https://github.com/KevinnZou/compose-webview-multiplatform")

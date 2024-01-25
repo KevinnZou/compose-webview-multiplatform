@@ -1,6 +1,7 @@
 # WebView
 
-This library provides a WebView composable that can be used in your Compose UI to display web content.
+This library provides a [WebView](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/webview/src/commonMain/kotlin/com/multiplatform/webview/web/WebView.kt) 
+composable that can be used in your Compose UI to display web content.
 
 ```kotlin
 /**

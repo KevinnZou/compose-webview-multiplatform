@@ -51,10 +51,10 @@ MaterialTheme {
 
 ## WebView to Native
 
-Starting from version 1.8.0, this library provides a `WebViewJsBridge` to allow developers to
-send messages from the WebView to Native.
+Starting from version 1.8.0, this library provides a [WebViewJsBridge](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/webview/src/commonMain/kotlin/com/multiplatform/webview/jsbridge/WebViewJsBridge.kt) 
+to allow developers to send messages from the WebView to Native.
 
-Developers can use the JsBridge to register a handler to handle the message from the WebView.
+Developers can use the `WebViewJsBridge` to register a handler to handle the message from the WebView.
 
 ```kotlin
 val jsBridge = rememberWebViewJsBridge()

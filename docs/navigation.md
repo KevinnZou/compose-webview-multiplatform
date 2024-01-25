@@ -1,5 +1,7 @@
 # Navigation
-This library provides a *WebViewNavigator* class to control over the navigation of a WebView from outside the composable. 
+This library provides a [WebViewNavigator](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/webview/src/commonMain/kotlin/com/multiplatform/webview/web/WebViewNavigator.kt) class 
+to control over the navigation of a WebView from outside the composable. 
+
 E.g.for performing a back navigation in response to the user clicking the "up" button in a TopAppBar.
 
 It can be used to load a new URL, evaluate the JavaScript, and go back and forward in the history.
@@ -62,7 +64,7 @@ class WebViewNavigator(private val coroutineScope: CoroutineScope) {
 ```
 
 ## Creating a WebViewNavigator
-It can be created using the *rememberWebViewNavigator* function, which can be remembered across Compositions.
+It can be created using the [rememberWebViewNavigator](https://github.com/KevinnZou/compose-webview-multiplatform/blob/c1104c4458277423ec0ee3386140e06950483cb4/webview/src/commonMain/kotlin/com/multiplatform/webview/web/WebViewNavigator.kt#L301) function, which can be remembered across Compositions.
 
 ```kotlin
 val navigator = rememberWebViewNavigator()
