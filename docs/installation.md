@@ -27,6 +27,11 @@ kotlin {
 }
 ```
 
+**Note:** 
+If you want to use this library in a desktop app, you need to configure the KCEF for it.
+Please see the [README.desktop.md](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/README.desktop.md) 
+for detailed instructions.
+
 ## Single Platform
 
 For an Android only project, you directly can use my [another library](https://github.com/KevinnZou/compose-webview).

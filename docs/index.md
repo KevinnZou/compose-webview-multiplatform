@@ -25,7 +25,8 @@ Currently, it supports the platforms of Android, iOS, and Desktop.
 
 The Android implementation of this library relies on the web module from the [Accompanist Library](https://github.com/google/accompanist/tree/main/web).
 
-**Note:** it has been deprecated in version 0.33.1-alpha. Thus I created a fork of it and used it as the base for this library. If you just want to use the WebView in Jetpack Compose, please visit this repo: https://github.com/KevinnZou/compose-webview.
+**Note:** it has been deprecated in version 0.33.1-alpha. Thus I created a fork of it and used it as the base for this library. 
+If you just want to use the WebView in Jetpack Compose, please visit this repo: [https://github.com/KevinnZou/compose-webview](https://github.com/KevinnZou/compose-webview).
 
 ## iOS
 The iOS implementation of this library relies on [WKWebView](https://developer.apple.com/documentation/webkit/wkwebview).
