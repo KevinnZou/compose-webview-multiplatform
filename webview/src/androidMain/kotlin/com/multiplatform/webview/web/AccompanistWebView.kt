@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
@@ -187,6 +188,7 @@ fun AccompanistWebView(
                             isAlgorithmicDarkeningAllowed = it.isAlgorithmicDarkeningAllowed
                         }
                         setSupportZoom(it.supportZoom)
+                        setBackgroundColor(it.backgroundColor.toArgb())
                         allowFileAccess = it.allowFileAccess
                         textZoom = it.textZoom
                         useWideViewPort = it.useWideViewPort
