@@ -14,9 +14,9 @@ import org.jetbrains.compose.resources.resource
  * Interface for WebView
  */
 interface IWebView {
-    var scope: CoroutineScope
+    val scope: CoroutineScope
 
-    var webViewJsBridge: WebViewJsBridge?
+    val webViewJsBridge: WebViewJsBridge?
 
     /**
      * True when the web view is able to navigate backwards, false otherwise.
@@ -159,32 +159,33 @@ interface IWebView {
      */
     fun injectJsBridge() {
         if (webViewJsBridge == null) return
+        val jsBridgeName = webViewJsBridge!!.jsBridgeName
         KLogger.d {
             "IWebView injectJsBridge"
         }
         val initJs =
             """
-            window.kmpJsBridge = {
+            window.$jsBridgeName = {
                 callbacks: {},
                 callbackId: 0,
                 callNative: function (methodName, params, callback) {
                     var message = {
                         methodName: methodName,
                         params: params,
-                        callbackId: callback ? window.kmpJsBridge.callbackId++ : -1
+                        callbackId: callback ? window.$jsBridgeName.callbackId++ : -1
                     };
                     if (callback) {
-                        window.kmpJsBridge.callbacks[message.callbackId] = callback;
+                        window.$jsBridgeName.callbacks[message.callbackId] = callback;
                         console.log('add callback: ' + message.callbackId + ', ' + callback);
                     }
-                    window.kmpJsBridge.postMessage(JSON.stringify(message));
+                    window.$jsBridgeName.postMessage(JSON.stringify(message));
                 },
                 onCallback: function (callbackId, data) {
-                    var callback = window.kmpJsBridge.callbacks[callbackId];
+                    var callback = window.$jsBridgeName.callbacks[callbackId];
                     console.log('onCallback: ' + callbackId + ', ' + data + ', ' + callback);
                     if (callback) {
                         callback(data);
-                        delete window.kmpJsBridge.callbacks[callbackId];
+                        delete window.$jsBridgeName.callbacks[callbackId];
                     }
                 }
             };

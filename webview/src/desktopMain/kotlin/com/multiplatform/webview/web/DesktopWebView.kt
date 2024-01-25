@@ -20,8 +20,8 @@ import org.cef.network.CefRequest
  */
 class DesktopWebView(
     private val webView: KCEFBrowser,
-    override var scope: CoroutineScope,
-    override var webViewJsBridge: WebViewJsBridge?,
+    override val scope: CoroutineScope,
+    override val webViewJsBridge: WebViewJsBridge?,
 ) : IWebView {
     init {
         initWebView()
@@ -115,7 +115,7 @@ class DesktopWebView(
         }
         val callDesktop =
             """
-            window.kmpJsBridge.postMessage = function (message) {
+            window.${webViewJsBridge.jsBridgeName}.postMessage = function (message) {
                     window.cefQuery({request:message});
                 };
             """.trimIndent()

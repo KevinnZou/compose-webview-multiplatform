@@ -29,8 +29,8 @@ import platform.darwin.NSObjectMeta
  */
 class IOSWebView(
     private val wkWebView: WKWebView,
-    override var scope: CoroutineScope,
-    override var webViewJsBridge: WebViewJsBridge?,
+    override val scope: CoroutineScope,
+    override val webViewJsBridge: WebViewJsBridge?,
 ) : IWebView {
     init {
         initWebView()
@@ -145,7 +145,7 @@ class IOSWebView(
         super.injectJsBridge()
         val callIOS =
             """
-            window.kmpJsBridge.postMessage = function (message) {
+            window.${webViewJsBridge.jsBridgeName}.postMessage = function (message) {
                     window.webkit.messageHandlers.iosJsBridge.postMessage(message);
                 };
             """.trimIndent()
