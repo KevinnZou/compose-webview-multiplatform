@@ -21,3 +21,4 @@ sample/desktopApp/cache
 sample/desktopApp/DawnCache
 sample/desktopApp/GPUCache
 sample/desktopApp/*.log
+site
