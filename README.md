@@ -320,6 +320,9 @@ window.kmpJsBridge.callNative("Greet",JSON.stringify({message:"Hello"}),
 );
 ```
 
+**Note:** Starting from version 1.8.6, the name of the JsBridge is configurable. Developers can configure it in the `rememberWebViewJsBridge` method.
+This library uses the `kmpJsBridge` as the default.
+
 ## WebSettings
 
 Starting from version 1.3.0, this library allows users to customize web settings.
