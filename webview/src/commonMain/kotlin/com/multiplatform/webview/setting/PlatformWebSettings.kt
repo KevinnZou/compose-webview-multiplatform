@@ -1,7 +1,5 @@
 package com.multiplatform.webview.setting
 
-import androidx.compose.ui.graphics.Color
-
 /**
  * Created By Kevin Zou On 2023/9/20
  */
