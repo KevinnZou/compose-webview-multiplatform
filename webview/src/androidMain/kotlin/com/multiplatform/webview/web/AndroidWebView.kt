@@ -17,8 +17,8 @@ import kotlinx.serialization.json.Json
  */
 class AndroidWebView(
     private val webView: WebView,
-    override var scope: CoroutineScope,
-    override var webViewJsBridge: WebViewJsBridge?,
+    override val scope: CoroutineScope,
+    override val webViewJsBridge: WebViewJsBridge?,
 ) : IWebView {
     init {
         initWebView()
@@ -94,7 +94,7 @@ class AndroidWebView(
         super.injectJsBridge()
         val callAndroid =
             """
-            window.kmpJsBridge.postMessage = function (message) {
+            window.${webViewJsBridge.jsBridgeName}.postMessage = function (message) {
                     window.androidJsBridge.call(message)
                 };
             """.trimIndent()

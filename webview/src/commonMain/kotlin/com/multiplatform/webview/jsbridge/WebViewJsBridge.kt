@@ -14,7 +14,7 @@ import com.multiplatform.webview.web.WebViewNavigator
  * A bridge that can be used to communicate between native and web.
  */
 @Immutable
-open class WebViewJsBridge(val navigator: WebViewNavigator? = null) {
+open class WebViewJsBridge(val navigator: WebViewNavigator? = null, val jsBridgeName: String = "kmpJsBridge") {
     private val jsMessageDispatcher = JsMessageDispatcher()
     var webView: IWebView? = null
 
@@ -40,7 +40,7 @@ open class WebViewJsBridge(val navigator: WebViewNavigator? = null) {
         data: String,
         callbackId: Int,
     ) {
-        webView?.evaluateJavaScript("window.kmpJsBridge.onCallback($callbackId, '$data')")
+        webView?.evaluateJavaScript("window.$jsBridgeName.onCallback($callbackId, '$data')")
     }
 }
 
