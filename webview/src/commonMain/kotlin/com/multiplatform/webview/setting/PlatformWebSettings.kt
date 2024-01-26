@@ -177,12 +177,6 @@ sealed class PlatformWebSettings {
          * Default is [LayerType.HARDWARE]
          */
         var layerType: Int = LayerType.HARDWARE,
-        /**
-         * The background color of the WebView client. The default value is {@code Color.Transparent}.
-         *
-         * @param backgroundColor a color value
-         */
-        var backgroundColor: Color = Color.Transparent,
     ) : PlatformWebSettings() {
         object LayerType {
             const val NONE = 0

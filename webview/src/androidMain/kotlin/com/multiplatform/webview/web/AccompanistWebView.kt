@@ -188,7 +188,7 @@ fun AccompanistWebView(
                             isAlgorithmicDarkeningAllowed = it.isAlgorithmicDarkeningAllowed
                         }
                         setSupportZoom(it.supportZoom)
-                        setBackgroundColor(it.backgroundColor.toArgb())
+                        setBackgroundColor(state.webSettings.backgroundColor.toArgb())
                         allowFileAccess = it.allowFileAccess
                         textZoom = it.textZoom
                         useWideViewPort = it.useWideViewPort

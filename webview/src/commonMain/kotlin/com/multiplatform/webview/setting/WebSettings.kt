@@ -1,5 +1,6 @@
 package com.multiplatform.webview.setting
 
+import androidx.compose.ui.graphics.Color
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.util.KLogger
 
@@ -74,6 +75,11 @@ class WebSettings {
             field = value
             KLogger.setMinSeverity(value)
         }
+
+    /**
+     * The background color of the WebView client. The default value is {@code Color.Transparent}.
+     */
+    var backgroundColor = Color.Transparent
 
     /**
      * Android platform specific settings
