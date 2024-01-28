@@ -27,6 +27,8 @@ It provides the basic WebView functionalities for JetBrains Compose Multiplatfor
     - starting from version 1.7.0, we switched from Java CEF Browser to [Kotlin CEF Browser](https://github.com/DatL4g/KCEF/tree/master) for more features and better performance.
     - **Note:** After switching to KCEF, developers need to configure it for the desktop app. Please see the [README.desktop.md](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/README.desktop.md) for more details.
 
+For more information, visit the documentation: https://kevinnzou.github.io/compose-webview-multiplatform/
+
 ## Basic Usage
 To use this widget there are two key APIs that are needed: *WebView*, which provides the layout, and *rememberWebViewState(url)* which provides some remembered state including the URL to display.
 
