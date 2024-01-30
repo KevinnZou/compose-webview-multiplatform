@@ -10,6 +10,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.readValue
 import platform.CoreGraphics.CGRectZero
 import platform.Foundation.setValue
+import platform.UIKit.UIColor
 import platform.WebKit.WKWebView
 import platform.WebKit.WKWebViewConfiguration
 import platform.WebKit.javaScriptEnabled
@@ -84,6 +85,18 @@ fun IOSWebView(
                     observer = observer,
                 )
                 this.navigationDelegate = navigationDelegate
+
+                setOpaque(false)
+                val composeBackgroundColor = state.webSettings.backgroundColor
+                val backgroundColor =
+                    UIColor(
+                        red = composeBackgroundColor.red.toDouble(),
+                        green = composeBackgroundColor.green.toDouble(),
+                        blue = composeBackgroundColor.blue.toDouble(),
+                        alpha = composeBackgroundColor.alpha.toDouble(),
+                    )
+                setBackgroundColor(backgroundColor)
+                scrollView.setBackgroundColor(backgroundColor)
                 onCreated()
             }.also {
                 val iosWebView = IOSWebView(it, scope, webViewJsBridge)
