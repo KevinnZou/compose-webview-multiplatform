@@ -78,6 +78,7 @@ class WebSettings {
 
     /**
      * The background color of the WebView client. The default value is {@code Color.Transparent}.
+     * Not supported on Desktop platform.
      */
     var backgroundColor = Color.Transparent
 
