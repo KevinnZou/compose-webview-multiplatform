@@ -14,7 +14,7 @@
 > This library is built using the [compose multiplatform library template](https://github.com/KevinnZou/compose-multiplatform-library-template).
 > It supports automatic package publishing, documentation, and code style checking.
 
-This library can be considered as the Multiplatform version of [Accompanist Web library](https://github.com/google/accompanist/tree/main/web). 
+This library can be considered as the Multiplatform version of [Compose WebView library](https://github.com/KevinnZou/compose-webview). 
 It provides the basic WebView functionalities for JetBrains Compose Multiplatform, which supports loading URLs, HTML, and post data. Currently, it supports the platforms of Android, iOS, and Desktop.
 
 * The Android implementation of this library relies on the web module from the [Accompanist Library](https://github.com/google/accompanist/tree/main/web).
