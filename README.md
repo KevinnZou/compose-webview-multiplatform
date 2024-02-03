@@ -525,3 +525,11 @@ dependencies {
     implementation("io.github.KevinnZou:compose-webview:0.33.3")
 }
 ```
+
+# Publications
+The following is a list of articles / blog posts that have been published discussing this plugin:
+
+1. [Web Everywhere: Introducing our Compose Multiplatform WebView Library](https://medium.com/@kevinnzou/web-everywhere-introducing-our-multiplatform-compose-webview-library-f9b1264b370)
+2. [What’s new in Compose Multiplatform WebView 1.5.0：Migrated to CEF Browser & Cookie Management Supported](https://medium.com/@kevinnzou/whats-new-in-compose-multiplatform-webview-1-5-0-migrated-ff2b3c564981)
+3. [Loading Local HTML files in Compose Multiplatform WebView](https://medium.com/@kevinnzou/loading-local-html-files-in-compose-multiplatform-webview-9a842f1ab9d9)
+4. [Bridging the Gap: Empowering JS and Native Communication in Compose Multiplatform WebView Library Version 1.8.0](https://medium.com/@kevinnzou/bridging-the-gap-empowering-js-and-native-communication-in-version-1-8-0-d17ce4d601b7)
