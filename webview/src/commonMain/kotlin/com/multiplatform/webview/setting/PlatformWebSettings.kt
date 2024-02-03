@@ -207,7 +207,7 @@ sealed class PlatformWebSettings {
         var backgroundColor: Color? = null,
         /**
          * The background color shown when the WebView client scrolls past the bounds of the active page.
-         * The default value is {@code Color.White}.
+         * The default value is {@code null}. Will use WebSettings backgroundColor when null.
          *
          * @param underPageBackgroundColor a color value
          */
