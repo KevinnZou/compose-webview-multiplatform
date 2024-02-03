@@ -89,11 +89,11 @@ fun IOSWebView(
                 setOpaque(false)
                 state.webSettings.let {
                     val backgroundColor = (it.iOSWebSettings.backgroundColor ?: it.backgroundColor).toUIColor()
+                    val scrollViewColor = (it.iOSWebSettings.underPageBackgroundColor ?: it.backgroundColor).toUIColor()
                     setBackgroundColor(backgroundColor)
-                    scrollView.setBackgroundColor(backgroundColor)
+                    scrollView.setBackgroundColor(scrollViewColor)
                 }
                 state.webSettings.iOSWebSettings.let {
-                    underPageBackgroundColor = it.underPageBackgroundColor.toUIColor()
                     with(scrollView) {
                         bounces = it.bounces
                         scrollEnabled = it.scrollEnabled

@@ -211,7 +211,7 @@ sealed class PlatformWebSettings {
          *
          * @param underPageBackgroundColor a color value
          */
-        var underPageBackgroundColor: Color = Color.White,
+        var underPageBackgroundColor: Color? = null,
         /**
          * Whether the WebView bounces when scrolled past content bounds.
          * The default value is {@code true}.
