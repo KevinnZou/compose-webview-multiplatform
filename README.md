@@ -30,7 +30,9 @@ It provides the basic WebView functionalities for JetBrains Compose Multiplatfor
 For more information, visit the documentation: https://kevinnzou.github.io/compose-webview-multiplatform/
 
 ## Basic Usage
-To use this widget there are two key APIs that are needed: *WebView*, which provides the layout, and *rememberWebViewState(url)* which provides some remembered state including the URL to display.
+**Note:** Developers targeting the _Desktop_ platform should refer to [README.desktop.md](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/README.desktop.md) for setup instructions first.
+
+To use this widget, two key APIs are needed: *WebView*, which provides the layout, and *rememberWebViewState(url)* which provides some remembered state including the URL to display.
 
 The basic usage is as follows:
 ```kotlin
@@ -328,7 +330,7 @@ This library uses the `kmpJsBridge` as the default.
 ## WebSettings
 
 Starting from version 1.3.0, this library allows users to customize web settings.
-There are some common web settings that can be shared across different platforms, such as
+Some common web settings can be shared across different platforms, such as
 isJavaScriptEnabled and userAgent.
 
 ```kotlin
@@ -354,8 +356,8 @@ class WebSettings {
 
 }
 ```
-For platform specific settings, this library provides the PlatformWebSettings. 
-These settings will only be applied to the respective platforms and do not affect other platforms.
+For platform-specific settings, this library provides the PlatformWebSettings. 
+These settings will only be applied to the respective platforms and will not affect other platforms.
 ```kotlin
 sealed class PlatformWebSettings {
     data class AndroidWebSettings(
@@ -513,8 +515,8 @@ kotlin {
 
 ### Single Platform
 
-For an Android only project, you directly can use my [another library](https://github.com/KevinnZou/compose-webview).
-Add the dependency to app level `build.gradle.kts`:
+For an Android-only project, you directly can use my [another library](https://github.com/KevinnZou/compose-webview).
+Add the dependency to app-level `build.gradle.kts`:
 
 ```kotlin
 repositories {
@@ -527,7 +529,7 @@ dependencies {
 ```
 
 # Publications
-The following is a list of articles / blog posts that have been published discussing this plugin:
+The following is a list of articles/blog posts that have been published discussing this plugin:
 
 1. [Web Everywhere: Introducing our Compose Multiplatform WebView Library](https://medium.com/@kevinnzou/web-everywhere-introducing-our-multiplatform-compose-webview-library-f9b1264b370)
 2. [What’s new in Compose Multiplatform WebView 1.5.0：Migrated to CEF Browser & Cookie Management Supported](https://medium.com/@kevinnzou/whats-new-in-compose-multiplatform-webview-1-5-0-migrated-ff2b3c564981)
