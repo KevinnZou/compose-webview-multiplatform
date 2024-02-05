@@ -6,11 +6,11 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.interop.UIKitView
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
+import com.multiplatform.webview.util.toUIColor
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.readValue
 import platform.CoreGraphics.CGRectZero
 import platform.Foundation.setValue
-import platform.UIKit.UIColor
 import platform.WebKit.WKWebView
 import platform.WebKit.WKWebViewConfiguration
 import platform.WebKit.javaScriptEnabled
@@ -87,16 +87,20 @@ fun IOSWebView(
                 this.navigationDelegate = navigationDelegate
 
                 setOpaque(false)
-                val composeBackgroundColor = state.webSettings.backgroundColor
-                val backgroundColor =
-                    UIColor(
-                        red = composeBackgroundColor.red.toDouble(),
-                        green = composeBackgroundColor.green.toDouble(),
-                        blue = composeBackgroundColor.blue.toDouble(),
-                        alpha = composeBackgroundColor.alpha.toDouble(),
-                    )
-                setBackgroundColor(backgroundColor)
-                scrollView.setBackgroundColor(backgroundColor)
+                state.webSettings.let {
+                    val backgroundColor = (it.iOSWebSettings.backgroundColor ?: it.backgroundColor).toUIColor()
+                    val scrollViewColor = (it.iOSWebSettings.underPageBackgroundColor ?: it.backgroundColor).toUIColor()
+                    setBackgroundColor(backgroundColor)
+                    scrollView.setBackgroundColor(scrollViewColor)
+                }
+                state.webSettings.iOSWebSettings.let {
+                    with(scrollView) {
+                        bounces = it.bounces
+                        scrollEnabled = it.scrollEnabled
+                        showsHorizontalScrollIndicator = it.showHorizontalScrollIndicator
+                        showsVerticalScrollIndicator = it.showVerticalScrollIndicator
+                    }
+                }
                 onCreated()
             }.also {
                 val iosWebView = IOSWebView(it, scope, webViewJsBridge)

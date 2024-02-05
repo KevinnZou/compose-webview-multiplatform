@@ -1,5 +1,7 @@
 package com.multiplatform.webview.setting
 
+import androidx.compose.ui.graphics.Color
+
 /**
  * Created By Kevin Zou On 2023/9/20
  */
@@ -195,5 +197,37 @@ sealed class PlatformWebSettings {
     /**
      * IOS web settings
      */
-    data object IOSWebSettings : PlatformWebSettings()
+    data class IOSWebSettings(
+        /**
+         * The background color of the WebView client. The default value is {@code null}.
+         * Will use WebSettings backgroundColor when null.
+         *
+         * @param backgroundColor a color value
+         */
+        var backgroundColor: Color? = null,
+        /**
+         * The background color shown when the WebView client scrolls past the bounds of the active page.
+         * The default value is {@code null}. Will use WebSettings backgroundColor when null.
+         *
+         * @param underPageBackgroundColor a color value
+         */
+        var underPageBackgroundColor: Color? = null,
+        /**
+         * Whether the WebView bounces when scrolled past content bounds.
+         * The default value is {@code true}.
+         */
+        var bounces: Boolean = true,
+        /**
+         * Whether horizontal and vertical scrolling is enabled. The default value is {@code true}.
+         */
+        var scrollEnabled: Boolean = true,
+        /**
+         * Whether the horizontal scroll indicator is visible. The default value is {@code true}.
+         */
+        var showHorizontalScrollIndicator: Boolean = true,
+        /**
+         * Whether the vertical scroll indicator is visible. The default value is {@code true}.
+         */
+        var showVerticalScrollIndicator: Boolean = true,
+    ) : PlatformWebSettings()
 }
