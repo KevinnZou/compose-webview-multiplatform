@@ -30,6 +30,12 @@ import kotlinx.coroutines.flow.filter
 
 /**
  * Created By Kevin Zou On 2023/9/8
+ *
+ * Basic Sample for loading Html in WebView
+ *
+ * Note: Developers targeting the Desktop platform should refer to
+ * [README.desktop.md](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/README.desktop.md)
+ * for setup instructions first.
  */
 @Composable
 internal fun BasicWebViewWithHTMLSample() {
