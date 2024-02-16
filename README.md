@@ -314,8 +314,13 @@ It receives three parameters:
   as the parameter. Pass null if no callback is needed.
 
 ```javascript
-window.kmpJsBridge.callNative = function (methodName, params, callback) {}
+window.kmpJsBridge.callNative = function (methodName, params, callback) {
+    ...
+}
+```
 
+Here is an example:
+```javascript
 window.kmpJsBridge.callNative("Greet",JSON.stringify({message:"Hello"}),
   function (data) {
     document.getElementById("subtitle").innerText = data;
