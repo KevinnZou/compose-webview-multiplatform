@@ -73,11 +73,14 @@ Developers can configure custom settings in the shared code in the following way
 val webViewState = rememberWebViewStateWithHTMLData(
     data = html
 )
-webViewState.webSettings.apply {
-    isJavaScriptEnabled = true
-    androidWebSettings.apply {
-        isAlgorithmicDarkeningAllowed = true
-        safeBrowsingEnabled = true
+DisposableEffect(Unit) {
+    webViewState.webSettings.apply {
+        isJavaScriptEnabled = true
+        androidWebSettings.apply {
+            isAlgorithmicDarkeningAllowed = true
+            safeBrowsingEnabled = true
+        }
     }
+    onDispose { }
 }
 ```
