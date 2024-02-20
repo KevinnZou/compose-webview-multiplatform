@@ -79,6 +79,7 @@ fun IOSWebView(
                 frame = CGRectZero.readValue(),
                 configuration = config,
             ).apply {
+                onCreated()
                 allowsBackForwardNavigationGestures = captureBackPresses
                 customUserAgent = state.webSettings.customUserAgentString
                 this.addProgressObservers(
@@ -101,7 +102,6 @@ fun IOSWebView(
                         showsVerticalScrollIndicator = it.showVerticalScrollIndicator
                     }
                 }
-                onCreated()
             }.also {
                 val iosWebView = IOSWebView(it, scope, webViewJsBridge)
                 state.webView = iosWebView

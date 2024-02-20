@@ -138,13 +138,13 @@ fun DesktopWebView(
     browser?.let {
         SwingPanel(
             factory = {
+                onCreated()
                 state.webView = desktopWebView
                 webViewJsBridge?.webView = desktopWebView
                 browser.apply {
                     addDisplayHandler(state)
                     addLoadListener(state, navigator)
                 }
-                onCreated()
                 browser.uiComponent
             },
             modifier = modifier,
