@@ -93,6 +93,7 @@ fun IOSWebView(
                     val scrollViewColor = (it.iOSWebSettings.underPageBackgroundColor ?: it.backgroundColor).toUIColor()
                     setBackgroundColor(backgroundColor)
                     scrollView.setBackgroundColor(scrollViewColor)
+                    scrollView.pinchGestureRecognizer?.enabled = it.supportZoom
                 }
                 state.webSettings.iOSWebSettings.let {
                     with(scrollView) {

@@ -178,6 +178,7 @@ fun AccompanistWebView(
                         userAgentString = it.customUserAgentString
                         allowFileAccessFromFileURLs = it.allowFileAccessFromFileURLs
                         allowUniversalAccessFromFileURLs = it.allowUniversalAccessFromFileURLs
+                        setSupportZoom(it.supportZoom)
                     }
 
                     state.webSettings.androidWebSettings.let {
@@ -187,7 +188,6 @@ fun AccompanistWebView(
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                             isAlgorithmicDarkeningAllowed = it.isAlgorithmicDarkeningAllowed
                         }
-                        setSupportZoom(it.supportZoom)
                         setBackgroundColor(state.webSettings.backgroundColor.toArgb())
                         allowFileAccess = it.allowFileAccess
                         textZoom = it.textZoom

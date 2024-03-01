@@ -11,16 +11,6 @@ sealed class PlatformWebSettings {
      */
     data class AndroidWebSettings(
         /**
-         * whether the WebView should support zooming using its on-screen zoom
-         * controls and gestures. The particular zoom mechanisms that should be used
-         * can be set with {@link #setBuiltInZoomControls}. This setting does not
-         * affect zooming performed using the {@link WebView#zoomIn()} and
-         * {@link WebView#zoomOut()} methods. The default is {@code true}.
-         *
-         * @param support whether the WebView should support zoom
-         */
-        var supportZoom: Boolean = true,
-        /**
          * Enables or disables file access within WebView.
          * Note that this enables or disables file system access only. Assets and resources
          * are still accessible using file:///android_asset and file:///android_res.

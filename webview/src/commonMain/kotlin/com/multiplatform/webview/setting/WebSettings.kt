@@ -31,6 +31,14 @@ class WebSettings {
     var zoomLevel: Double = 1.0
 
     /**
+     * whether the WebView should support zooming using its on-screen zoom
+     * controls and gestures. The default is {@code true}.
+     *
+     * @param support whether the WebView should support zoom
+     */
+    var supportZoom: Boolean = true
+
+    /**
      * Whether cross-origin requests in the context of a file scheme URL should be allowed to
      * access content from other file scheme URLs. Note that some accesses such as image HTML
      * elements don't follow same-origin rules and aren't affected by this setting.
