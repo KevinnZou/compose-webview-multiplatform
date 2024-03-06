@@ -20,6 +20,14 @@ object HtmlRes {
                     text-align: center; 
                     color: ffffff; 
                 }
+                @media (prefers-color-scheme: dark) {
+                  body {
+                    background-color: white;
+                  }
+                  h1, h2 {
+                    color: black; 
+                  }
+                }
             </style>
         </head>
         <body>
