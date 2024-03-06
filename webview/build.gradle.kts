@@ -51,6 +51,7 @@ kotlin {
             dependencies {
                 api("androidx.activity:activity-compose:1.7.2")
                 api("androidx.webkit:webkit:1.8.0")
+                implementation("androidx.webkit:webkit:1.9.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines")
             }
         }
