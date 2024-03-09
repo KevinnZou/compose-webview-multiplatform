@@ -42,15 +42,14 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-                implementation("co.touchlab:kermit:2.0.0-RC5")
+                implementation("co.touchlab:kermit:2.0.3")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
             }
         }
         val androidMain by getting {
             dependencies {
-                api("androidx.activity:activity-compose:1.7.2")
-                api("androidx.webkit:webkit:1.8.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines")
+                api("androidx.activity:activity-compose:1.8.2")
+                api("androidx.webkit:webkit:1.10.0")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
             }
         }
