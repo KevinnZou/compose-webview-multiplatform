@@ -63,7 +63,7 @@ fun DesktopWebView(
     val fileContent by produceState("", state.content) {
         value =
             if (state.content is WebContent.File) {
-                val res = Res.readBytes("assets/${(state.content as WebContent.File).fileName}")
+                val res = Res.readBytes("files/assets/${(state.content as WebContent.File).fileName}")
                 res.decodeToString().trimIndent()
             } else {
                 ""
