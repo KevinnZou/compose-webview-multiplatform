@@ -6,11 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -22,7 +18,10 @@ import com.kevinnzou.sample.res.HtmlRes
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
 import com.multiplatform.webview.util.KLogSeverity
-import com.multiplatform.webview.web.*
+import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.WebViewState
+import com.multiplatform.webview.web.rememberWebViewNavigator
+import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
 import kotlinx.coroutines.flow.filter
 
 /**
@@ -39,7 +38,7 @@ internal fun BasicWebViewWithHTMLSample() {
     val html = HtmlRes.html
     val webViewState =
         rememberWebViewStateWithHTMLFile(
-            fileName = "index.html",
+            fileName = "files/assets/index.html",
         )
 //    val webViewState = rememberWebViewStateWithHTMLData(html)
     val webViewNavigator = rememberWebViewNavigator()

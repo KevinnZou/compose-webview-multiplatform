@@ -12,8 +12,8 @@ import com.multiplatform.webview.web.rememberWebViewState
 @Composable
 internal fun WebViewApp() {
 //    WebViewSample()
-//    BasicWebViewSample()
-    BasicWebViewWithHTMLSample()
+    BasicWebViewSample()
+//    BasicWebViewWithHTMLSample()
 }
 
 @Composable
