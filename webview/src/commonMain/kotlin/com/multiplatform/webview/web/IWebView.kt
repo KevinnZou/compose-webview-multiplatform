@@ -2,9 +2,9 @@ package com.multiplatform.webview.web
 
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
+import compose_webview_multiplatform.webview.generated.resources.Res
 import kotlinx.coroutines.CoroutineScope
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.resource
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -97,8 +97,7 @@ interface IWebView {
      */
     @OptIn(ExperimentalResourceApi::class)
     suspend fun loadRawHtmlFile(fileName: String) {
-        val res = resource(fileName)
-        val html = res.readBytes().decodeToString().trimIndent()
+        val html = Res.readBytes(fileName).decodeToString().trimIndent()
         loadHtml(html, encoding = "utf-8")
     }
 
