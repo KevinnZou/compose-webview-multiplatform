@@ -22,10 +22,7 @@ import com.kevinnzou.sample.res.HtmlRes
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
 import com.multiplatform.webview.util.KLogSeverity
-import com.multiplatform.webview.web.WebView
-import com.multiplatform.webview.web.WebViewState
-import com.multiplatform.webview.web.rememberWebViewNavigator
-import com.multiplatform.webview.web.rememberWebViewStateWithHTMLData
+import com.multiplatform.webview.web.*
 import kotlinx.coroutines.flow.filter
 
 /**
@@ -40,10 +37,11 @@ import kotlinx.coroutines.flow.filter
 @Composable
 internal fun BasicWebViewWithHTMLSample() {
     val html = HtmlRes.html
-//    val webViewState = rememberWebViewStateWithHTMLFile(
-//        fileName = "index.html",
-//    )
-    val webViewState = rememberWebViewStateWithHTMLData(html)
+    val webViewState =
+        rememberWebViewStateWithHTMLFile(
+            fileName = "index.html",
+        )
+//    val webViewState = rememberWebViewStateWithHTMLData(html)
     val webViewNavigator = rememberWebViewNavigator()
     val jsBridge = rememberWebViewJsBridge(webViewNavigator)
     var jsRes by mutableStateOf("Evaluate JavaScript")
