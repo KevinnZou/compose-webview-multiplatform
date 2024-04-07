@@ -16,6 +16,7 @@ actual fun ActualWebView(
     webViewJsBridge: WebViewJsBridge?,
     onCreated: () -> Unit,
     onDispose: () -> Unit,
+    factory: ((PlatformContext) -> PlatformWebView)?,
 ) {
     AccompanistWebView(
         state,
@@ -25,5 +26,13 @@ actual fun ActualWebView(
         webViewJsBridge,
         onCreated = { _ -> onCreated() },
         onDispose = { _ -> onDispose() },
+        factory =
+            if (factory == null) {
+                null
+            } else {
+                { it ->
+                    factory.invoke(PlatformContext(it)).androidWebView
+                }
+            },
     )
 }

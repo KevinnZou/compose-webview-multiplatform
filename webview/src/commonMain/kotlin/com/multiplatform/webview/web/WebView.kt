@@ -40,6 +40,7 @@ fun WebView(
     webViewJsBridge: WebViewJsBridge? = null,
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
+    factory: ((PlatformContext) -> PlatformWebView)? = null,
 ) {
     val webView = state.webView
 
@@ -119,6 +120,7 @@ fun WebView(
         webViewJsBridge = webViewJsBridge,
         onCreated = onCreated,
         onDispose = onDispose,
+        factory = factory,
     )
 
     DisposableEffect(Unit) {
@@ -143,4 +145,5 @@ expect fun ActualWebView(
     webViewJsBridge: WebViewJsBridge? = null,
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
+    factory: ((PlatformContext) -> PlatformWebView)? = null,
 )

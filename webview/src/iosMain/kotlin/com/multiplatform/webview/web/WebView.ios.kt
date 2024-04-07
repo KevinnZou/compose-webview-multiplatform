@@ -11,6 +11,7 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.readValue
 import platform.CoreGraphics.CGRectZero
 import platform.Foundation.setValue
+import platform.UIKit.UIViewController
 import platform.WebKit.WKWebView
 import platform.WebKit.WKWebViewConfiguration
 import platform.WebKit.javaScriptEnabled
@@ -27,6 +28,7 @@ actual fun ActualWebView(
     webViewJsBridge: WebViewJsBridge?,
     onCreated: () -> Unit,
     onDispose: () -> Unit,
+    factory: ((PlatformContext) -> PlatformWebView)?,
 ) {
     IOSWebView(
         state = state,
@@ -36,6 +38,14 @@ actual fun ActualWebView(
         webViewJsBridge = webViewJsBridge,
         onCreated = onCreated,
         onDispose = onDispose,
+        factory =
+            if (factory == null) {
+                null
+            } else {
+                { controller ->
+                    factory.invoke(PlatformContext(controller)).iosWebView
+                }
+            },
     )
 }
 
@@ -52,6 +62,7 @@ fun IOSWebView(
     webViewJsBridge: WebViewJsBridge?,
     onCreated: () -> Unit,
     onDispose: () -> Unit,
+    factory: ((UIViewController) -> WKWebView)?,
 ) {
     val observer =
         remember {
@@ -65,6 +76,7 @@ fun IOSWebView(
 
     UIKitView(
         factory = {
+            // TODO Provide Default Configuration
             val config =
                 WKWebViewConfiguration().apply {
                     allowsInlineMediaPlayback = true

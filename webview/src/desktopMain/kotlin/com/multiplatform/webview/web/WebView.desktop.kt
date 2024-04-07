@@ -28,6 +28,7 @@ actual fun ActualWebView(
     webViewJsBridge: WebViewJsBridge?,
     onCreated: () -> Unit,
     onDispose: () -> Unit,
+    factory: ((PlatformContext) -> PlatformWebView)?,
 ) {
     DesktopWebView(
         state,
