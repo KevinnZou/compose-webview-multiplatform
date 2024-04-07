@@ -8,10 +8,10 @@ import androidx.compose.ui.platform.LocalContext
 /**
  * Created By Kevin Zou On 2024/4/7
  */
-actual typealias PlatformWebView = WebView
+actual class PlatformWebView(val androidWebView: WebView)
 
 actual fun getPlatformWebView(context: PlatformContext): PlatformWebView? {
-    return WebView(context.androidContext)
+    return PlatformWebView(WebView(context.androidContext))
 }
 
 actual class PlatformContext(val androidContext: Context)
