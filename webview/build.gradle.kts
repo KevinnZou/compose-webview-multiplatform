@@ -1,18 +1,36 @@
 @file:Suppress("UNUSED_VARIABLE", "OPT_IN_USAGE")
 
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+
+
 plugins {
-    kotlin("multiplatform")
-    id("com.android.library")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kotlinMultiplatform)
+    alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.kotlinSerialization)
     id("org.jetbrains.dokka")
     id("com.vanniktech.maven.publish")
-    kotlin("plugin.serialization")
 }
 
 kotlin {
 //    explicitApi = ExplicitApiMode.Strict
 
     targetHierarchy.default()
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser {
+            commonWebpackConfig {
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        add(project.projectDir.path)
+                    }
+                }
+            }
+        }
+    }
 
     androidTarget {
         publishLibraryVariants("release")
@@ -40,11 +58,12 @@ kotlin {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material)
+                implementation(libs.kotlinx.serialization.json)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
-                implementation("co.touchlab:kermit:2.0.0-RC5")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+                implementation("co.touchlab:kermit:2.0.3")
+
             }
         }
         val androidMain by getting {

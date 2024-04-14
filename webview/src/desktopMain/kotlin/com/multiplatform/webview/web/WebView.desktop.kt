@@ -14,7 +14,6 @@ import dev.datlag.kcef.KCEF
 import dev.datlag.kcef.KCEFBrowser
 import org.cef.browser.CefRendering
 import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.resource
 
 /**
  * Desktop WebView implementation.
@@ -67,13 +66,14 @@ fun DesktopWebView(
         }
     val scope = rememberCoroutineScope()
     val fileContent by produceState("", state.content) {
+        /* FIXME:
         value =
             if (state.content is WebContent.File) {
                 val res = resource("assets/${(state.content as WebContent.File).fileName}")
                 res.readBytes().decodeToString().trimIndent()
             } else {
                 ""
-            }
+            }*/
     }
 
     val browser: KCEFBrowser? =
