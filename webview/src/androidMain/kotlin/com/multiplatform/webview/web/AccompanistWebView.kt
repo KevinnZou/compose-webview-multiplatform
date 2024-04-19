@@ -291,6 +291,12 @@ open class AccompanistWebViewClient : WebViewClient() {
         error: WebResourceError?,
     ) {
         super.onReceivedError(view, request, error)
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            KLogger.e {
+                "onReceivedError: $error"
+            }
+            return
+        }
         KLogger.e {
             "onReceivedError: ${error?.description}"
         }
