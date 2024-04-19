@@ -32,6 +32,7 @@ fun main() =
                                 initialized = true
                             }
                         }
+                        release("jbr-release-17.0.10b1087.23")
                         settings {
                             cachePath = File("cache").absolutePath
                         }
