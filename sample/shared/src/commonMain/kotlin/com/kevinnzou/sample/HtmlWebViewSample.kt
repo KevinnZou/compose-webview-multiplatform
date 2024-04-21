@@ -38,7 +38,7 @@ internal fun BasicWebViewWithHTMLSample() {
     val html = HtmlRes.html
     val webViewState =
         rememberWebViewStateWithHTMLFile(
-            fileName = "files/assets/index.html",
+            fileName = "index.html",
         )
 //    val webViewState = rememberWebViewStateWithHTMLData(html)
     val webViewNavigator = rememberWebViewNavigator()
