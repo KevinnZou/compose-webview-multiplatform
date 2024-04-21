@@ -7,5 +7,3 @@ ktlint_standard_function-naming = disabled
 ktlint_standard_no-consecutive-comments = disabled
 ktlint_standard_property-naming = disabled
 ktlint_function_naming_ignore_when_annotated_with=Composable
-ktlint_standard_class-naming = disabled
-ktlint_standard_package-name = disabled
