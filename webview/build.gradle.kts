@@ -1,5 +1,8 @@
 @file:Suppress("UNUSED_VARIABLE", "OPT_IN_USAGE")
 
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
@@ -13,6 +16,17 @@ kotlin {
 //    explicitApi = ExplicitApiMode.Strict
 
     targetHierarchy.default()
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        moduleName = "composeWebView"
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeWebView.js"
+            }
+        }
+        binaries.executable()
+    }
 
     androidTarget {
         publishLibraryVariants("release")
@@ -42,7 +56,7 @@ kotlin {
                 implementation(compose.components.resources)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("co.touchlab:kermit:2.0.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             }
         }
         val androidMain by getting {

@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+
 plugins {
     kotlin("multiplatform")
     kotlin("plugin.serialization")
@@ -9,6 +11,17 @@ plugins {
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
     targetHierarchy.default()
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        moduleName = "composeWebViewSample"
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeWebViewSample.js"
+            }
+        }
+        binaries.executable()
+    }
 
     androidTarget {
         compilations.all {
@@ -45,7 +58,7 @@ kotlin {
                 implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
                 implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
                 api(project(":webview"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
                 implementation("org.jetbrains.kotlinx:atomicfu:0.23.2")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha03")
@@ -90,4 +103,8 @@ android {
     kotlin {
         jvmToolchain(17)
     }
+}
+
+compose.experimental {
+    web.application {}
 }
