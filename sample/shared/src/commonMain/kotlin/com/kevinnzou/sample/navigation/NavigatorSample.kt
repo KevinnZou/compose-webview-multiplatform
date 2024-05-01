@@ -1,4 +1,4 @@
-package com.kevinnzou.sample.screen
+package com.kevinnzou.sample.navigation
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.BottomNavigation

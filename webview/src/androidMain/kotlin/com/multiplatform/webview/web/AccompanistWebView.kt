@@ -180,7 +180,6 @@ fun AccompanistWebView(
 
                 settings.apply {
                     state.webSettings.let {
-                        // TODO 导致页面重建
                         javaScriptEnabled = it.isJavaScriptEnabled
                         userAgentString = it.customUserAgentString
                         allowFileAccessFromFileURLs = it.allowFileAccessFromFileURLs

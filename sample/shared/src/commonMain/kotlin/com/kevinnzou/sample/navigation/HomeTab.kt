@@ -1,4 +1,4 @@
-package com.kevinnzou.sample.screen
+package com.kevinnzou.sample.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -54,8 +54,7 @@ fun Home() {
         val bundle = webViewState.viewState
         if (bundle == null) {
             // This is the first time load, so load the home page.
-            // Test Url: https://en.wikipedia.org/wiki/Foo_Fighters
-            navigator.loadUrl("https://kotlinlang.org/docs/multiplatform.html")
+            navigator.loadUrl("https://www.bing.com/search?q=Android")
         }
     }
 

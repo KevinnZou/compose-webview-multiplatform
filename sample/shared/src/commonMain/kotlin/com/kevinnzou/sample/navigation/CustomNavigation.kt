@@ -1,4 +1,4 @@
-package com.kevinnzou.sample.screen
+package com.kevinnzou.sample.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +21,12 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 /**
  * Created By Kevin Zou On 2023/12/12
  */
+
+@Composable
+fun NavigationTabSample() {
+    CustomNavigationScreen()
+}
+
 @Composable
 fun <T : Any> Navigation(
     currentScreen: T,

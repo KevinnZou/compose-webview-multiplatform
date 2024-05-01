@@ -1,4 +1,4 @@
-package com.kevinnzou.sample.screen
+package com.kevinnzou.sample.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
@@ -19,15 +19,6 @@ object PersonalTab : Tab {
     @Composable
     override fun Content() {
         Personal()
-//        var count by rememberSaveable { mutableStateOf(0) }
-//        Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-//            Column {
-//                Text(text = "Count $count", fontSize = 30.sp)
-//                Button(onClick = { count++ }) {
-//                    Text(text = "Count Up")
-//                }
-//            }
-//        }
     }
 
     override val options: TabOptions
@@ -48,6 +39,6 @@ object PersonalTab : Tab {
 
 @Composable
 fun Personal() {
-    val state = rememberWebViewState("https://kotlinlang.org/docs/multiplatform.html")
+    val state = rememberWebViewState("https://www.bing.com/search?q=Android")
     WebView(state = state, modifier = Modifier.fillMaxSize())
 }
