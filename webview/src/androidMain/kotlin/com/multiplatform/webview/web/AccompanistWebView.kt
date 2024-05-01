@@ -280,7 +280,6 @@ open class AccompanistWebViewClient : WebViewClient() {
         }
         state.loadingState = LoadingState.Finished
         state.lastLoadedUrl = url
-//        view.scrollTo(state.scrollOffset.first, state.scrollOffset.second)
     }
 
     override fun doUpdateVisitedHistory(

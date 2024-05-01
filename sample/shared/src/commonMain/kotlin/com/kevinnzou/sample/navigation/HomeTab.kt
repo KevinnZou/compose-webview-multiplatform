@@ -10,7 +10,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
-import co.touchlab.kermit.Logger
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberSaveableWebViewState
@@ -62,10 +61,5 @@ fun Home() {
         state = webViewState,
         modifier = Modifier.fillMaxSize(),
         navigator = navigator,
-        onDispose = {
-            Logger.d(tag = "ComposeWebView") {
-                "WebView onDispose"
-            }
-        },
     )
 }
