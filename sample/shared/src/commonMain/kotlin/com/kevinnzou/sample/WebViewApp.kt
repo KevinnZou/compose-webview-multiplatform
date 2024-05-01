@@ -6,7 +6,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.kevinnzou.sample.navigation.NavigationTabSample
+import com.kevinnzou.sample.navigation.VoyagerNavigationSample
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewState
 
@@ -15,7 +15,7 @@ internal fun WebViewApp() {
 //    WebViewSample()
 //    BasicWebViewSample()
 //    BasicWebViewWithHTMLSample()
-    NavigationTabSample()
+    VoyagerNavigationSample()
 }
 
 @Composable

@@ -15,7 +15,7 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
  * Created By Kevin Zou On 2023/12/8
  */
 @Composable
-fun NavigatorSample() {
+fun VoyagerNavigationSample() {
     TabNavigator(HomeTab) {
         Scaffold(
             content = {

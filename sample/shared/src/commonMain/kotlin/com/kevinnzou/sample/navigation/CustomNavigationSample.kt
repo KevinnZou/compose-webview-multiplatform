@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
  */
 
 @Composable
-fun NavigationTabSample() {
+fun CustomNavigationSample() {
     CustomNavigationScreen()
 }
 
