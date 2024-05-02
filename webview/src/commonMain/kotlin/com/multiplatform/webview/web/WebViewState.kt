@@ -15,6 +15,7 @@ import com.multiplatform.webview.cookie.WebViewCookieManager
 import com.multiplatform.webview.setting.WebSettings
 import com.multiplatform.webview.util.KLogger
 import com.multiplatform.webview.util.getPlatform
+import com.multiplatform.webview.util.isZero
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -147,31 +148,38 @@ val WebStateSaver: Saver<WebViewState, Any> =
     run {
         val pageTitleKey = "pagetitle"
         val lastLoadedUrlKey = "lastloaded"
-        val stateBundle = "bundle"
+        val stateBundleKey = "bundle"
+        val scrollOffsetKey = "scrollOffset"
 
         mapSaver(
             save = {
                 val bundle = WebViewBundle()
                 val viewState = if (it.webView?.saveState(bundle) == true) bundle else null
-                KLogger.d {
-                    "WebViewStateSaver Save: ${it.pageTitle}, ${it.lastLoadedUrl}, $viewState"
+                KLogger.info {
+                    "WebViewStateSaver Save: ${it.pageTitle}, ${it.lastLoadedUrl}, ${it.webView?.scrollOffset()}, $viewState"
                 }
                 mapOf(
                     pageTitleKey to it.pageTitle,
                     lastLoadedUrlKey to it.lastLoadedUrl,
-                    stateBundle to viewState,
-                    "scrollOffset" to it.webView?.scrollOffset(),
+                    stateBundleKey to viewState,
+                    scrollOffsetKey to it.webView?.scrollOffset(),
                 )
             },
             restore = {
-                KLogger.d {
-                    "WebViewStateSaver Restore: ${it[pageTitleKey]}, ${it[lastLoadedUrlKey]}, ${it[stateBundle]}"
+                KLogger.info {
+                    "WebViewStateSaver Restore: ${it[pageTitleKey]}, ${it[lastLoadedUrlKey]}, ${it["scrollOffset"]}, ${it[stateBundleKey]}"
                 }
+                val scrollOffset = it[scrollOffsetKey] as Pair<Int, Int>? ?: (0 to 0)
                 WebViewState(WebContent.NavigatorOnly).apply {
                     this.pageTitle = it[pageTitleKey] as String?
                     this.lastLoadedUrl = it[lastLoadedUrlKey] as String?
-                    this.viewState = it[stateBundle] as WebViewBundle?
-                    this.scrollOffset = it["scrollOffset"] as Pair<Int, Int>? ?: (0 to 0)
+                    this.viewState = it[stateBundleKey] as WebViewBundle?
+                    if (!scrollOffset.isZero()) {
+                        this.scrollOffset = scrollOffset
+                        KLogger.info {
+                            "WebViewStateSaver Restore: $this, ${this.scrollOffset}"
+                        }
+                    }
                 }
             },
         )

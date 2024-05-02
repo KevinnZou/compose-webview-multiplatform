@@ -7,6 +7,7 @@ import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.useContents
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.HTTPBody
 import platform.Foundation.HTTPMethod
@@ -167,7 +168,12 @@ class IOSWebView(
     @OptIn(ExperimentalForeignApi::class)
     override fun scrollOffset(): Pair<Int, Int> {
         val offset = wkWebView.scrollView.contentOffset
-        return Pair(0, 0)
+        offset.useContents {
+            KLogger.i {
+                "get scrollOffset: $x, $y"
+            }
+            return Pair(x.toInt(), y.toInt())
+        }
     }
 
     private class BundleMarker : NSObject() {

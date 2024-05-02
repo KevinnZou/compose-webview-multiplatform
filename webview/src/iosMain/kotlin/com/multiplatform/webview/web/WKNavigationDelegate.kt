@@ -1,6 +1,8 @@
 package com.multiplatform.webview.web
 
 import com.multiplatform.webview.util.KLogger
+import kotlinx.cinterop.ExperimentalForeignApi
+import platform.CoreGraphics.CGPointMake
 import platform.Foundation.NSError
 import platform.WebKit.WKNavigation
 import platform.WebKit.WKNavigationDelegateProtocol
@@ -44,7 +46,8 @@ class WKNavigationDelegate(
         val supportZoom = if (state.webSettings.supportZoom) "yes" else "no"
 
         @Suppress("ktlint:standard:max-line-length")
-        val script = "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=${state.webSettings.zoomLevel}, maximum-scale=10.0, minimum-scale=0.1,user-scalable=$supportZoom');document.getElementsByTagName('head')[0].appendChild(meta);"
+        val script =
+            "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=${state.webSettings.zoomLevel}, maximum-scale=10.0, minimum-scale=0.1,user-scalable=$supportZoom');document.getElementsByTagName('head')[0].appendChild(meta);"
         webView.evaluateJavaScript(script) { _, _ -> }
         KLogger.info { "didCommitNavigation" }
     }
@@ -52,6 +55,7 @@ class WKNavigationDelegate(
     /**
      * Called when the web view finishes loading.
      */
+    @OptIn(ExperimentalForeignApi::class)
     override fun webView(
         webView: WKWebView,
         didFinishNavigation: WKNavigation?,
@@ -61,6 +65,13 @@ class WKNavigationDelegate(
         state.loadingState = LoadingState.Finished
         navigator.canGoBack = webView.canGoBack
         navigator.canGoForward = webView.canGoForward
+        webView.scrollView.setContentOffset(
+            CGPointMake(
+                x = state.scrollOffset.first.toDouble(),
+                y = state.scrollOffset.second.toDouble(),
+            ),
+            true,
+        )
         KLogger.info { "didFinishNavigation" }
     }
 
