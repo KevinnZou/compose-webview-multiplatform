@@ -42,8 +42,9 @@ object HomeTab : Tab {
 
 @Composable
 fun Home() {
+    val url = "https://www.bing.com/search?q=Android"
     val webViewState =
-        rememberSaveableWebViewState().apply {
+        rememberSaveableWebViewState(url).apply {
             webSettings.logSeverity = KLogSeverity.Debug
         }
 
@@ -53,7 +54,7 @@ fun Home() {
         val bundle = webViewState.viewState
         if (bundle == null) {
             // This is the first time load, so load the home page.
-            navigator.loadUrl("https://www.bing.com/search?q=Android")
+            navigator.loadUrl(url)
         }
     }
 

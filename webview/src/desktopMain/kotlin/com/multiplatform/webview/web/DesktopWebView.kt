@@ -43,6 +43,9 @@ class DesktopWebView(
                 }
             webView.loadRequest(request)
         } else {
+            KLogger.d {
+                "DesktopWebView loadUrl $url"
+            }
             webView.loadURL(url)
         }
     }
@@ -159,8 +162,8 @@ class DesktopWebView(
         webView.client.addMessageRouter(router)
     }
 
-    override fun saveState(outState: WebViewBundle) {
-        // TODO
+    override fun saveState(outState: WebViewBundle): Boolean {
+        return false
     }
 
     override fun scrollOffset(): Pair<Int, Int> {

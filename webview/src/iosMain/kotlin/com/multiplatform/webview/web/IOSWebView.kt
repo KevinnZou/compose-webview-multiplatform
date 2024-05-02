@@ -160,8 +160,8 @@ class IOSWebView(
         }
     }
 
-    override fun saveState(outState: WebViewBundle) {
-        // TODO
+    override fun saveState(outState: WebViewBundle): Boolean {
+        return false
     }
 
     @OptIn(ExperimentalForeignApi::class)

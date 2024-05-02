@@ -129,7 +129,7 @@ class AndroidWebView(
         return Pair(webView.scrollX, webView.scrollY)
     }
 
-    override fun saveState(outState: WebViewBundle) {
-        webView.saveState(outState)
+    override fun saveState(outState: WebViewBundle): Boolean {
+        return webView.saveState(outState) != null
     }
 }

@@ -14,6 +14,7 @@ import com.multiplatform.webview.cookie.CookieManager
 import com.multiplatform.webview.cookie.WebViewCookieManager
 import com.multiplatform.webview.setting.WebSettings
 import com.multiplatform.webview.util.KLogger
+import com.multiplatform.webview.util.getPlatform
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -130,9 +131,16 @@ fun rememberWebViewState(
  * @sample com.google.accompanist.sample.webview.WebViewSaveStateSample
  */
 @Composable
-fun rememberSaveableWebViewState(): WebViewState =
-    rememberSaveable(saver = WebStateSaver) {
-        WebViewState(WebContent.NavigatorOnly)
+fun rememberSaveableWebViewState(
+    url: String,
+    additionalHttpHeaders: Map<String, String> = emptyMap(),
+): WebViewState =
+    if (getPlatform().isDesktop()) {
+        rememberWebViewState(url, additionalHttpHeaders)
+    } else {
+        rememberSaveable(saver = WebStateSaver) {
+            WebViewState(WebContent.NavigatorOnly)
+        }
     }
 
 val WebStateSaver: Saver<WebViewState, Any> =
@@ -143,7 +151,8 @@ val WebStateSaver: Saver<WebViewState, Any> =
 
         mapSaver(
             save = {
-                val viewState = WebViewBundle().apply { it.webView?.saveState(this) }
+                val bundle = WebViewBundle()
+                val viewState = if (it.webView?.saveState(bundle) == true) bundle else null
                 KLogger.d {
                     "WebViewStateSaver Save: ${it.pageTitle}, ${it.lastLoadedUrl}, $viewState"
                 }

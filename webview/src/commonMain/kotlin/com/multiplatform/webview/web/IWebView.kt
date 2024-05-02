@@ -206,7 +206,7 @@ interface IWebView {
         }
     }
 
-    fun saveState(outState: WebViewBundle)
+    fun saveState(outState: WebViewBundle): Boolean
 
     fun scrollOffset(): Pair<Int, Int>
 }
