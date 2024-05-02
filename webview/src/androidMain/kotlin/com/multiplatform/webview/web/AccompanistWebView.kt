@@ -166,9 +166,6 @@ fun AccompanistWebView(
                 this.layoutParams = layoutParams
 
                 state.viewState?.let {
-                    KLogger.d {
-                        "restoreState: $it"
-                    }
                     this.restoreState(it)
                 }
 
@@ -205,11 +202,18 @@ fun AccompanistWebView(
                     }
                 }
                 if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-                    val nightModeFlags = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+                    val nightModeFlags =
+                        resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
                     if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
-                        WebSettingsCompat.setForceDark(this.settings, WebSettingsCompat.FORCE_DARK_ON)
+                        WebSettingsCompat.setForceDark(
+                            this.settings,
+                            WebSettingsCompat.FORCE_DARK_ON,
+                        )
                     } else {
-                        WebSettingsCompat.setForceDark(this.settings, WebSettingsCompat.FORCE_DARK_OFF)
+                        WebSettingsCompat.setForceDark(
+                            this.settings,
+                            WebSettingsCompat.FORCE_DARK_OFF,
+                        )
                     }
 
                     WebSettingsCompat.setForceDarkStrategy(
@@ -224,11 +228,6 @@ fun AccompanistWebView(
             }
         },
         modifier = modifier,
-        onReset = {
-            KLogger.d {
-                "AndroidView onReset"
-            }
-        },
         onRelease = {
             onDispose(it)
         },

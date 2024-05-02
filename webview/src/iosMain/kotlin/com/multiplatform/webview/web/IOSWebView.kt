@@ -169,9 +169,6 @@ class IOSWebView(
     override fun scrollOffset(): Pair<Int, Int> {
         val offset = wkWebView.scrollView.contentOffset
         offset.useContents {
-            KLogger.i {
-                "get scrollOffset: $x, $y"
-            }
             return Pair(x.toInt(), y.toInt())
         }
     }

@@ -42,7 +42,6 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation("co.touchlab:kermit:2.0.3")
-                implementation("co.touchlab:kermit:2.0.0-RC5")
                 implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
                 implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
                 api(project(":webview"))
