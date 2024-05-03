@@ -96,9 +96,9 @@ internal fun BasicWebViewSample(navHostController: NavHostController? = null) {
                             contentDescription = "Error",
                             colorFilter = ColorFilter.tint(Color.Red),
                             modifier =
-                            Modifier
-                                .align(Alignment.CenterEnd)
-                                .padding(8.dp),
+                                Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .padding(8.dp),
                         )
                     }
 
@@ -132,8 +132,8 @@ internal fun BasicWebViewSample(navHostController: NavHostController? = null) {
             WebView(
                 state = state,
                 modifier =
-                Modifier
-                    .fillMaxSize(),
+                    Modifier
+                        .fillMaxSize(),
                 navigator = navigator,
             )
         }
