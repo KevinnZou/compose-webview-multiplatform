@@ -131,7 +131,7 @@ class WKNavigationDelegate(
                 request.allHTTPHeaderFields?.forEach {
                     headerMap[it.key.toString()] = it.value.toString()
                 }
-                KLogger.i {
+                KLogger.info {
                     "decidePolicyForNavigationAction: ${request.URL?.absoluteString}, $headerMap"
                 }
                 val webRequest =
