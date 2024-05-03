@@ -1,6 +1,7 @@
 package com.multiplatform.webview.web
 
 import com.multiplatform.webview.util.KLogger
+import com.multiplatform.webview.util.notZero
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreGraphics.CGPointMake
 import platform.Foundation.NSError
@@ -65,13 +66,15 @@ class WKNavigationDelegate(
         state.loadingState = LoadingState.Finished
         navigator.canGoBack = webView.canGoBack
         navigator.canGoForward = webView.canGoForward
-        webView.scrollView.setContentOffset(
-            CGPointMake(
-                x = state.scrollOffset.first.toDouble(),
-                y = state.scrollOffset.second.toDouble(),
-            ),
-            true,
-        )
+        if (state.scrollOffset.notZero()) {
+            webView.scrollView.setContentOffset(
+                CGPointMake(
+                    x = state.scrollOffset.first.toDouble(),
+                    y = state.scrollOffset.second.toDouble(),
+                ),
+                true,
+            )
+        }
         KLogger.info { "didFinishNavigation" }
     }
 
