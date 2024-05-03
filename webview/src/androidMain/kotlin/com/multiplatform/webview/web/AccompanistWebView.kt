@@ -367,53 +367,6 @@ open class AccompanistWebViewClient : WebViewClient() {
             }
         }
     }
-
-//    override fun shouldInterceptRequest(
-//        view: WebView?,
-//        request: WebResourceRequest?,
-//    ): WebResourceResponse? {
-//        KLogger.d { "shouldInterceptRequest: ${request?.url} ${request?.isForMainFrame} ${request?.isRedirect} ${request?.method}" }
-//        if (isRedirect || request == null || navigator.requestInterceptor == null) {
-//            isRedirect = false
-//            return super.shouldInterceptRequest(view, request)
-//        }
-//        if (request.isForMainFrame) {
-//            val webRequest =
-//                WebRequest(
-//                    request.url.toString(),
-//                    request.requestHeaders.toMutableMap(),
-//                    request.isForMainFrame,
-//                    request.isRedirect,
-//                    request.method ?: "GET",
-//                )
-//            val interceptResult =
-//                navigator.requestInterceptor!!.onInterceptUrlRequest(
-//                    webRequest,
-//                    navigator,
-//                )
-//            return when (interceptResult) {
-//                is WebRequestInterceptResult.Allow -> {
-//                    super.shouldInterceptRequest(view, request)
-//                }
-//
-//                is WebRequestInterceptResult.Reject -> {
-//                    navigator.stopLoading()
-//                    super.shouldInterceptRequest(view, request)
-//                }
-//
-//                is WebRequestInterceptResult.Modify -> {
-//                    isRedirect = true
-//                    interceptResult.request.apply {
-//                        navigator.stopLoading()
-//                        navigator.loadUrl(this.url, this.headers)
-//                    }
-//                    null
-//                }
-//            }
-//        }
-//        isRedirect = false
-//        return super.shouldInterceptRequest(view, request)
-//    }
 }
 
 /**
