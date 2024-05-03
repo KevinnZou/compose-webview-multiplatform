@@ -5,6 +5,7 @@ import com.multiplatform.webview.util.notZero
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreGraphics.CGPointMake
 import platform.Foundation.NSError
+import platform.UIKit.UIDevice
 import platform.WebKit.WKNavigation
 import platform.WebKit.WKNavigationDelegateProtocol
 import platform.WebKit.WKWebView
@@ -66,14 +67,17 @@ class WKNavigationDelegate(
         state.loadingState = LoadingState.Finished
         navigator.canGoBack = webView.canGoBack
         navigator.canGoForward = webView.canGoForward
-        if (state.scrollOffset.notZero()) {
-            webView.scrollView.setContentOffset(
-                CGPointMake(
-                    x = state.scrollOffset.first.toDouble(),
-                    y = state.scrollOffset.second.toDouble(),
-                ),
-                true,
-            )
+        // Restore scroll position on iOS 14 and below
+        if (UIDevice.currentDevice.systemVersion.toDouble() < 15.0) {
+            if (state.scrollOffset.notZero()) {
+                webView.scrollView.setContentOffset(
+                    CGPointMake(
+                        x = state.scrollOffset.first.toDouble(),
+                        y = state.scrollOffset.second.toDouble(),
+                    ),
+                    true,
+                )
+            }
         }
         KLogger.info { "didFinishNavigation" }
     }

@@ -162,8 +162,8 @@ class DesktopWebView(
         webView.client.addMessageRouter(router)
     }
 
-    override fun saveState(outState: WebViewBundle): Boolean {
-        return false
+    override fun saveState(): WebViewBundle? {
+        return null
     }
 
     override fun scrollOffset(): Pair<Int, Int> {

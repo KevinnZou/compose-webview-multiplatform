@@ -17,6 +17,7 @@ import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSURL
 import platform.Foundation.create
 import platform.Foundation.setValue
+import platform.UIKit.UIDevice
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
 import platform.darwin.NSObjectMeta
@@ -161,8 +162,12 @@ class IOSWebView(
         }
     }
 
-    override fun saveState(outState: WebViewBundle): Boolean {
-        return false
+    override fun saveState(): WebViewBundle? {
+        if (UIDevice.currentDevice.systemVersion.toDouble() < 15.0) {
+            return null
+        }
+        val data = wkWebView.interactionState as NSData?
+        return data
     }
 
     @OptIn(ExperimentalForeignApi::class)

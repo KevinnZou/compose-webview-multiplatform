@@ -153,8 +153,7 @@ val WebStateSaver: Saver<WebViewState, Any> =
 
         mapSaver(
             save = {
-                val bundle = WebViewBundle()
-                val viewState = if (it.webView?.saveState(bundle) == true) bundle else null
+                val viewState = it.webView?.saveState()
                 KLogger.info {
                     "WebViewStateSaver Save: ${it.pageTitle}, ${it.lastLoadedUrl}, ${it.webView?.scrollOffset()}, $viewState"
                 }
@@ -170,10 +169,11 @@ val WebStateSaver: Saver<WebViewState, Any> =
                     "WebViewStateSaver Restore: ${it[pageTitleKey]}, ${it[lastLoadedUrlKey]}, ${it["scrollOffset"]}, ${it[stateBundleKey]}"
                 }
                 val scrollOffset = it[scrollOffsetKey] as Pair<Int, Int>? ?: (0 to 0)
+                val bundle = it[stateBundleKey] as WebViewBundle?
                 WebViewState(WebContent.NavigatorOnly).apply {
                     this.pageTitle = it[pageTitleKey] as String?
                     this.lastLoadedUrl = it[lastLoadedUrlKey] as String?
-                    this.viewState = it[stateBundleKey] as WebViewBundle?
+                    bundle?.let { this.viewState = it }
                     if (!scrollOffset.isZero()) {
                         this.scrollOffset = scrollOffset
                         KLogger.info {
