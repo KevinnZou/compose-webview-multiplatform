@@ -124,4 +124,17 @@ class AndroidWebView(
         KLogger.d { "callAndroid call from JS: $id, $method, $params" }
         webViewJsBridge?.dispatch(JsMessage(id, method, params))
     }
+
+    override fun scrollOffset(): Pair<Int, Int> {
+        return Pair(webView.scrollX, webView.scrollY)
+    }
+
+    override fun saveState(): WebViewBundle? {
+        val bundle = WebViewBundle()
+        return if (webView.saveState(bundle) != null) {
+            bundle
+        } else {
+            null
+        }
+    }
 }

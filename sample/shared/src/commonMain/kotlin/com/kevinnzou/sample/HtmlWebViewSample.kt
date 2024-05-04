@@ -1,15 +1,26 @@
 package com.kevinnzou.sample
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import co.touchlab.kermit.Logger
 import com.kevinnzou.sample.eventbus.FlowEventBus
 import com.kevinnzou.sample.eventbus.NavigationEvent
@@ -34,7 +45,7 @@ import kotlinx.coroutines.flow.filter
  * for setup instructions first.
  */
 @Composable
-internal fun BasicWebViewWithHTMLSample() {
+internal fun BasicWebViewWithHTMLSample(navHostController: NavHostController? = null) {
     val html = HtmlRes.html
     val webViewState =
         rememberWebViewStateWithHTMLFile(
@@ -49,34 +60,50 @@ internal fun BasicWebViewWithHTMLSample() {
         initJsBridge(jsBridge)
     }
     MaterialTheme {
-        Box(Modifier.fillMaxSize()) {
-            WebView(
-                state = webViewState,
-                modifier = Modifier.fillMaxSize(),
-                captureBackPresses = false,
-                navigator = webViewNavigator,
-                webViewJsBridge = jsBridge,
-            )
-            Button(
-                onClick = {
-                    webViewNavigator.evaluateJavaScript(
-                        """
-                        document.getElementById("subtitle").innerText = "Hello from KMM!";
-                        window.kmpJsBridge.callNative("Greet",JSON.stringify({message: "Hello"}),
-                            function (data) {
-                                document.getElementById("subtitle").innerText = data;
-                                console.log("Greet from Native: " + data);
-                            }
-                        );
-                        callJS();
-                        """.trimIndent(),
-                    ) {
-                        jsRes = it
+        Column {
+            TopAppBar(
+                title = { Text(text = "WebView Sample") },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        navHostController?.popBackStack()
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                        )
                     }
                 },
-                modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 50.dp),
-            ) {
-                Text(jsRes)
+            )
+
+            Box(Modifier.fillMaxSize()) {
+                WebView(
+                    state = webViewState,
+                    modifier = Modifier.fillMaxSize(),
+                    captureBackPresses = false,
+                    navigator = webViewNavigator,
+                    webViewJsBridge = jsBridge,
+                )
+                Button(
+                    onClick = {
+                        webViewNavigator.evaluateJavaScript(
+                            """
+                            document.getElementById("subtitle").innerText = "Hello from KMM!";
+                            window.kmpJsBridge.callNative("Greet",JSON.stringify({message: "Hello"}),
+                                function (data) {
+                                    document.getElementById("subtitle").innerText = data;
+                                    console.log("Greet from Native: " + data);
+                                }
+                            );
+                            callJS();
+                            """.trimIndent(),
+                        ) {
+                            jsRes = it
+                        }
+                    },
+                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 50.dp),
+                ) {
+                    Text(jsRes)
+                }
             }
         }
     }

@@ -5,11 +5,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.Saver
+import androidx.compose.runtime.saveable.mapSaver
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import com.multiplatform.webview.cookie.CookieManager
 import com.multiplatform.webview.cookie.WebViewCookieManager
 import com.multiplatform.webview.setting.WebSettings
+import com.multiplatform.webview.util.KLogger
+import com.multiplatform.webview.util.getPlatform
+import com.multiplatform.webview.util.isZero
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -70,6 +76,17 @@ class WebViewState(webContent: WebContent) {
     internal var webView by mutableStateOf<IWebView?>(null)
 
     /**
+     * The saved view state from when the view was destroyed last. To restore state,
+     * use the navigator and only call loadUrl if the bundle is null.
+     * See WebViewSaveStateSample.
+     */
+    var viewState: WebViewBundle? = null
+        internal set
+
+    var scrollOffset: Pair<Int, Int> = 0 to 0
+        internal set
+
+    /**
      * CookieManager for WebView.
      * Exposes access to the cookie manager for webView
      */
@@ -103,6 +120,66 @@ fun rememberWebViewState(
                 url = url,
                 additionalHttpHeaders = additionalHttpHeaders,
             )
+    }
+
+/**
+ * Creates a WebView state that is remembered across Compositions and saved
+ * across activity recreation.
+ * When using saved state, you cannot change the URL via recomposition. The only way to load
+ * a URL is via a WebViewNavigator.
+ *
+ * @param data The uri to load in the WebView
+ * @sample com.google.accompanist.sample.webview.WebViewSaveStateSample
+ */
+@Composable
+fun rememberSaveableWebViewState(
+    url: String,
+    additionalHttpHeaders: Map<String, String> = emptyMap(),
+): WebViewState =
+    if (getPlatform().isDesktop()) {
+        rememberWebViewState(url, additionalHttpHeaders)
+    } else {
+        rememberSaveable(saver = WebStateSaver) {
+            WebViewState(WebContent.NavigatorOnly)
+        }
+    }
+
+val WebStateSaver: Saver<WebViewState, Any> =
+    run {
+        val pageTitleKey = "pagetitle"
+        val lastLoadedUrlKey = "lastloaded"
+        val stateBundleKey = "bundle"
+        val scrollOffsetKey = "scrollOffset"
+
+        mapSaver(
+            save = {
+                val viewState = it.webView?.saveState()
+                KLogger.info {
+                    "WebViewStateSaver Save: ${it.pageTitle}, ${it.lastLoadedUrl}, ${it.webView?.scrollOffset()}, $viewState"
+                }
+                mapOf(
+                    pageTitleKey to it.pageTitle,
+                    lastLoadedUrlKey to it.lastLoadedUrl,
+                    stateBundleKey to viewState,
+                    scrollOffsetKey to it.webView?.scrollOffset(),
+                )
+            },
+            restore = {
+                KLogger.info {
+                    "WebViewStateSaver Restore: ${it[pageTitleKey]}, ${it[lastLoadedUrlKey]}, ${it["scrollOffset"]}, ${it[stateBundleKey]}"
+                }
+                val scrollOffset = it[scrollOffsetKey] as Pair<Int, Int>? ?: (0 to 0)
+                val bundle = it[stateBundleKey] as WebViewBundle?
+                WebViewState(WebContent.NavigatorOnly).apply {
+                    this.pageTitle = it[pageTitleKey] as String?
+                    this.lastLoadedUrl = it[lastLoadedUrlKey] as String?
+                    bundle?.let { this.viewState = it }
+                    if (!scrollOffset.isZero()) {
+                        this.scrollOffset = scrollOffset
+                    }
+                }
+            },
+        )
     }
 
 /**

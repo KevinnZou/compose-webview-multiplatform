@@ -205,4 +205,14 @@ interface IWebView {
             initJsBridge(this)
         }
     }
+
+    /**
+     * Save the current state of the WebView.
+     */
+    fun saveState(): WebViewBundle?
+
+    /**
+     * Get the scroll offset of the WebView.
+     */
+    fun scrollOffset(): Pair<Int, Int>
 }

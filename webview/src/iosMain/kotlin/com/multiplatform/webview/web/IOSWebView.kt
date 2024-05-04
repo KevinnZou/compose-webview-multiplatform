@@ -7,6 +7,7 @@ import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.useContents
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.HTTPBody
 import platform.Foundation.HTTPMethod
@@ -16,6 +17,7 @@ import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSURL
 import platform.Foundation.create
 import platform.Foundation.setValue
+import platform.UIKit.UIDevice
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
 import platform.darwin.NSObjectMeta
@@ -157,6 +159,23 @@ class IOSWebView(
         val jsMessageHandler = WKJsMessageHandler(webViewJsBridge)
         wkWebView.configuration.userContentController.apply {
             addScriptMessageHandler(jsMessageHandler, "iosJsBridge")
+        }
+    }
+
+    override fun saveState(): WebViewBundle? {
+        // iOS 15- does not support saving state
+        if (UIDevice.currentDevice.systemVersion.toDouble() < 15.0) {
+            return null
+        }
+        val data = wkWebView.interactionState as NSData?
+        return data
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    override fun scrollOffset(): Pair<Int, Int> {
+        val offset = wkWebView.scrollView.contentOffset
+        offset.useContents {
+            return Pair(x.toInt(), y.toInt())
         }
     }
 

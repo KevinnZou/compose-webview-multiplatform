@@ -68,18 +68,28 @@ fun IOSWebView(
             val config =
                 WKWebViewConfiguration().apply {
                     allowsInlineMediaPlayback = true
-                    defaultWebpagePreferences.allowsContentJavaScript = state.webSettings.isJavaScriptEnabled
+                    defaultWebpagePreferences.allowsContentJavaScript =
+                        state.webSettings.isJavaScriptEnabled
                     preferences.apply {
-                        setValue(state.webSettings.allowFileAccessFromFileURLs, forKey = "allowFileAccessFromFileURLs")
+                        setValue(
+                            state.webSettings.allowFileAccessFromFileURLs,
+                            forKey = "allowFileAccessFromFileURLs",
+                        )
                         javaScriptEnabled = state.webSettings.isJavaScriptEnabled
                     }
-                    setValue(state.webSettings.allowUniversalAccessFromFileURLs, forKey = "allowUniversalAccessFromFileURLs")
+                    setValue(
+                        state.webSettings.allowUniversalAccessFromFileURLs,
+                        forKey = "allowUniversalAccessFromFileURLs",
+                    )
                 }
             WKWebView(
                 frame = CGRectZero.readValue(),
                 configuration = config,
             ).apply {
                 onCreated()
+                state.viewState?.let {
+                    this.interactionState = it
+                }
                 allowsBackForwardNavigationGestures = captureBackPresses
                 customUserAgent = state.webSettings.customUserAgentString
                 this.addProgressObservers(
@@ -89,8 +99,13 @@ fun IOSWebView(
 
                 setOpaque(false)
                 state.webSettings.let {
-                    val backgroundColor = (it.iOSWebSettings.backgroundColor ?: it.backgroundColor).toUIColor()
-                    val scrollViewColor = (it.iOSWebSettings.underPageBackgroundColor ?: it.backgroundColor).toUIColor()
+                    val backgroundColor =
+                        (it.iOSWebSettings.backgroundColor ?: it.backgroundColor).toUIColor()
+                    val scrollViewColor =
+                        (
+                            it.iOSWebSettings.underPageBackgroundColor
+                                ?: it.backgroundColor
+                        ).toUIColor()
                     setBackgroundColor(backgroundColor)
                     scrollView.setBackgroundColor(scrollViewColor)
                     scrollView.pinchGestureRecognizer?.enabled = it.supportZoom

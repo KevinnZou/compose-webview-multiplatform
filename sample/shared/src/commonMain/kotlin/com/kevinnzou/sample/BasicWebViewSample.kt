@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import co.touchlab.kermit.Logger
 import com.multiplatform.webview.cookie.Cookie
 import com.multiplatform.webview.util.KLogSeverity
@@ -51,7 +52,7 @@ import kotlinx.coroutines.flow.filter
  * for setup instructions first.
  */
 @Composable
-internal fun BasicWebViewSample() {
+internal fun BasicWebViewSample(navHostController: NavHostController? = null) {
     val initialUrl = "https://github.com/KevinnZou/compose-webview-multiplatform"
     val state = rememberWebViewState(url = initialUrl)
     DisposableEffect(Unit) {
@@ -72,13 +73,17 @@ internal fun BasicWebViewSample() {
             TopAppBar(
                 title = { Text(text = "WebView Sample") },
                 navigationIcon = {
-                    if (navigator.canGoBack) {
-                        IconButton(onClick = { navigator.navigateBack() }) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Back",
-                            )
+                    IconButton(onClick = {
+                        if (navigator.canGoBack) {
+                            navigator.navigateBack()
+                        } else {
+                            navHostController?.popBackStack()
                         }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                        )
                     }
                 },
             )

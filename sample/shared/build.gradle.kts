@@ -32,6 +32,7 @@ kotlin {
 
     sourceSets {
         val coroutinesVersion = extra["coroutines.version"] as String
+        val voyagerVersion = "1.0.0-rc10"
 
         val commonMain by getting {
             dependencies {
@@ -41,10 +42,13 @@ kotlin {
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation("co.touchlab:kermit:2.0.3")
+                implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
+                implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
                 api(project(":webview"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
                 implementation("org.jetbrains.kotlinx:atomicfu:0.23.2")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha03")
             }
         }
         val androidMain by getting {
