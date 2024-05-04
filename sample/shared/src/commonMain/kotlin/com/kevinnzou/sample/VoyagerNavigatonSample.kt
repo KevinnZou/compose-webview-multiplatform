@@ -1,4 +1,4 @@
-package com.kevinnzou.sample.navigation
+package com.kevinnzou.sample
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.BottomNavigation
@@ -16,6 +16,8 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import com.kevinnzou.sample.navigation.HomeTab
+import com.kevinnzou.sample.navigation.PersonalTab
 
 /**
  * Created By Kevin Zou On 2023/12/8

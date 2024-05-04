@@ -1,5 +1,8 @@
 # State
-This library provides a [WebViewState](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/webview/src/commonMain/kotlin/com/multiplatform/webview/web/WebViewState.kt) class as a state holder to hold the state for the WebView.
+
+This library provides
+a [WebViewState](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/webview/src/commonMain/kotlin/com/multiplatform/webview/web/WebViewState.kt)
+class as a state holder to hold the state for the WebView.
 
 ## WebViewState
 
@@ -52,7 +55,9 @@ class WebViewState(webContent: WebContent) {
 
 ## rememberWebViewState
 
-It can be created using the [rememberWebViewState](https://github.com/KevinnZou/compose-webview-multiplatform/blob/c1104c4458277423ec0ee3386140e06950483cb4/webview/src/commonMain/kotlin/com/multiplatform/webview/web/WebViewState.kt#L87) function, which can be remembered across Compositions.
+It can be created using
+the [rememberWebViewState](https://github.com/KevinnZou/compose-webview-multiplatform/blob/c1104c4458277423ec0ee3386140e06950483cb4/webview/src/commonMain/kotlin/com/multiplatform/webview/web/WebViewState.kt#L87)
+function, which can be remembered across Compositions.
 
 ```kotlin
 val state = rememberWebViewState("https://github.com/KevinnZou/compose-webview-multiplatform")
@@ -81,11 +86,11 @@ fun rememberWebViewState(
  */
 @Composable
 fun rememberWebViewStateWithHTMLData(
-  data: String,
-  baseUrl: String? = null,
-  encoding: String = "utf-8",
-  mimeType: String? = null,
-  historyUrl: String? = null
+    data: String,
+    baseUrl: String? = null,
+    encoding: String = "utf-8",
+    mimeType: String? = null,
+    historyUrl: String? = null
 )
 
 /**
@@ -95,12 +100,56 @@ fun rememberWebViewStateWithHTMLData(
  */
 @Composable
 fun rememberWebViewStateWithHTMLFile(
-  fileName: String,
+    fileName: String,
 )
 ```
 
+## rememberSaveableWebViewState
+
+This library also provides a `rememberSaveableWebViewState` function that can be used to create a
+`WebViewState` that is remembered across recompositions.
+
+It can be used in tab layouts, where the state of the WebView should be saved when the user switches
+between tabs.
+
+```kotlin
+@Composable
+fun Home() {
+    val url = "https://www.jetbrains.com/lp/compose-multiplatform/"
+    val webViewState =
+        rememberSaveableWebViewState(url).apply {
+            webSettings.logSeverity = KLogSeverity.Debug
+        }
+
+    val navigator = rememberWebViewNavigator()
+
+    LaunchedEffect(navigator) {
+        val bundle = webViewState.viewState
+        if (bundle == null) {
+            // This is the first time load, so load the home page.
+            navigator.loadUrl(url)
+        }
+    }
+
+    WebView(
+        state = webViewState,
+        modifier = Modifier.fillMaxSize().padding(bottom = 45.dp),
+        navigator = navigator,
+    )
+}
+```
+
+Please refer to
+the [VoyagerNavigationSample](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/sample/shared/src/commonMain/kotlin/com/kevinnzou/sample/VoyagerNavigationSample.kt)
+for whole example.
+
+```kotlin
+
 ## Usage
-Developers can use the `WebViewState` to get the loading information of the WebView, such as the loading progress, the loading status, and the URL of the current page.
+
+Developers can use the `WebViewState` to get the loading information of the WebView, such as the
+loading progress, the loading status, and the URL of the current page.
+
 ```kotlin
 Column {
     val state = rememberWebViewState("https://github.com/KevinnZou/compose-webview-multiplatform")
