@@ -143,8 +143,6 @@ Please refer to
 the [VoyagerNavigationSample](https://github.com/KevinnZou/compose-webview-multiplatform/blob/main/sample/shared/src/commonMain/kotlin/com/kevinnzou/sample/VoyagerNavigationSample.kt)
 for whole example.
 
-```kotlin
-
 ## Usage
 
 Developers can use the `WebViewState` to get the loading information of the WebView, such as the
