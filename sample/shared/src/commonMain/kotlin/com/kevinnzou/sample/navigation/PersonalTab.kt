@@ -26,7 +26,7 @@ object PersonalTab : Tab {
     override val options: TabOptions
         @Composable
         get() {
-            val title = "个人"
+            val title = "Personal"
             val icon = rememberVectorPainter(Icons.Default.Person)
 
             return remember {

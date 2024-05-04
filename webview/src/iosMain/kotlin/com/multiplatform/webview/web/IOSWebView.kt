@@ -163,6 +163,7 @@ class IOSWebView(
     }
 
     override fun saveState(): WebViewBundle? {
+        // iOS 15- does not support saving state
         if (UIDevice.currentDevice.systemVersion.toDouble() < 15.0) {
             return null
         }

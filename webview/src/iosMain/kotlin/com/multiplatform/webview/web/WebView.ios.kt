@@ -88,7 +88,7 @@ fun IOSWebView(
             ).apply {
                 onCreated()
                 state.viewState?.let {
-                    this.interactionState = state.viewState
+                    this.interactionState = it
                 }
                 allowsBackForwardNavigationGestures = captureBackPresses
                 customUserAgent = state.webSettings.customUserAgentString

@@ -176,9 +176,6 @@ val WebStateSaver: Saver<WebViewState, Any> =
                     bundle?.let { this.viewState = it }
                     if (!scrollOffset.isZero()) {
                         this.scrollOffset = scrollOffset
-                        KLogger.info {
-                            "WebViewStateSaver Restore: $this, ${this.scrollOffset}"
-                        }
                     }
                 }
             },
