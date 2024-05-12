@@ -43,3 +43,7 @@ internal sealed class Platform {
  * Get the current platform.
  */
 internal expect fun getPlatform(): Platform
+
+internal expect fun getPlatformVersion(): String
+
+internal expect fun getPlatformVersionDouble(): Double
