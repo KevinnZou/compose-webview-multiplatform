@@ -72,7 +72,7 @@ fun MainScreen(controller: NavController) {
         Button(onClick = {
             controller.navigate("tab")
         }) {
-            Text("Tab Sample", fontSize = 18.sp)
+            Text("SaveState Sample", fontSize = 18.sp)
         }
     }
 }
