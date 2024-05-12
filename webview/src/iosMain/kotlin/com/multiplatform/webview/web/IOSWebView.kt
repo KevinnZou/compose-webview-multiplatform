@@ -3,6 +3,7 @@ package com.multiplatform.webview.web
 import com.multiplatform.webview.jsbridge.WKJsMessageHandler
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
+import com.multiplatform.webview.util.getPlatformVersionDouble
 import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.allocArrayOf
@@ -17,7 +18,6 @@ import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSURL
 import platform.Foundation.create
 import platform.Foundation.setValue
-import platform.UIKit.UIDevice
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
 import platform.darwin.NSObjectMeta
@@ -164,7 +164,7 @@ class IOSWebView(
 
     override fun saveState(): WebViewBundle? {
         // iOS 15- does not support saving state
-        if (UIDevice.currentDevice.systemVersion.toDouble() < 15.0) {
+        if (getPlatformVersionDouble() < 15.0) {
             return null
         }
         val data = wkWebView.interactionState as NSData?
