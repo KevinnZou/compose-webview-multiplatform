@@ -45,7 +45,7 @@ kotlin {
 
     sourceSets {
         val coroutinesVersion = extra["coroutines.version"] as String
-        val voyagerVersion = "1.0.0-rc10"
+        val voyagerVersion = "1.1.0-alpha03"
 
         val commonMain by getting {
             dependencies {
