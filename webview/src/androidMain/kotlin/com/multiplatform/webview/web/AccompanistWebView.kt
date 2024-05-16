@@ -216,10 +216,12 @@ fun AccompanistWebView(
                         )
                     }
 
-                    WebSettingsCompat.setForceDarkStrategy(
-                        this.settings,
-                        WebSettingsCompat.DARK_STRATEGY_WEB_THEME_DARKENING_ONLY,
-                    )
+                    if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK_STRATEGY)) {
+                        WebSettingsCompat.setForceDarkStrategy(
+                            this.settings,
+                            WebSettingsCompat.DARK_STRATEGY_WEB_THEME_DARKENING_ONLY,
+                        )
+                    }
                 }
             }.also {
                 val androidWebView = AndroidWebView(it, scope, webViewJsBridge)
