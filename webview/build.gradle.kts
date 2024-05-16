@@ -125,3 +125,7 @@ mavenPublishing {
     publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.S01, automaticRelease = true)
     signAllPublications()
 }
+
+compose.experimental {
+    web.application {}
+}
