@@ -24,6 +24,11 @@ internal sealed class Platform {
     data object IOS : Platform()
 
     /**
+     * The WasmJs platform.
+     */
+    data object WasmJs : Platform()
+
+    /**
      * Whether the current platform is Android.
      */
     fun isAndroid() = this is Android
@@ -37,6 +42,11 @@ internal sealed class Platform {
      * Whether the current platform is iOS.
      */
     fun isIOS() = this is IOS
+
+    /**
+     * Whether the current platform is WasmJs.
+     */
+    fun isWasmJs() = this is WasmJs
 }
 
 /**

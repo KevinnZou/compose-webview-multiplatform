@@ -1,5 +1,8 @@
 @file:Suppress("UNUSED_VARIABLE", "OPT_IN_USAGE")
 
+import org.jetbrains.kotlin.gradle.targets.js.dsl.ExperimentalWasmDsl
+
+
 plugins {
     kotlin("multiplatform")
     id("com.android.library")
@@ -13,6 +16,17 @@ kotlin {
 //    explicitApi = ExplicitApiMode.Strict
 
     targetHierarchy.default()
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        moduleName = "composeWebView"
+        browser {
+            commonWebpackConfig {
+                outputFileName = "composeWebView.js"
+            }
+        }
+        binaries.executable()
+    }
 
     androidTarget {
         publishLibraryVariants("release")
@@ -38,11 +52,12 @@ kotlin {
             dependencies {
                 implementation(compose.runtime)
                 implementation(compose.foundation)
+                implementation(compose.material3)
                 @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
                 implementation(compose.components.resources)
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("co.touchlab:kermit:2.0.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
             }
         }
         val androidMain by getting {
@@ -109,4 +124,8 @@ fun org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget.setUpiOSObserver()
 mavenPublishing {
     publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.S01, automaticRelease = true)
     signAllPublications()
+}
+
+compose.experimental {
+    web.application {}
 }
