@@ -3,11 +3,11 @@ package com.multiplatform.webview.web
 import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.request.WebRequestInterceptResult
 import com.multiplatform.webview.util.KLogger
-import platform.Foundation.HTTPMethod
 import com.multiplatform.webview.util.getPlatformVersionDouble
 import com.multiplatform.webview.util.notZero
 import kotlinx.cinterop.ExperimentalForeignApi
 import platform.CoreGraphics.CGPointMake
+import platform.Foundation.HTTPMethod
 import platform.Foundation.NSError
 import platform.Foundation.allHTTPHeaderFields
 import platform.WebKit.WKNavigation

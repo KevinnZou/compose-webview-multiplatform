@@ -110,6 +110,7 @@ internal fun InterceptRequestSample(navHostController: NavHostController? = null
                 },
             )
 
+            @Suppress("ktlint:standard:max-line-length")
             Text(
                 text =
                     "This sample demonstrates how to intercept requests in WebView. " +
