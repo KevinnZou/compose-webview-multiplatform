@@ -334,12 +334,18 @@ open class AccompanistWebViewClient : WebViewClient() {
             isRedirect = false
             return super.shouldOverrideUrlLoading(view, request)
         }
+        val isRedirectRequest =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                request.isRedirect
+            } else {
+                false
+            }
         val webRequest =
             WebRequest(
                 request.url.toString(),
                 request.requestHeaders?.toMutableMap() ?: mutableMapOf(),
                 request.isForMainFrame,
-                request.isRedirect,
+                isRedirectRequest,
                 request.method ?: "GET",
             )
         val interceptResult =
