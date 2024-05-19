@@ -47,6 +47,9 @@ internal fun WebViewApp() {
         composable("tab") {
             VoyagerNavigationSample(controller)
         }
+        composable("intercept") {
+            InterceptRequestSample(controller)
+        }
     }
 }
 
@@ -73,6 +76,12 @@ fun MainScreen(controller: NavController) {
             controller.navigate("tab")
         }) {
             Text("SaveState Sample", fontSize = 18.sp)
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(onClick = {
+            controller.navigate("intercept")
+        }) {
+            Text("Intercept Request Sample", fontSize = 18.sp)
         }
     }
 }

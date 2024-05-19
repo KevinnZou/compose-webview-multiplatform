@@ -1,11 +1,15 @@
 package com.multiplatform.webview.web
 
+import com.multiplatform.webview.request.WebRequest
+import com.multiplatform.webview.request.WebRequestInterceptResult
 import com.multiplatform.webview.util.KLogger
+import dev.datlag.kcef.KCEFBrowser
 import org.cef.CefSettings
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
 import org.cef.handler.CefDisplayHandler
 import org.cef.handler.CefLoadHandler
+import org.cef.handler.CefRequestHandlerAdapter
 import org.cef.network.CefRequest
 import kotlin.math.abs
 import kotlin.math.ln
@@ -151,6 +155,59 @@ internal fun CefBrowser.addLoadListener(
                         description = "Failed to load url: ${failedUrl}\n$errorText",
                     ),
                 )
+            }
+        },
+    )
+}
+
+internal fun KCEFBrowser.addRequestHandler(
+    state: WebViewState,
+    navigator: WebViewNavigator,
+) {
+    client.addRequestHandler(
+        object : CefRequestHandlerAdapter() {
+            override fun onBeforeBrowse(
+                browser: CefBrowser?,
+                frame: CefFrame?,
+                request: CefRequest?,
+                userGesture: Boolean,
+                isRedirect: Boolean,
+            ): Boolean {
+                navigator.requestInterceptor?.apply {
+                    val map = mutableMapOf<String, String>()
+                    request?.getHeaderMap(map)
+                    KLogger.d { "onBeforeBrowse ${request?.url} $map" }
+                    val webRequest =
+                        WebRequest(
+                            request?.url.toString(),
+                            map,
+                            isForMainFrame = frame?.isMain ?: false,
+                            isRedirect = isRedirect,
+                            request?.method ?: "GET",
+                        )
+                    val interceptResult =
+                        this.onInterceptUrlRequest(
+                            webRequest,
+                            navigator,
+                        )
+                    return when (interceptResult) {
+                        is WebRequestInterceptResult.Allow -> {
+                            super.onBeforeBrowse(browser, frame, request, userGesture, isRedirect)
+                        }
+
+                        is WebRequestInterceptResult.Reject -> {
+                            true
+                        }
+
+                        is WebRequestInterceptResult.Modify -> {
+                            interceptResult.request.apply {
+                                navigator.loadUrl(this.url, this.headers)
+                            }
+                            true
+                        }
+                    }
+                }
+                return super.onBeforeBrowse(browser, frame, request, userGesture, isRedirect)
             }
         },
     )
