@@ -66,26 +66,26 @@ internal fun InterceptRequestSample(navHostController: NavHostController? = null
     val navigator =
         rememberWebViewNavigator(
             requestInterceptor =
-                object : RequestInterceptor {
-                    override fun onInterceptUrlRequest(
-                        request: WebRequest,
-                        navigator: WebViewNavigator,
-                    ): WebRequestInterceptResult {
-                        request.let {
-                            Logger.i { "Sample onInterceptRequest: $it" }
-                        }
-                        return if (request.url.contains("kotlin")) {
-                            WebRequestInterceptResult.Modify(
-                                WebRequest(
-                                    url = "https://kotlinlang.org/docs/multiplatform.html",
-                                    headers = mutableMapOf("info" to "test"),
-                                ),
-                            )
-                        } else {
-                            WebRequestInterceptResult.Allow
-                        }
+            object : RequestInterceptor {
+                override fun onInterceptUrlRequest(
+                    request: WebRequest,
+                    navigator: WebViewNavigator,
+                ): WebRequestInterceptResult {
+                    request.let {
+                        Logger.i { "Sample onInterceptRequest: $it" }
                     }
-                },
+                    return if (request.url.contains("kotlin")) {
+                        WebRequestInterceptResult.Modify(
+                            WebRequest(
+                                url = "https://kotlinlang.org/docs/multiplatform.html",
+                                headers = mutableMapOf("info" to "test"),
+                            ),
+                        )
+                    } else {
+                        WebRequestInterceptResult.Allow
+                    }
+                }
+            },
         )
     var textFieldValue by remember(state.lastLoadedUrl) {
         mutableStateOf(state.lastLoadedUrl)
@@ -93,23 +93,27 @@ internal fun InterceptRequestSample(navHostController: NavHostController? = null
     MaterialTheme {
         Column {
             TopAppBar(
-                title = { Text(text = "Intercept Kotlin Request Sample") },
+                title = { Text(text = "Intercept Request Sample") },
                 navigationIcon = {
-                    if (navigator.canGoBack) {
-                        IconButton(onClick = {
-                            if (navigator.canGoBack) {
-                                navigator.navigateBack()
-                            } else {
-                                navHostController?.popBackStack()
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Default.ArrowBack,
-                                contentDescription = "Back",
-                            )
+                    IconButton(onClick = {
+                        if (navigator.canGoBack) {
+                            navigator.navigateBack()
+                        } else {
+                            navHostController?.popBackStack()
                         }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Back",
+                        )
                     }
                 },
+            )
+
+            Text(
+                text = "This sample demonstrates how to intercept requests in WebView. " +
+                        "When the URL contains 'kotlin', the request will be redirected to 'https://kotlinlang.org/docs/multiplatform.html'.",
+                modifier = Modifier.padding(8.dp),
             )
 
             Row {
@@ -120,9 +124,9 @@ internal fun InterceptRequestSample(navHostController: NavHostController? = null
                             contentDescription = "Error",
                             colorFilter = ColorFilter.tint(Color.Red),
                             modifier =
-                                Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .padding(8.dp),
+                            Modifier
+                                .align(Alignment.CenterEnd)
+                                .padding(8.dp),
                         )
                     }
 
@@ -156,8 +160,8 @@ internal fun InterceptRequestSample(navHostController: NavHostController? = null
             WebView(
                 state = state,
                 modifier =
-                    Modifier
-                        .fillMaxSize(),
+                Modifier
+                    .fillMaxSize(),
                 navigator = navigator,
             )
         }
