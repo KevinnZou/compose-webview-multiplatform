@@ -62,7 +62,7 @@ internal fun BasicWebViewWithHTMLSample(navHostController: NavHostController? = 
     MaterialTheme {
         Column {
             TopAppBar(
-                title = { Text(text = "WebView Sample") },
+                title = { Text(text = "Html Sample") },
                 navigationIcon = {
                     IconButton(onClick = {
                         navHostController?.popBackStack()

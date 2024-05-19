@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import co.touchlab.kermit.Logger
 import com.multiplatform.webview.request.RequestInterceptor
 import com.multiplatform.webview.request.WebRequest
@@ -50,7 +51,7 @@ import com.multiplatform.webview.web.rememberWebViewState
  * for setup instructions first.
  */
 @Composable
-internal fun InterceptRequestSample() {
+internal fun InterceptRequestSample(navHostController: NavHostController? = null) {
     val initialUrl = "https://www.bing.com/search?q=Android"
     val state = rememberWebViewState(url = initialUrl)
     DisposableEffect(Unit) {
@@ -92,10 +93,16 @@ internal fun InterceptRequestSample() {
     MaterialTheme {
         Column {
             TopAppBar(
-                title = { Text(text = "WebView Sample") },
+                title = { Text(text = "Intercept Kotlin Request Sample") },
                 navigationIcon = {
                     if (navigator.canGoBack) {
-                        IconButton(onClick = { navigator.navigateBack() }) {
+                        IconButton(onClick = {
+                            if (navigator.canGoBack) {
+                                navigator.navigateBack()
+                            } else {
+                                navHostController?.popBackStack()
+                            }
+                        }) {
                             Icon(
                                 imageVector = Icons.Default.ArrowBack,
                                 contentDescription = "Back",

@@ -28,7 +28,7 @@ fun VoyagerNavigationSample(navHostController: NavHostController? = null) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = "WebView Sample") },
+                    title = { Text(text = "SaveState Sample") },
                     navigationIcon = {
                         IconButton(onClick = {
                             navHostController?.popBackStack()
