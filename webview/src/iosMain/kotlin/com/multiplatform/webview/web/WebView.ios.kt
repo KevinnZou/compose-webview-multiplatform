@@ -97,7 +97,6 @@ fun IOSWebView(
                 )
                 this.navigationDelegate = navigationDelegate
 
-                setOpaque(false)
                 state.webSettings.let {
                     val backgroundColor =
                         (it.iOSWebSettings.backgroundColor ?: it.backgroundColor).toUIColor()
@@ -106,8 +105,11 @@ fun IOSWebView(
                             it.iOSWebSettings.underPageBackgroundColor
                                 ?: it.backgroundColor
                         ).toUIColor()
-                    setBackgroundColor(backgroundColor)
-                    scrollView.setBackgroundColor(scrollViewColor)
+                    setOpaque(it.iOSWebSettings.opaque)
+                    if (!it.iOSWebSettings.opaque){
+                        setBackgroundColor(backgroundColor)
+                        scrollView.setBackgroundColor(scrollViewColor)
+                    }
                     scrollView.pinchGestureRecognizer?.enabled = it.supportZoom
                 }
                 state.webSettings.iOSWebSettings.let {

@@ -189,9 +189,15 @@ sealed class PlatformWebSettings {
      */
     data class IOSWebSettings(
         /**
+         * The ios default opaque display
+         * The default value is {@code true}.
+         */
+        var opaque: Boolean = true,
+        /**
          * The background color of the WebView client. The default value is {@code null}.
          * Will use WebSettings backgroundColor when null.
          *
+         * @param opaque need set into false
          * @param backgroundColor a color value
          */
         var backgroundColor: Color? = null,
@@ -199,6 +205,7 @@ sealed class PlatformWebSettings {
          * The background color shown when the WebView client scrolls past the bounds of the active page.
          * The default value is {@code null}. Will use WebSettings backgroundColor when null.
          *
+         * @param opaque need set into false
          * @param underPageBackgroundColor a color value
          */
         var underPageBackgroundColor: Color? = null,
