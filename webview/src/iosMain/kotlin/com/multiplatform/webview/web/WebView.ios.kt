@@ -101,8 +101,10 @@ fun IOSWebView(
                     val backgroundColor =
                         (it.iOSWebSettings.backgroundColor ?: it.backgroundColor).toUIColor()
                     val scrollViewColor =
-                        (it.iOSWebSettings.underPageBackgroundColor
-                            ?: it.backgroundColor).toUIColor()
+                        (
+                             it.iOSWebSettings.underPageBackgroundColor
+                                 ?: it.backgroundColor
+                         ).toUIColor()
                     setOpaque(it.iOSWebSettings.opaque)
                     if (!it.iOSWebSettings.opaque) {
                         setBackgroundColor(backgroundColor)
