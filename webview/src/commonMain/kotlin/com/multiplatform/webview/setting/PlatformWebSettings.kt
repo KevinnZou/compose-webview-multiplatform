@@ -189,6 +189,13 @@ sealed class PlatformWebSettings {
      */
     data class IOSWebSettings(
         /**
+         * The ios default opaque display
+         * The default value is {@code false}.
+         * When Value is true will turn off these two properties:
+         * @param backgroundColor,@param underPageBackgroundColor
+         */
+        var opaque: Boolean = false,
+        /**
          * The background color of the WebView client. The default value is {@code null}.
          * Will use WebSettings backgroundColor when null.
          *
