@@ -232,6 +232,7 @@ fun AccompanistWebView(
             }
         },
         modifier = modifier,
+        onReset = {},
         onRelease = {
             onDispose(it)
         },
