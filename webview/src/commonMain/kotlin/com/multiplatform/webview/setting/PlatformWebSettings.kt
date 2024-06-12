@@ -163,6 +163,10 @@ sealed class PlatformWebSettings {
          */
         var domStorageEnabled: Boolean = false,
         /**
+         * Whether the a user gesture is required to play media. The default is {@code true}.
+         */
+        var mediaPlaybackRequiresUserGesture: Boolean = true,
+        /**
          * The Layer Type of the WebView.
          * Default is [LayerType.HARDWARE]
          */

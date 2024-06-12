@@ -201,6 +201,7 @@ fun AccompanistWebView(
                         defaultFontSize = it.defaultFontSize
                         loadsImagesAutomatically = it.loadsImagesAutomatically
                         domStorageEnabled = it.domStorageEnabled
+                        mediaPlaybackRequiresUserGesture = it.mediaPlaybackRequiresUserGesture
                     }
                 }
                 if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
