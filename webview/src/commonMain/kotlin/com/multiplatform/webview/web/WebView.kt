@@ -10,7 +10,6 @@ import com.multiplatform.webview.util.KLogger
 import com.multiplatform.webview.util.getPlatform
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.merge
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
  * Created By Kevin Zou On 2023/8/31
@@ -30,7 +29,6 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
  * @param onDispose Called when the WebView is destroyed.
  * @sample sample.BasicWebViewSample
  */
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun WebView(
     state: WebViewState,
@@ -38,8 +36,8 @@ fun WebView(
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
     webViewJsBridge: WebViewJsBridge? = null,
-    onCreated: () -> Unit = {},
-    onDispose: () -> Unit = {},
+    onCreated: (NativeWebView) -> Unit = {},
+    onDispose: (NativeWebView) -> Unit = {},
 ) {
     val webView = state.webView
 
@@ -141,6 +139,6 @@ expect fun ActualWebView(
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
     webViewJsBridge: WebViewJsBridge? = null,
-    onCreated: () -> Unit = {},
-    onDispose: () -> Unit = {},
+    onCreated: (NativeWebView) -> Unit = {},
+    onDispose: (NativeWebView) -> Unit = {},
 )

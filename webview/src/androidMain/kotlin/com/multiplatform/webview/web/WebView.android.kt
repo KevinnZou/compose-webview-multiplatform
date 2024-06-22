@@ -14,8 +14,8 @@ actual fun ActualWebView(
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
     webViewJsBridge: WebViewJsBridge?,
-    onCreated: () -> Unit,
-    onDispose: () -> Unit,
+    onCreated: (NativeWebView) -> Unit,
+    onDispose: (NativeWebView) -> Unit,
 ) {
     AccompanistWebView(
         state,
@@ -23,7 +23,7 @@ actual fun ActualWebView(
         captureBackPresses,
         navigator,
         webViewJsBridge,
-        onCreated = { _ -> onCreated() },
-        onDispose = { _ -> onDispose() },
+        onCreated = onCreated,
+        onDispose = onDispose,
     )
 }

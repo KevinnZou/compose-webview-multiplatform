@@ -20,8 +20,8 @@ actual fun ActualWebView(
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
     webViewJsBridge: WebViewJsBridge?,
-    onCreated: () -> Unit,
-    onDispose: () -> Unit,
+    onCreated: (NativeWebView) -> Unit,
+    onDispose: (NativeWebView) -> Unit,
 ) {
     DesktopWebView(
         state,
@@ -43,8 +43,8 @@ fun DesktopWebView(
     modifier: Modifier,
     navigator: WebViewNavigator,
     webViewJsBridge: WebViewJsBridge?,
-    onCreated: () -> Unit,
-    onDispose: () -> Unit,
+    onCreated: (NativeWebView) -> Unit,
+    onDispose: (NativeWebView) -> Unit,
 ) {
     val currentOnDispose by rememberUpdatedState(onDispose)
     val client =
@@ -132,7 +132,7 @@ fun DesktopWebView(
     browser?.let {
         SwingPanel(
             factory = {
-                onCreated()
+                onCreated(it)
                 state.webView = desktopWebView
                 webViewJsBridge?.webView = desktopWebView
                 browser.apply {
@@ -149,7 +149,7 @@ fun DesktopWebView(
     DisposableEffect(Unit) {
         onDispose {
             client?.dispose()
-            currentOnDispose()
+            browser?.let { currentOnDispose(it) }
         }
     }
 }

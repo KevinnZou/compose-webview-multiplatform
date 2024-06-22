@@ -25,8 +25,8 @@ actual fun ActualWebView(
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
     webViewJsBridge: WebViewJsBridge?,
-    onCreated: () -> Unit,
-    onDispose: () -> Unit,
+    onCreated: (NativeWebView) -> Unit,
+    onDispose: (NativeWebView) -> Unit,
 ) {
     IOSWebView(
         state = state,
@@ -50,8 +50,8 @@ fun IOSWebView(
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
     webViewJsBridge: WebViewJsBridge?,
-    onCreated: () -> Unit,
-    onDispose: () -> Unit,
+    onCreated: (NativeWebView) -> Unit,
+    onDispose: (NativeWebView) -> Unit,
 ) {
     val observer =
         remember {
@@ -85,8 +85,8 @@ fun IOSWebView(
             WKWebView(
                 frame = CGRectZero.readValue(),
                 configuration = config,
-            ).apply {
-                onCreated()
+            )).apply {
+                onCreated(this)
                 state.viewState?.let {
                     this.interactionState = it
                 }
@@ -133,7 +133,7 @@ fun IOSWebView(
                 observer = observer,
             )
             it.navigationDelegate = null
-            onDispose()
+            onDispose(it)
         },
     )
 }
