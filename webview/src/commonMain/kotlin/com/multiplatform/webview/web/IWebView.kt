@@ -10,10 +10,18 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
  * Created By Kevin Zou On 2023/9/5
  */
 
+expect class NativeWebView
+
 /**
  * Interface for WebView
  */
 interface IWebView {
+    /**
+     * The native web view instance. On Android, this is an instance of [android.webkit.WebView].
+     * On iOS, this is an instance of [WKWebView]. On desktop, this is an instance of [KCEFBrowser].
+     */
+    val webView: NativeWebView
+
     val scope: CoroutineScope
 
     val webViewJsBridge: WebViewJsBridge?

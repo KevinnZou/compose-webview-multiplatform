@@ -12,11 +12,13 @@ import kotlinx.serialization.json.Json
  * Created By Kevin Zou On 2023/9/5
  */
 
+actual typealias NativeWebView = WebView
+
 /**
  * Android implementation of [IWebView]
  */
 class AndroidWebView(
-    private val webView: WebView,
+    override val webView: WebView,
     override val scope: CoroutineScope,
     override val webViewJsBridge: WebViewJsBridge?,
 ) : IWebView {

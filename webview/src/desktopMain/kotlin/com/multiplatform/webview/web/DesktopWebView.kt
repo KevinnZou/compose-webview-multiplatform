@@ -15,11 +15,13 @@ import org.cef.network.CefPostData
 import org.cef.network.CefPostDataElement
 import org.cef.network.CefRequest
 
+actual typealias NativeWebView = KCEFBrowser
+
 /**
  * Created By Kevin Zou On 2023/9/12
  */
 class DesktopWebView(
-    private val webView: KCEFBrowser,
+    override val webView: KCEFBrowser,
     override val scope: CoroutineScope,
     override val webViewJsBridge: WebViewJsBridge?,
 ) : IWebView {
