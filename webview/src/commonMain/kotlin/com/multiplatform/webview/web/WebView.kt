@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.merge
  * navigation from outside the composable.
  * @param onCreated Called when the WebView is first created.
  * @param onDispose Called when the WebView is destroyed.
+ * @param factory A function that creates a platform-specific WebView object.
  * @sample sample.BasicWebViewSample
  */
 @Composable
@@ -38,6 +39,7 @@ fun WebView(
     webViewJsBridge: WebViewJsBridge? = null,
     onCreated: (NativeWebView) -> Unit = {},
     onDispose: (NativeWebView) -> Unit = {},
+    factory: ((WebViewFactoryParam) -> NativeWebView)? = null,
 ) {
     val webView = state.webView
 
@@ -117,6 +119,7 @@ fun WebView(
         webViewJsBridge = webViewJsBridge,
         onCreated = onCreated,
         onDispose = onDispose,
+        factory = factory ?: ::defaultWebViewFactory,
     )
 
     DisposableEffect(Unit) {
@@ -130,6 +133,24 @@ fun WebView(
 }
 
 /**
+ * Platform specific parameters given to the WebView factory function. This is a
+ * data class containing one or more platform-specific values necessary to
+ * create a platform-specific WebView:
+ *   - On Android, this contains a `Context` object
+ *   - On iOS, this contains a `WKWebViewConfiguration` object created from the
+ *     provided WebSettings
+ *   - On Desktop, this contains the WebViewState, the KCEFClient, and the
+ *     loaded file content (if a file, otherwise, an empty string)
+ */
+expect class WebViewFactoryParam
+
+/**
+ * Platform specific default WebView factory function. This can be called from
+ * a custom factory function for any platforms that don't need to be customized.
+ */
+expect fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView
+
+/**
  * Expect API of [WebView] that is implemented in the platform-specific modules.
  */
 @Composable
@@ -141,4 +162,5 @@ expect fun ActualWebView(
     webViewJsBridge: WebViewJsBridge? = null,
     onCreated: (NativeWebView) -> Unit = {},
     onDispose: (NativeWebView) -> Unit = {},
+    factory: (WebViewFactoryParam) -> NativeWebView = ::defaultWebViewFactory,
 )
