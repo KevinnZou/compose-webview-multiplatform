@@ -58,17 +58,33 @@ actual class WebViewFactoryParam(
 actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
     when (val content = param.state.content) {
         is WebContent.Url ->
-            param.client.createBrowser(content.url,
-                param.rendering, param.transparent, param.requestContext)
+            param.client.createBrowser(
+                content.url,
+                param.rendering,
+                param.transparent,
+                param.requestContext,
+            )
         is WebContent.Data ->
-            param.client.createBrowserWithHtml(content.data,
-                content.baseUrl ?: KCEFBrowser.BLANK_URI, param.rendering, param.transparent)
+            param.client.createBrowserWithHtml(
+                content.data,
+                content.baseUrl ?: KCEFBrowser.BLANK_URI,
+                param.rendering,
+                param.transparent,
+            )
         is WebContent.File ->
-            param.client.createBrowserWithHtml(param.fileContent,
-                KCEFBrowser.BLANK_URI, param.rendering, param.transparent)
+            param.client.createBrowserWithHtml(
+                param.fileContent,
+                KCEFBrowser.BLANK_URI,
+                param.rendering,
+                param.transparent,
+            )
         else ->
-            param.client.createBrowser(KCEFBrowser.BLANK_URI,
-                param.rendering, param.transparent, param.requestContext)
+            param.client.createBrowser(
+                KCEFBrowser.BLANK_URI,
+                param.rendering,
+                param.transparent,
+                param.requestContext,
+            )
     }
 
 /**
@@ -109,12 +125,14 @@ fun DesktopWebView(
             }
     }
 
-    val browser: KCEFBrowser? = remember(client, state.webSettings, fileContent) {
-        client?.let { factory(WebViewFactoryParam(state, client, fileContent)) }
-    }
-    val desktopWebView: DesktopWebView? = remember(browser) {
-        browser?.let { DesktopWebView(browser, scope, webViewJsBridge) }
-    }
+    val browser: KCEFBrowser? =
+        remember(client, state.webSettings, fileContent) {
+            client?.let { factory(WebViewFactoryParam(state, client, fileContent)) }
+        }
+    val desktopWebView: DesktopWebView? =
+        remember(browser) {
+            browser?.let { DesktopWebView(browser, scope, webViewJsBridge) }
+        }
 
     browser?.let {
         SwingPanel(
