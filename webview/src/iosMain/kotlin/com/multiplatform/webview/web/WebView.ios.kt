@@ -46,9 +46,7 @@ actual data class WebViewFactoryParam(val config: WKWebViewConfiguration)
 
 /** Default WebView factory for iOS. */
 @OptIn(ExperimentalForeignApi::class)
-actual fun defaultWebViewFactory(param: WebViewFactoryParam) = WKWebView(
-    frame = CGRectZero.readValue(), configuration = param.config,
-)
+actual fun defaultWebViewFactory(param: WebViewFactoryParam) = WKWebView(frame = CGRectZero.readValue(), configuration = param.config)
 
 /**
  * iOS WebView implementation.
