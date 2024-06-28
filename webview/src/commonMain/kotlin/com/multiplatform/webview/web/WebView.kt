@@ -16,8 +16,43 @@ import kotlinx.coroutines.flow.merge
  */
 
 /**
+ * Provides a basic WebView composable.
+ * This version of the function is provided for backwards compatibility by using the older
+ * onCreated and onDispose callbacks and is missing the factory parameter.
  *
- * A wrapper around the Android View WebView to provide a basic WebView composable.
+ * @param state The webview state holder where the Uri to load is defined.
+ * @param modifier A compose modifier
+ * @param captureBackPresses Set to true to have this Composable capture back presses and navigate
+ * the WebView back.
+ * @param navigator An optional navigator object that can be used to control the WebView's
+ * navigation from outside the composable.
+ * @param onCreated Called when the WebView is first created.
+ * @param onDispose Called when the WebView is destroyed.
+ * @sample sample.BasicWebViewSample
+ */
+@Composable
+fun WebView(
+    state: WebViewState,
+    modifier: Modifier = Modifier,
+    captureBackPresses: Boolean = true,
+    navigator: WebViewNavigator = rememberWebViewNavigator(),
+    webViewJsBridge: WebViewJsBridge? = null,
+    onCreated: () -> Unit = {},
+    onDispose: () -> Unit = {},
+) {
+    WebView(
+        state = state,
+        modifier = modifier,
+        captureBackPresses = captureBackPresses,
+        navigator = navigator,
+        webViewJsBridge = webViewJsBridge,
+        onCreated = { _ -> onCreated() },
+        onDispose = { _ -> onDispose() },
+    )
+}
+
+/**
+ * Provides a basic WebView composable.
  *
  * @param state The webview state holder where the Uri to load is defined.
  * @param modifier A compose modifier
