@@ -363,7 +363,6 @@ open class AccompanistWebViewClient : WebViewClient() {
             }
 
             is WebRequestInterceptResult.Reject -> {
-                navigator.stopLoading()
                 true
             }
 
