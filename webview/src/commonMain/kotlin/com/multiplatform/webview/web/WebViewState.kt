@@ -76,6 +76,12 @@ class WebViewState(webContent: WebContent) {
     internal var webView by mutableStateOf<IWebView?>(null)
 
     /**
+     * The native web view instance. On Android, this is an instance of [android.webkit.WebView].
+     * On iOS, this is an instance of [WKWebView]. On desktop, this is an instance of [KCEFBrowser].
+     */
+    val nativeWebView get() = webView?.webView ?: error("WebView is not initialized")
+
+    /**
      * The saved view state from when the view was destroyed last. To restore state,
      * use the navigator and only call loadUrl if the bundle is null.
      * See WebViewSaveStateSample.

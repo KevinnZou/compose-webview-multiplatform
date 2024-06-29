@@ -555,6 +555,7 @@ The complete API of this library is as follows:
  * navigation from outside the composable.
  * @param onCreated Called when the WebView is first created.
  * @param onDispose Called when the WebView is destroyed.
+ * @param factory A function that creates a platform-specific WebView object.
  * @sample sample.BasicWebViewSample
  */
 @Composable
@@ -563,8 +564,10 @@ fun WebView(
     modifier: Modifier = Modifier,
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
-    onCreated: () -> Unit = {},
-    onDispose: () -> Unit = {},
+    webViewJsBridge: WebViewJsBridge? = null,
+    onCreated: (NativeWebView) -> Unit = {},
+    onDispose: (NativeWebView) -> Unit = {},
+    factory: ((WebViewFactoryParam) -> NativeWebView)? = null,
 )
 ```
 
