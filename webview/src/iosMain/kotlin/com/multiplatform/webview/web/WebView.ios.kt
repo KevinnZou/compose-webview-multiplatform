@@ -25,8 +25,9 @@ actual fun ActualWebView(
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
     webViewJsBridge: WebViewJsBridge?,
-    onCreated: () -> Unit,
-    onDispose: () -> Unit,
+    onCreated: (NativeWebView) -> Unit,
+    onDispose: (NativeWebView) -> Unit,
+    factory: (WebViewFactoryParam) -> NativeWebView,
 ) {
     IOSWebView(
         state = state,
@@ -36,8 +37,16 @@ actual fun ActualWebView(
         webViewJsBridge = webViewJsBridge,
         onCreated = onCreated,
         onDispose = onDispose,
+        factory = factory,
     )
 }
+
+/** iOS WebView factory parameters: configuration created from WebSettings. */
+actual data class WebViewFactoryParam(val config: WKWebViewConfiguration)
+
+/** Default WebView factory for iOS. */
+@OptIn(ExperimentalForeignApi::class)
+actual fun defaultWebViewFactory(param: WebViewFactoryParam) = WKWebView(frame = CGRectZero.readValue(), configuration = param.config)
 
 /**
  * iOS WebView implementation.
@@ -50,8 +59,9 @@ fun IOSWebView(
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
     webViewJsBridge: WebViewJsBridge?,
-    onCreated: () -> Unit,
-    onDispose: () -> Unit,
+    onCreated: (NativeWebView) -> Unit,
+    onDispose: (NativeWebView) -> Unit,
+    factory: (WebViewFactoryParam) -> NativeWebView,
 ) {
     val observer =
         remember {
@@ -82,11 +92,8 @@ fun IOSWebView(
                         forKey = "allowUniversalAccessFromFileURLs",
                     )
                 }
-            WKWebView(
-                frame = CGRectZero.readValue(),
-                configuration = config,
-            ).apply {
-                onCreated()
+            factory(WebViewFactoryParam(config)).apply {
+                onCreated(this)
                 state.viewState?.let {
                     this.interactionState = it
                 }
@@ -133,7 +140,7 @@ fun IOSWebView(
                 observer = observer,
             )
             it.navigationDelegate = null
-            onDispose()
+            onDispose(it)
         },
     )
 }
