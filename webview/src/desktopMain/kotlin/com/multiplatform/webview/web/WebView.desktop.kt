@@ -100,11 +100,14 @@ fun DesktopWebView(
     onCreated: (NativeWebView) -> Unit,
     onDispose: (NativeWebView) -> Unit,
     factory: (WebViewFactoryParam) -> NativeWebView,
+    kcefClientFactory: () -> KCEFClient? = {
+        KCEF.newClientOrNullBlocking()
+    },
 ) {
     val currentOnDispose by rememberUpdatedState(onDispose)
     val client =
         remember(state.webSettings.desktopWebSettings.disablePopupWindows) {
-            KCEF.newClientOrNullBlocking()?.also {
+            kcefClientFactory()?.also {
                 if (state.webSettings.desktopWebSettings.disablePopupWindows) {
                     it.addLifeSpanHandler(DisablePopupWindowsLifeSpanHandler())
                 } else {
