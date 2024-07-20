@@ -1,7 +1,15 @@
 package com.multiplatform.webview.web
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.view.View.MeasureSpec
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.core.view.drawToBitmap
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
@@ -137,6 +145,56 @@ class AndroidWebView(
             bundle
         } else {
             null
+        }
+    }
+
+    override fun takeSnapshot(rect: Rect?, completionHandler: (ImageBitmap?) -> Unit) {
+        try {
+            // Measure the WebView
+            webView.measure(
+                MeasureSpec.makeMeasureSpec(
+                    MeasureSpec.UNSPECIFIED,
+                    MeasureSpec.UNSPECIFIED
+                ),
+                MeasureSpec.makeMeasureSpec(
+                    0,
+                    MeasureSpec.UNSPECIFIED
+                )
+            )
+            val left = rect?.left?.toInt() ?: 0
+            val top = rect?.top?.toInt() ?: 0
+            val right = rect?.right?.toInt() ?: webView.measuredWidth
+            val bottom = rect?.bottom?.toInt() ?: webView.measuredHeight
+
+            webView.layout(
+                0,
+                0,
+                right,
+                bottom
+            )
+
+            // Create a bitmap with the appropriate dimensions
+            val bm = Bitmap.createBitmap(
+                rect?.width?.toInt() ?: right,
+                rect?.height?.toInt() ?: bottom,
+                Bitmap.Config.ARGB_8888
+            )
+
+            // Create a canvas to draw the WebView
+            val canvas = Canvas(bm)
+
+            // Translate the canvas to account for the scroll position and
+            // the specified rectangle
+            if (rect != null) {
+                // Get the current scroll position
+                val scrollX = webView.scrollX
+                val scrollY = webView.scrollY
+                canvas.translate((-scrollX).toFloat() - left, (-scrollY).toFloat() - top)
+            }
+            webView.draw(canvas)
+            completionHandler.invoke(bm.asImageBitmap())
+        } catch (e: Exception) {
+            completionHandler.invoke(null)
         }
     }
 }
