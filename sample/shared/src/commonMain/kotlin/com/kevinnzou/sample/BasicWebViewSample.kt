@@ -17,6 +17,7 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
+import androidx.compose.material.TextButton
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -100,6 +101,22 @@ internal fun BasicWebViewSample(navHostController: NavHostController? = null) {
                         )
                     }
                 },
+                actions = {
+                    TextButton(onClick = {
+                        coroutineScope.launch {
+                            webViewSnapshotResult = webViewSnapshot.takeSnapshot(
+                                Rect(
+                                    top = 50f,
+                                    left = 50f,
+                                    right = 1000f,
+                                    bottom = 2000f
+                                )
+                            )
+                        }
+                    }) {
+                        Text("Snapshot", color = Color.White)
+                    }
+                }
             )
 
             Row {
@@ -151,24 +168,6 @@ internal fun BasicWebViewSample(navHostController: NavHostController? = null) {
                     navigator = navigator,
                     webViewSnapshot = webViewSnapshot
                 )
-
-                Button(
-                    onClick = {
-                        coroutineScope.launch {
-                            webViewSnapshotResult = webViewSnapshot.takeSnapshot(
-//                                Rect(
-//                                    top = 50f,
-//                                    left = 50f,
-//                                    right = 1000f,
-//                                    bottom = 2000f
-//                                )
-                            )
-                        }
-                    },
-                    modifier = Modifier.align(Alignment.Center),
-                ) {
-                    Text("Take Snapshot")
-                }
 
                 // When WebView's Bitmap image is captured, show snapshot in dialog
                 webViewSnapshotResult?.let { bitmap ->
