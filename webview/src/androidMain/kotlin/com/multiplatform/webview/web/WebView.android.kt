@@ -19,7 +19,7 @@ actual fun ActualWebView(
     onDispose: (NativeWebView) -> Unit,
     factory: (WebViewFactoryParam) -> NativeWebView,
 ) {
-    AccompanistWebView(
+    FileChoosableWebView(
         state,
         modifier,
         captureBackPresses,
@@ -27,7 +27,7 @@ actual fun ActualWebView(
         webViewJsBridge,
         onCreated = onCreated,
         onDispose = onDispose,
-        factory = { factory(WebViewFactoryParam(it)) },
+        factory = factory,
     )
 }
 
