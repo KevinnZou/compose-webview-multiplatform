@@ -5,7 +5,6 @@ import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import android.webkit.ValueCallback
-import android.webkit.WebChromeClient.FileChooserParams
 import android.webkit.WebView
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
@@ -18,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
+import com.multiplatform.webview.util.KLogger
 
 @Composable
 fun FileChoosableWebView(
@@ -41,15 +41,29 @@ fun FileChoosableWebView(
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.StartActivityForResult(),
         ) { result: ActivityResult ->
-            if (result.resultCode == Activity.RESULT_OK) {
-                val data = FileChooserParams.parseResult(result.resultCode, result.data)
-                if (data == null) {
-                    webViewChromeClient.cancelFileChooser()
-                } else {
-                    webViewChromeClient.onReceiveFiles(data)
-                }
-            } else {
+            if (result.resultCode != Activity.RESULT_OK) {
+                KLogger.d { "resultCode is not RESULT_OK (value: ${result.resultCode})" }
                 webViewChromeClient.cancelFileChooser()
+                return@rememberLauncherForActivityResult
+            }
+
+            val intent = result.data
+            if (intent == null) {
+                KLogger.d { "result intent is null" }
+                webViewChromeClient.cancelFileChooser()
+                return@rememberLauncherForActivityResult
+            }
+
+            val singleFile: Uri? = intent.data
+            val multiFiles: List<Uri>? = intent.getUris()
+
+            when {
+                singleFile != null -> webViewChromeClient.onReceiveFiles(arrayOf(singleFile))
+                multiFiles != null -> webViewChromeClient.onReceiveFiles(multiFiles.toTypedArray())
+                else -> {
+                    KLogger.d { "data and clipData is null" }
+                    webViewChromeClient.cancelFileChooser()
+                }
             }
         }
 
@@ -74,6 +88,11 @@ fun FileChoosableWebView(
         factory = { factory(WebViewFactoryParam(it)) },
         chromeClient = webViewChromeClient,
     )
+}
+
+private fun Intent.getUris(): List<Uri>? {
+    val clipData = clipData ?: return null
+    return (0 until clipData.itemCount).map { clipData.getItemAt(it).uri }
 }
 
 class FileChoosableWebChromeClient(
