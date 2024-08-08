@@ -50,6 +50,9 @@ internal fun WebViewApp() {
         composable("intercept") {
             InterceptRequestSample(controller)
         }
+        composable("file") {
+            FileChooseWebViewSample(controller)
+        }
     }
 }
 
@@ -82,6 +85,12 @@ fun MainScreen(controller: NavController) {
             controller.navigate("intercept")
         }) {
             Text("Intercept Request Sample", fontSize = 18.sp)
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(onClick = {
+            controller.navigate("file")
+        }) {
+            Text("File Choose Sample", fontSize = 18.sp)
         }
     }
 }
