@@ -1,10 +1,12 @@
 package com.multiplatform.webview.web
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Build
 import android.view.ViewGroup
+import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -19,6 +21,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.content.ContextCompat
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
@@ -171,6 +174,7 @@ fun AccompanistWebView(
                     this.restoreState(it)
                 }
 
+                chromeClient.context = context
                 webChromeClient = chromeClient
                 webViewClient = client
 
@@ -389,6 +393,8 @@ open class AccompanistWebViewClient : WebViewClient() {
 open class AccompanistWebChromeClient : WebChromeClient() {
     open lateinit var state: WebViewState
         internal set
+    lateinit var context: Context
+        internal set
     private var lastLoadedUrl = ""
 
     override fun onReceivedTitle(
@@ -424,5 +430,60 @@ open class AccompanistWebChromeClient : WebChromeClient() {
                 LoadingState.Loading(newProgress / 100.0f)
             }
         lastLoadedUrl = view.url ?: ""
+    }
+
+    override fun onPermissionRequest(request: PermissionRequest) {
+        val grantedPermissions = mutableListOf<String>()
+        KLogger.d { "onPermissionRequest received request for resources [${request.resources}]" }
+
+        request.resources.forEach { resource ->
+            var androidPermission: String? = null
+
+            when (resource) {
+                PermissionRequest.RESOURCE_AUDIO_CAPTURE -> {
+                    androidPermission = android.Manifest.permission.RECORD_AUDIO
+                }
+
+                PermissionRequest.RESOURCE_MIDI_SYSEX -> {
+                    // MIDI sysex is only available on Android M and above
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        if (state.webSettings.androidWebSettings.allowMidiSysexMessages) {
+                            grantedPermissions.add(PermissionRequest.RESOURCE_MIDI_SYSEX)
+                        }
+                    }
+                }
+
+                PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID -> {
+                    if (state.webSettings.androidWebSettings.allowProtectedMedia) {
+                        grantedPermissions.add(PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID)
+                    }
+                }
+
+                PermissionRequest.RESOURCE_VIDEO_CAPTURE -> {
+                    androidPermission = android.Manifest.permission.CAMERA
+                }
+            }
+
+            if (androidPermission != null) {
+                if (ContextCompat.checkSelfPermission(context, androidPermission) == PackageManager.PERMISSION_GRANTED) {
+                    grantedPermissions.add(resource)
+                    KLogger.d {
+                        "onPermissionRequest permission [$androidPermission] was already granted for resource [$resource]"
+                    }
+                } else {
+                    KLogger.w {
+                        "onPermissionRequest didn't find already granted permission [$androidPermission] for resource [$resource]"
+                    }
+                }
+            }
+        }
+
+        if (grantedPermissions.isNotEmpty()) {
+            request.grant(grantedPermissions.toTypedArray())
+            KLogger.d { "onPermissionRequest granted permissions: ${grantedPermissions.joinToString()}" }
+        } else {
+            request.deny()
+            KLogger.d { "onPermissionRequest denied permissions: ${request.resources}" }
+        }
     }
 }
