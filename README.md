@@ -544,6 +544,37 @@ Note that the HTML file should be put in the `resources/assets` folder of the sh
 It also supports external resources such as images, CSS, and JavaScript files on Android and iOS.
 Desktop support is coming soon.
 
+## Handling permission requests on Android
+
+There are 4 types of permissions that can be requested by the WebView on Android: 
+
+- RESOURCE_PROTECTED_MEDIA_ID
+- RESOURCE_MIDI_SYSEX
+- RESOURCE_AUDIO_CAPTURE
+- RESOURCE_VIDEO_CAPTURE
+
+`RESOURCE_PROTECTED_MEDIA_ID` and `RESOURCE_MIDI_SYSEX` are special ones, because they don't have a
+native Android counterpart, so it's not possible to request a permission from the user to grant
+them transitively. Therefore, you configure the WebView to grant these permissions automatically, 
+by setting the respective properties under `AndroidWebSettings` to true:
+
+```kotlin
+webViewState.webSettings.apply {
+        // ...
+        androidWebSettings.apply {
+            // Grants RESOURCE_PROTECTED_MEDIA_ID permission, default false
+            allowProtectedMedia = true
+            // Grants RESOURCE_MIDI_SYSEX permission, default false
+            allowMidiSysexMessages = true
+        }
+        // ...
+    }
+```
+
+`RESOURCE_AUDIO_CAPTURE` and `RESOURCE_VIDEO_CAPTURE` are also handled internally by the WebView,
+but you need to make sure to explicitly ask for these permissions in your app. If user grants them,
+the WebView will be able to use them without any additional configuration.
+
 ## API
 
 The complete API of this library is as follows:
