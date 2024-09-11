@@ -48,7 +48,7 @@ kotlin {
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
                 implementation("org.jetbrains.kotlinx:atomicfu:0.23.2")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-                implementation("org.jetbrains.androidx.navigation:navigation-compose:2.7.0-alpha03")
+                implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha08")
             }
         }
         val androidMain by getting {
