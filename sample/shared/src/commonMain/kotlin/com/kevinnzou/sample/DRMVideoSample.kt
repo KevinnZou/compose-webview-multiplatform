@@ -63,9 +63,7 @@ internal fun DRMVideoSample(navHostController: NavHostController? = null) {
 
             WebView(
                 state = state,
-                modifier =
-                Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 navigator = navigator,
             )
         }
