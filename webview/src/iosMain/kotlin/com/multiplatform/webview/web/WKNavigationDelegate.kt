@@ -123,7 +123,7 @@ class WKNavigationDelegate(
         }
         if (url != null && !isRedirect &&
             navigator.requestInterceptor != null &&
-            decidePolicyForNavigationAction.targetFrame?.mainFrame == true
+            decidePolicyForNavigationAction.targetFrame?.mainFrame != false
         ) {
             navigator.requestInterceptor.apply {
                 val request = decidePolicyForNavigationAction.request
