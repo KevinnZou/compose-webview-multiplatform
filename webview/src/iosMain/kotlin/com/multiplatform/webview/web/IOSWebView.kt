@@ -85,9 +85,10 @@ class IOSWebView(
     }
 
     override suspend fun loadHtmlFile(fileName: String) {
-        val res = NSBundle.mainBundle.resourcePath + "/compose-resources/assets/" + fileName
-        val url = NSURL.fileURLWithPath(res)
-        webView.loadFileURL(url, url)
+        val baseDir = NSBundle.mainBundle.resourcePath + "/compose-resources/assets/"
+        val fileToLoad = NSURL.fileURLWithPath(baseDir + fileName)
+        val fromDirectory = NSURL.fileURLWithPath(baseDir)
+        webView.loadFileURL(fileToLoad, fromDirectory)
     }
 
     @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
