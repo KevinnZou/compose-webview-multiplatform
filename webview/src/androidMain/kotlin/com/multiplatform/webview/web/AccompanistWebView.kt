@@ -166,7 +166,6 @@ fun AccompanistWebView(
     AndroidView(
         factory = { context ->
             (factory?.invoke(context) ?: WebView(context)).apply {
-                onCreated(this)
 
                 this.layoutParams = layoutParams
 
@@ -230,6 +229,7 @@ fun AccompanistWebView(
                         )
                     }
                 }
+                onCreated(this)
             }.also {
                 val androidWebView = AndroidWebView(it, scope, webViewJsBridge)
                 state.webView = androidWebView
