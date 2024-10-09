@@ -59,7 +59,7 @@ class WebViewState(webContent: WebContent) {
     /**
      * A list for errors captured in the last load. Reset when a new page is loaded.
      * Errors could be from any resource (iframe, image, etc.), not just for the main page.
-     * For more fine grained control use the OnError callback of the WebView.
+     * To filter for only main frame errors, use [WebViewError.isFromMainFrame].
      */
     val errorsForCurrentRequest: SnapshotStateList<WebViewError> = mutableStateListOf()
 

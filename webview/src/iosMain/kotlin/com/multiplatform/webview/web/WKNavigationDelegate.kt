@@ -103,8 +103,10 @@ class WKNavigationDelegate(
         }
         state.errorsForCurrentRequest.add(
             WebViewError(
-                withError.code.toInt(),
-                withError.localizedDescription,
+                code = withError.code.toInt(),
+                description = withError.localizedDescription,
+                // on iOS all errors are from the main frame
+                isFromMainFrame = true,
             ),
         )
         KLogger.e {
