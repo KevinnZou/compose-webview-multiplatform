@@ -33,11 +33,11 @@ fun main() =
                                 initialized = true
                             }
                         }
-                        download(
-                            Download.Builder().github {
-                                release("jbr-release-17.0.10b1087.23")
-                            }.build()
-                        )
+                        download {
+                            github {
+                                release("jbr-release-17.0.12b1207.37")
+                            }
+                        }
 
                         settings {
                             cachePath = File("cache").absolutePath
