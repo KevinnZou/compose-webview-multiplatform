@@ -9,6 +9,7 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.kevinnzou.sample.MainWebView
 import dev.datlag.kcef.KCEF
+import dev.datlag.kcef.KCEFBuilder.Download
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -32,7 +33,12 @@ fun main() =
                                 initialized = true
                             }
                         }
-                        release("jbr-release-17.0.10b1087.23")
+                        download(
+                            Download.Builder().github {
+                                release("jbr-release-17.0.10b1087.23")
+                            }.build()
+                        )
+
                         settings {
                             cachePath = File("cache").absolutePath
                         }
