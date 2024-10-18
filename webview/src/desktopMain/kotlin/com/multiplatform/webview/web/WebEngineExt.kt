@@ -153,6 +153,7 @@ internal fun CefBrowser.addLoadListener(
                     WebViewError(
                         code = errorCode?.code ?: 404,
                         description = "Failed to load url: ${failedUrl}\n$errorText",
+                        isFromMainFrame = frame?.isMain ?: false,
                     ),
                 )
             }

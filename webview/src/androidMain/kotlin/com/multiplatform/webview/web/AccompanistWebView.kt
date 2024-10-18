@@ -324,8 +324,9 @@ open class AccompanistWebViewClient : WebViewClient() {
         if (error != null) {
             state.errorsForCurrentRequest.add(
                 WebViewError(
-                    error.errorCode,
-                    error.description.toString(),
+                    code = error.errorCode,
+                    description = error.description.toString(),
+                    isFromMainFrame = request?.isForMainFrame ?: false,
                 ),
             )
         }
