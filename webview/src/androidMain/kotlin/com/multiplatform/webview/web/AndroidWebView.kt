@@ -1,10 +1,22 @@
 package com.multiplatform.webview.web
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Matrix
+import android.graphics.Paint
+import android.util.Log
+import android.view.View.MeasureSpec
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.core.view.drawToBitmap
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
+import com.multiplatform.webview.util.WebViewSnapshotUtil
+import com.multiplatform.webview.util.takeSnapshot
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.serialization.json.Json
 
@@ -137,6 +149,17 @@ class AndroidWebView(
             bundle
         } else {
             null
+        }
+    }
+
+    override fun takeSnapshot(rect: Rect?, completionHandler: (ImageBitmap?) -> Unit) {
+        webView.post {
+            try {
+                val bm = webView.takeSnapshot(rect)
+                completionHandler.invoke(bm?.asImageBitmap())
+            } catch (e: Exception) {
+                completionHandler.invoke(null)
+            }
         }
     }
 }
