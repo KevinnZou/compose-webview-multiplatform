@@ -74,7 +74,7 @@ class WebViewState(webContent: WebContent) {
      * We need access to this in the state saver. An internal DisposableEffect or AndroidView
      * onDestroy is called after the state saver and so can't be used.
      */
-     val webView = MutableStateFlow<IWebView?>(null)
+    val webView = MutableStateFlow<IWebView?>(null)
 
     /**
      * The native web view instance. On Android, this is an instance of [android.webkit.WebView].
