@@ -16,6 +16,7 @@ import com.multiplatform.webview.setting.WebSettings
 import com.multiplatform.webview.util.KLogger
 import com.multiplatform.webview.util.getPlatform
 import com.multiplatform.webview.util.isZero
+import kotlinx.coroutines.flow.MutableStateFlow
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -73,13 +74,13 @@ class WebViewState(webContent: WebContent) {
      * We need access to this in the state saver. An internal DisposableEffect or AndroidView
      * onDestroy is called after the state saver and so can't be used.
      */
-    internal var webView by mutableStateOf<IWebView?>(null)
+     val webView = MutableStateFlow<IWebView?>(null)
 
     /**
      * The native web view instance. On Android, this is an instance of [android.webkit.WebView].
      * On iOS, this is an instance of [WKWebView]. On desktop, this is an instance of [KCEFBrowser].
      */
-    val nativeWebView get() = webView?.webView ?: error("WebView is not initialized")
+    val nativeWebView get() = webView.value?.webView ?: error("WebView is not initialized")
 
     /**
      * The saved view state from when the view was destroyed last. To restore state,
@@ -159,15 +160,15 @@ val WebStateSaver: Saver<WebViewState, Any> =
 
         mapSaver(
             save = {
-                val viewState = it.webView?.saveState()
+                val viewState = it.webView.value?.saveState()
                 KLogger.info {
-                    "WebViewStateSaver Save: ${it.pageTitle}, ${it.lastLoadedUrl}, ${it.webView?.scrollOffset()}, $viewState"
+                    "WebViewStateSaver Save: ${it.pageTitle}, ${it.lastLoadedUrl}, ${it.webView.value?.scrollOffset()}, $viewState"
                 }
                 mapOf(
                     pageTitleKey to it.pageTitle,
                     lastLoadedUrlKey to it.lastLoadedUrl,
                     stateBundleKey to viewState,
-                    scrollOffsetKey to it.webView?.scrollOffset(),
+                    scrollOffsetKey to it.webView.value?.scrollOffset(),
                 )
             },
             restore = {
