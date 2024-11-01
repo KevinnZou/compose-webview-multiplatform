@@ -62,7 +62,7 @@ internal fun FileChooseWebViewSample(navHostController: NavHostController? = nul
                     modifier = Modifier.fillMaxSize(),
                     captureBackPresses = false,
                     navigator = webViewNavigator,
-                    platformWebViewParams = getPlatformWebViewParams()
+                    platformWebViewParams = getPlatformWebViewParams(),
                 )
             }
         }

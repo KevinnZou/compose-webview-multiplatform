@@ -36,7 +36,7 @@ actual fun getPlatformWebViewParams(): PlatformWebViewParams? {
                 Toast.makeText(
                     webViewChromeClient.context,
                     "resultCode is not RESULT_OK (value: ${result.resultCode})",
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
                 webViewChromeClient.cancelFileChooser()
                 return@rememberLauncherForActivityResult
@@ -47,7 +47,7 @@ actual fun getPlatformWebViewParams(): PlatformWebViewParams? {
                 Toast.makeText(
                     webViewChromeClient.context,
                     "result intent is null",
-                    Toast.LENGTH_SHORT
+                    Toast.LENGTH_SHORT,
                 ).show()
                 webViewChromeClient.cancelFileChooser()
                 return@rememberLauncherForActivityResult
@@ -63,7 +63,7 @@ actual fun getPlatformWebViewParams(): PlatformWebViewParams? {
                     Toast.makeText(
                         webViewChromeClient.context,
                         "data and clipData is null",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_SHORT,
                     ).show()
                     webViewChromeClient.cancelFileChooser()
                 }
