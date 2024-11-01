@@ -51,6 +51,13 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
                 state.pageTitle = title
             }
 
+            override fun onFullscreenModeChange(
+                p0: CefBrowser?,
+                p1: Boolean,
+            ) {
+                // Not supported
+            }
+
             override fun onTooltip(
                 browser: CefBrowser?,
                 text: String?,
@@ -153,6 +160,7 @@ internal fun CefBrowser.addLoadListener(
                     WebViewError(
                         code = errorCode?.code ?: 404,
                         description = "Failed to load url: ${failedUrl}\n$errorText",
+                        isFromMainFrame = frame?.isMain ?: false,
                     ),
                 )
             }

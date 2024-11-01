@@ -167,6 +167,19 @@ sealed class PlatformWebSettings {
          */
         var mediaPlaybackRequiresUserGesture: Boolean = true,
         /**
+         * Controls whether the `RESOURCE_PROTECTED_MEDIA_ID` permission requests should be
+         * automatically granted or not. Necessary to be able to play back DRM protected media
+         * inside the WebView.
+         * The default is {@code false}.
+         */
+        var allowProtectedMedia: Boolean = false,
+        /**
+         * Controls whether the `RESOURCE_MIDI_SYSEX` permission requests should be automatically
+         * granted or not. The resource will allow sysex messages to be sent to or received from MIDI
+         * devices. Available on API level 21 and above.
+         */
+        var allowMidiSysexMessages: Boolean = false,
+        /**
          * The Layer Type of the WebView.
          * Default is [LayerType.HARDWARE]
          */

@@ -103,8 +103,10 @@ class WKNavigationDelegate(
         }
         state.errorsForCurrentRequest.add(
             WebViewError(
-                withError.code.toInt(),
-                withError.localizedDescription,
+                code = withError.code.toInt(),
+                description = withError.localizedDescription,
+                // on iOS all errors are from the main frame
+                isFromMainFrame = true,
             ),
         )
         KLogger.e {
@@ -123,7 +125,7 @@ class WKNavigationDelegate(
         }
         if (url != null && !isRedirect &&
             navigator.requestInterceptor != null &&
-            decidePolicyForNavigationAction.targetFrame?.mainFrame == true
+            decidePolicyForNavigationAction.targetFrame?.mainFrame != false
         ) {
             navigator.requestInterceptor.apply {
                 val request = decidePolicyForNavigationAction.request
