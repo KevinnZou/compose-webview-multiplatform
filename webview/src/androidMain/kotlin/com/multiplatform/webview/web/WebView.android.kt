@@ -2,6 +2,8 @@ package com.multiplatform.webview.web
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 
@@ -17,9 +19,10 @@ actual fun ActualWebView(
     webViewJsBridge: WebViewJsBridge?,
     onCreated: (NativeWebView) -> Unit,
     onDispose: (NativeWebView) -> Unit,
+    platformWebViewParams: PlatformWebViewParams?,
     factory: (WebViewFactoryParam) -> NativeWebView,
 ) {
-    FileChoosableWebView(
+    AccompanistWebView(
         state,
         modifier,
         captureBackPresses,
@@ -27,7 +30,9 @@ actual fun ActualWebView(
         webViewJsBridge,
         onCreated = onCreated,
         onDispose = onDispose,
-        factory = factory,
+        client = platformWebViewParams?.client ?: remember { AccompanistWebViewClient() },
+        chromeClient = platformWebViewParams?.chromeClient ?: remember { AccompanistWebChromeClient() },
+        factory = { factory(WebViewFactoryParam(it)) },
     )
 }
 
@@ -36,3 +41,9 @@ actual data class WebViewFactoryParam(val context: Context)
 
 /** Default WebView factory for Android. */
 actual fun defaultWebViewFactory(param: WebViewFactoryParam) = android.webkit.WebView(param.context)
+
+@Immutable
+actual data class PlatformWebViewParams(
+    val client: AccompanistWebViewClient? = null,
+    val chromeClient: AccompanistWebChromeClient? = null,
+)

@@ -1,4 +1,4 @@
-package com.multiplatform.webview.web
+package com.kevinnzou.sample
 
 import android.app.Activity
 import android.content.ActivityNotFoundException
@@ -6,6 +6,7 @@ import android.content.Intent
 import android.net.Uri
 import android.webkit.ValueCallback
 import android.webkit.WebView
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,21 +16,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import com.multiplatform.webview.jsbridge.WebViewJsBridge
-import com.multiplatform.webview.util.KLogger
+import com.multiplatform.webview.web.AccompanistWebChromeClient
+import com.multiplatform.webview.web.PlatformWebViewParams
 
 @Composable
-fun FileChoosableWebView(
-    state: WebViewState,
-    modifier: Modifier,
-    captureBackPresses: Boolean,
-    navigator: WebViewNavigator,
-    webViewJsBridge: WebViewJsBridge?,
-    onCreated: (NativeWebView) -> Unit,
-    onDispose: (NativeWebView) -> Unit,
-    factory: (WebViewFactoryParam) -> NativeWebView,
-) {
+actual fun getPlatformWebViewParams(): PlatformWebViewParams? {
     var fileChooserIntent by remember { mutableStateOf<Intent?>(null) }
 
     val webViewChromeClient =
@@ -42,14 +33,22 @@ fun FileChoosableWebView(
             contract = ActivityResultContracts.StartActivityForResult(),
         ) { result: ActivityResult ->
             if (result.resultCode != Activity.RESULT_OK) {
-                KLogger.d { "resultCode is not RESULT_OK (value: ${result.resultCode})" }
+                Toast.makeText(
+                    webViewChromeClient.context,
+                    "resultCode is not RESULT_OK (value: ${result.resultCode})",
+                    Toast.LENGTH_SHORT
+                ).show()
                 webViewChromeClient.cancelFileChooser()
                 return@rememberLauncherForActivityResult
             }
 
             val intent = result.data
             if (intent == null) {
-                KLogger.d { "result intent is null" }
+                Toast.makeText(
+                    webViewChromeClient.context,
+                    "result intent is null",
+                    Toast.LENGTH_SHORT
+                ).show()
                 webViewChromeClient.cancelFileChooser()
                 return@rememberLauncherForActivityResult
             }
@@ -61,7 +60,11 @@ fun FileChoosableWebView(
                 singleFile != null -> webViewChromeClient.onReceiveFiles(arrayOf(singleFile))
                 multiFiles != null -> webViewChromeClient.onReceiveFiles(multiFiles.toTypedArray())
                 else -> {
-                    KLogger.d { "data and clipData is null" }
+                    Toast.makeText(
+                        webViewChromeClient.context,
+                        "data and clipData is null",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     webViewChromeClient.cancelFileChooser()
                 }
             }
@@ -77,17 +80,7 @@ fun FileChoosableWebView(
         }
     }
 
-    AccompanistWebView(
-        state,
-        modifier,
-        captureBackPresses,
-        navigator,
-        webViewJsBridge,
-        onCreated = onCreated,
-        onDispose = onDispose,
-        factory = { factory(WebViewFactoryParam(it)) },
-        chromeClient = webViewChromeClient,
-    )
+    return PlatformWebViewParams(chromeClient = webViewChromeClient)
 }
 
 private fun Intent.getUris(): List<Uri>? {
@@ -95,7 +88,7 @@ private fun Intent.getUris(): List<Uri>? {
     return (0 until clipData.itemCount).map { clipData.getItemAt(it).uri }
 }
 
-class FileChoosableWebChromeClient(
+private class FileChoosableWebChromeClient(
     private val onShowFilePicker: (Intent) -> Unit,
 ) : AccompanistWebChromeClient() {
     private var filePathCallback: ValueCallback<Array<Uri>>? = null

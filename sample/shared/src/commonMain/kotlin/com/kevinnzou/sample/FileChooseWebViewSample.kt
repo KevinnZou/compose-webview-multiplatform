@@ -15,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.multiplatform.webview.util.KLogSeverity
+import com.multiplatform.webview.web.PlatformWebViewParams
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
@@ -61,8 +62,12 @@ internal fun FileChooseWebViewSample(navHostController: NavHostController? = nul
                     modifier = Modifier.fillMaxSize(),
                     captureBackPresses = false,
                     navigator = webViewNavigator,
+                    platformWebViewParams = getPlatformWebViewParams()
                 )
             }
         }
     }
 }
+
+@Composable
+expect fun getPlatformWebViewParams(): PlatformWebViewParams?

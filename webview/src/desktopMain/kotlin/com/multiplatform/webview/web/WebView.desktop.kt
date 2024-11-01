@@ -24,6 +24,7 @@ actual fun ActualWebView(
     webViewJsBridge: WebViewJsBridge?,
     onCreated: (NativeWebView) -> Unit,
     onDispose: (NativeWebView) -> Unit,
+    platformWebViewParams: PlatformWebViewParams?,
     factory: (WebViewFactoryParam) -> NativeWebView,
 ) {
     DesktopWebView(
@@ -53,6 +54,8 @@ actual class WebViewFactoryParam(
     inline val transparent: Boolean get() = webSettings.desktopWebSettings.transparent
     val requestContext: CefRequestContext get() = createModifiedRequestContext(webSettings)
 }
+
+actual class PlatformWebViewParams
 
 /** Default WebView factory for Desktop. */
 actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
