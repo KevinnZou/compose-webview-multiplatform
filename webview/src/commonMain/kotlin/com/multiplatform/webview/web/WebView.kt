@@ -39,6 +39,7 @@ fun WebView(
     webViewJsBridge: WebViewJsBridge? = null,
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
+    platformWebViewParams: PlatformWebViewParams? = null,
 ) {
     WebView(
         state = state,
@@ -48,6 +49,7 @@ fun WebView(
         webViewJsBridge = webViewJsBridge,
         onCreated = { _ -> onCreated() },
         onDispose = { _ -> onDispose() },
+        platformWebViewParams = platformWebViewParams,
     )
 }
 
@@ -74,6 +76,7 @@ fun WebView(
     webViewJsBridge: WebViewJsBridge? = null,
     onCreated: (NativeWebView) -> Unit = {},
     onDispose: (NativeWebView) -> Unit = {},
+    platformWebViewParams: PlatformWebViewParams? = null,
     factory: ((WebViewFactoryParam) -> NativeWebView)? = null,
 ) {
     val webView = state.webView
@@ -154,6 +157,7 @@ fun WebView(
         webViewJsBridge = webViewJsBridge,
         onCreated = onCreated,
         onDispose = onDispose,
+        platformWebViewParams = platformWebViewParams,
         factory = factory ?: ::defaultWebViewFactory,
     )
 
@@ -180,6 +184,14 @@ fun WebView(
 expect class WebViewFactoryParam
 
 /**
+ * Platform specific parameters given to the WebView composable function:
+ *   - On Android, this contains an optional `AccompanistWebViewClient` and `AccompanistWebChromeClient`
+ *   - On iOS, this is currently unused
+ *   - On Desktop, this is currently unused
+ */
+expect class PlatformWebViewParams
+
+/**
  * Platform specific default WebView factory function. This can be called from
  * a custom factory function for any platforms that don't need to be customized.
  */
@@ -197,5 +209,6 @@ expect fun ActualWebView(
     webViewJsBridge: WebViewJsBridge? = null,
     onCreated: (NativeWebView) -> Unit = {},
     onDispose: (NativeWebView) -> Unit = {},
+    platformWebViewParams: PlatformWebViewParams? = null,
     factory: (WebViewFactoryParam) -> NativeWebView = ::defaultWebViewFactory,
 )

@@ -30,6 +30,7 @@ actual fun ActualWebView(
     webViewJsBridge: WebViewJsBridge?,
     onCreated: (NativeWebView) -> Unit,
     onDispose: (NativeWebView) -> Unit,
+    platformWebViewParams: PlatformWebViewParams?,
     factory: (WebViewFactoryParam) -> NativeWebView,
 ) {
     IOSWebView(
@@ -46,6 +47,8 @@ actual fun ActualWebView(
 
 /** iOS WebView factory parameters: configuration created from WebSettings. */
 actual data class WebViewFactoryParam(val config: WKWebViewConfiguration)
+
+actual class PlatformWebViewParams
 
 /** Default WebView factory for iOS. */
 @OptIn(ExperimentalForeignApi::class)
