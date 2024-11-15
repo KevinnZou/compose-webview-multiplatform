@@ -180,6 +180,10 @@ sealed class PlatformWebSettings {
          */
         var allowMidiSysexMessages: Boolean = false,
         /**
+         * Controls whether the default video poster (a gray, pixelated play button) should be hidden.
+         */
+        var hideDefaultVideoPoster: Boolean = false,
+        /**
          * The Layer Type of the WebView.
          * Default is [LayerType.HARDWARE]
          */

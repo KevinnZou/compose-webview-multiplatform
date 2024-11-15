@@ -487,4 +487,10 @@ open class AccompanistWebChromeClient : WebChromeClient() {
             KLogger.d { "onPermissionRequest denied permissions: ${request.resources}" }
         }
     }
+
+    override fun getDefaultVideoPoster(): Bitmap? {
+        return if (state.webSettings.androidWebSettings.hideDefaultVideoPoster) {
+            Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888)
+        } else super.getDefaultVideoPoster()
+    }
 }
