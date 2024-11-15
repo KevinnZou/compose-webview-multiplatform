@@ -89,7 +89,9 @@ fun IOSWebView(
                     mediaTypesRequiringUserActionForPlayback =
                         if (state.webSettings.iOSWebSettings.mediaPlaybackRequiresUserGesture) {
                             WKAudiovisualMediaTypeAll
-                        } else WKAudiovisualMediaTypeNone
+                        } else {
+                            WKAudiovisualMediaTypeNone
+                        }
                     defaultWebpagePreferences.allowsContentJavaScript =
                         state.webSettings.isJavaScriptEnabled
                     preferences.apply {
