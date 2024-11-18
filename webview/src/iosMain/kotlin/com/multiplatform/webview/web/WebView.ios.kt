@@ -14,6 +14,8 @@ import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.readValue
 import platform.CoreGraphics.CGRectZero
 import platform.Foundation.setValue
+import platform.WebKit.WKAudiovisualMediaTypeAll
+import platform.WebKit.WKAudiovisualMediaTypeNone
 import platform.WebKit.WKWebView
 import platform.WebKit.WKWebViewConfiguration
 import platform.WebKit.javaScriptEnabled
@@ -84,6 +86,12 @@ fun IOSWebView(
             val config =
                 WKWebViewConfiguration().apply {
                     allowsInlineMediaPlayback = true
+                    mediaTypesRequiringUserActionForPlayback =
+                        if (state.webSettings.iOSWebSettings.mediaPlaybackRequiresUserGesture) {
+                            WKAudiovisualMediaTypeAll
+                        } else {
+                            WKAudiovisualMediaTypeNone
+                        }
                     defaultWebpagePreferences.allowsContentJavaScript =
                         state.webSettings.isJavaScriptEnabled
                     preferences.apply {
