@@ -20,11 +20,19 @@ fun main() = application {
         var restartRequired by remember { mutableStateOf(false) }
         var downloading by remember { mutableStateOf(0F) }
         var initialized by remember { mutableStateOf(false) }
+        val download: Download = remember { Builder().github().build() }
 
         LaunchedEffect(Unit) {
             withContext(Dispatchers.IO) {
                 KCEF.init(builder = {
                     installDir(File("kcef-bundle"))
+                    
+                    /*
+                      Add this code when using JDK 17.
+                      Builder().github {
+                          release("jbr-release-17.0.10b1087.23")
+                      }.buffer(download.bufferSize).build()
+                     */
                     progress {
                         onDownloading {
                             downloading = max(it, 0F)
