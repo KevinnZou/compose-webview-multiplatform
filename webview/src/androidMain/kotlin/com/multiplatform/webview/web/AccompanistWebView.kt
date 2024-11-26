@@ -16,6 +16,8 @@ import android.widget.FrameLayout
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -149,7 +151,7 @@ fun AccompanistWebView(
     chromeClient: AccompanistWebChromeClient = remember { AccompanistWebChromeClient() },
     factory: ((Context) -> WebView)? = null,
 ) {
-    val webView = state.webView
+    val webView by state.webView.collectAsState()
     val scope = rememberCoroutineScope()
 
     BackHandler(captureBackPresses && navigator.canGoBack) {
@@ -232,7 +234,7 @@ fun AccompanistWebView(
                 }
             }.also {
                 val androidWebView = AndroidWebView(it, scope, webViewJsBridge)
-                state.webView = androidWebView
+                state.webView.value = androidWebView
                 webViewJsBridge?.webView = androidWebView
             }
         },
