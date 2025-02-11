@@ -10,6 +10,11 @@ After importing the library, some configurations need to be done before running 
 
 ## Initialization
 
+> [!NOTE]  
+> Starting from version 1.9.40, KCEF v2024.04.20.4 is used and it is possible to load JCEF directly from bundled binary.
+>
+>  So if you build your app with the JetBrains Runtime JDK, it's no longer required to download the packages.
+
 Take a look at the KCEF Compose documentation here: [DatL4g/KCEF](https://github.com/DatL4g/KCEF/blob/master/COMPOSE.md)
 
 Please use the following example as a reference.
