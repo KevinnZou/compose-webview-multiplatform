@@ -31,7 +31,6 @@ kotlin {
     }
 
     sourceSets {
-        val coroutinesVersion = extra["coroutines.version"] as String
 
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -49,6 +48,10 @@ kotlin {
             api(project(":webview"))
         }
 
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
+        }
+
         androidMain.dependencies {
             api(libs.android.activity.compose)
             api(libs.android.appcompat)
@@ -59,12 +62,6 @@ kotlin {
         desktopMain.dependencies {
             implementation(compose.desktop.common)
             implementation(libs.kotlin.coroutines.swing)
-        }
-
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
         }
     }
 }
