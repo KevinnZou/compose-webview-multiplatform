@@ -18,7 +18,9 @@ maven-publish = "com.vanniktech.maven.publish:0.25.3"
 [libraries]
 android-activity-compose = "androidx.activity:activity-compose:1.8.2"
 android-webkit = "androidx.webkit:webkit:1.10.0"
+kcef = "dev.datlag:kcef:2024.04.20.3"
 kermit = "co.touchlab:kermit:2.0.3"
 kotlin-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "coroutines" }
 kotlin-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlin-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
 kotlin-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0"

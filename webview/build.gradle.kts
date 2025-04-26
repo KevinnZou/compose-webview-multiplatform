@@ -50,6 +50,13 @@ kotlin {
             implementation(libs.kotlin.coroutines.android)
         }
 
+        val desktopMain by getting
+        desktopMain.dependencies {
+            implementation(compose.desktop.common)
+            api(libs.kcef)
+            implementation(libs.kotlin.coroutines.swing)
+        }
+
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
@@ -59,13 +66,7 @@ kotlin {
             iosArm64Main.dependsOn(this)
             iosSimulatorArm64Main.dependsOn(this)
         }
-        val desktopMain by getting {
-            dependencies {
-                implementation(compose.desktop.common)
-                api("dev.datlag:kcef:2024.04.20.3")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
-            }
-        }
+
     }
 }
 
