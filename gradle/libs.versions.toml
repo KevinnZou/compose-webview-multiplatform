@@ -1,0 +1,18 @@
+[versions]
+agp = "8.1.1"
+compose = "1.7.1"
+kotlin = "1.9.23"
+coroutines = "1.8.0"
+
+[libraries]
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+compose-multiplatorm = { id = "org.jetbrains.compose", version.ref = "compose" }
+dokka = "org.jetbrains.dokka:1.9.0"
+kotlin-atomicfu = { id = "org.jetbrains.kotlin.plugin.atomicfu", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+ktlint = "org.jlleitschuh.gradle.ktlint:11.6.1"
+maven-publish = "com.vanniktech.maven.publish:0.25.3"
