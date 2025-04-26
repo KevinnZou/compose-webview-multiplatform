@@ -45,17 +45,16 @@ kotlin {
             implementation(libs.kotlin.coroutines.core)
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.tabNavigator)
-            
+
             api(project(":webview"))
         }
 
-        val androidMain by getting {
-            dependencies {
-                api("androidx.activity:activity-compose:1.8.2")
-                api("androidx.appcompat:appcompat:1.6.1")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
-            }
+        androidMain.dependencies {
+            api(libs.android.activity.compose)
+            api(libs.android.appcompat)
+            implementation(libs.kotlin.coroutines.android)
         }
+
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.common)
