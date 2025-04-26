@@ -55,12 +55,12 @@ kotlin {
             implementation(libs.kotlin.coroutines.android)
         }
 
-        val desktopMain by getting {
-            dependencies {
-                implementation(compose.desktop.common)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
-            }
+        val desktopMain by getting
+        desktopMain.dependencies {
+            implementation(compose.desktop.common)
+            implementation(libs.kotlin.coroutines.swing)
         }
+
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
