@@ -33,8 +33,6 @@ kotlin {
     }
 
     sourceSets {
-        val coroutinesVersion = extra["coroutines.version"] as String
-
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -50,14 +48,14 @@ kotlin {
             implementation(libs.kotlin.coroutines.android)
         }
 
+        iosMain.dependencies { }
+
         val desktopMain by getting
         desktopMain.dependencies {
             implementation(compose.desktop.common)
             api(libs.kcef)
             implementation(libs.kotlin.coroutines.swing)
         }
-
-        iosMain.dependencies { }
     }
 }
 
