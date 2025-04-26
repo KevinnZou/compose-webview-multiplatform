@@ -44,13 +44,12 @@ kotlin {
             implementation(libs.kotlin.serialization.json)
         }
 
-        val androidMain by getting {
-            dependencies {
-                api("androidx.activity:activity-compose:1.8.2")
-                api("androidx.webkit:webkit:1.10.0")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
-            }
+        androidMain.dependencies {
+            api(libs.android.activity.compose)
+            api(libs.android.webkit)
+            implementation(libs.kotlin.coroutines.android)
         }
+
         val iosX64Main by getting
         val iosArm64Main by getting
         val iosSimulatorArm64Main by getting
