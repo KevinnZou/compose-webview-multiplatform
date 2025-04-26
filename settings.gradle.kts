@@ -13,7 +13,8 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("https://packages.jetbrains.team/maven/p/kpm/public/")
-        maven { url = uri("https://jitpack.io") }
+        maven("https://jitpack.io")
+        maven("https://jogamp.org/deployment/maven")
     }
 }
 
