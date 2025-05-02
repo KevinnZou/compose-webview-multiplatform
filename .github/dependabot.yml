@@ -1,0 +1,8 @@
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+updates:
+  - package-ecosystem: "gradle"
+    directory: "/"
+    open-pull-requests-limit: 10
+    schedule:
+      interval: "monthly"

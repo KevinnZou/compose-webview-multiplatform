@@ -1,9 +1,9 @@
 plugins {
-    kotlin("multiplatform")
-    kotlin("plugin.serialization")
-    id("org.jetbrains.compose")
-    id("com.android.library")
-    id("org.jetbrains.kotlin.plugin.atomicfu")
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.compose.multiplatorm)
+    alias(libs.plugins.kotlin.atomicfu)
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
@@ -31,43 +31,37 @@ kotlin {
     }
 
     sourceSets {
-        val coroutinesVersion = extra["coroutines.version"] as String
-        val voyagerVersion = "1.0.0-rc10"
 
-        val commonMain by getting {
-            dependencies {
-                implementation(compose.runtime)
-                implementation(compose.foundation)
-                implementation(compose.material)
-                @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
-                implementation(compose.components.resources)
-                implementation("co.touchlab:kermit:2.0.3")
-                implementation("cafe.adriel.voyager:voyager-navigator:$voyagerVersion")
-                implementation("cafe.adriel.voyager:voyager-tab-navigator:$voyagerVersion")
-                api(project(":webview"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
-                implementation("org.jetbrains.kotlinx:atomicfu:0.23.2")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-                implementation("org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha08")
-            }
+        commonMain.dependencies {
+            implementation(compose.runtime)
+            implementation(compose.foundation)
+            implementation(compose.material)
+            implementation(compose.components.resources)
+            implementation(libs.compose.navigation)
+            implementation(libs.kermit)
+            implementation(libs.kotlin.serialization.json)
+            implementation(libs.kotlin.atomicfu)
+            implementation(libs.kotlin.coroutines.core)
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.tabNavigator)
+
+            api(project(":webview"))
         }
-        val androidMain by getting {
-            dependencies {
-                api("androidx.activity:activity-compose:1.8.2")
-                api("androidx.appcompat:appcompat:1.6.1")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutinesVersion")
-            }
+
+        commonTest.dependencies {
+            implementation(libs.kotlin.test)
         }
-        val desktopMain by getting {
-            dependencies {
-                implementation(compose.desktop.common)
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-swing:$coroutinesVersion")
-            }
+
+        androidMain.dependencies {
+            api(libs.android.activity.compose)
+            api(libs.android.appcompat)
+            implementation(libs.kotlin.coroutines.android)
         }
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
-            }
+
+        val desktopMain by getting
+        desktopMain.dependencies {
+            implementation(compose.desktop.common)
+            implementation(libs.kotlin.coroutines.swing)
         }
     }
 }

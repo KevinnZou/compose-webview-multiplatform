@@ -1,16 +1,14 @@
 plugins {
-    kotlin("multiplatform")
-    id("com.android.application")
-    id("org.jetbrains.compose")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.compose.multiplatorm)
 }
 
 kotlin {
     androidTarget()
     sourceSets {
-        val androidMain by getting {
-            dependencies {
-                implementation(project(":sample:shared"))
-            }
+        androidMain.dependencies {
+            implementation(project(":sample:shared"))
         }
     }
 }
