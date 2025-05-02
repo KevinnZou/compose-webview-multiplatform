@@ -3,7 +3,7 @@ agp = "8.1.1"
 compose = "1.7.1"
 kotlin = "1.9.23"
 coroutines = "1.8.0"
-voyager = "1.0.0-rc10"
+voyager = "1.1.0-beta03"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
