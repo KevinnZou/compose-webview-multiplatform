@@ -9,7 +9,7 @@ voyager = "1.0.0-rc10"
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 compose-multiplatorm = { id = "org.jetbrains.compose", version.ref = "compose" }
-dokka = "org.jetbrains.dokka:1.9.0"
+dokka = "org.jetbrains.dokka:2.0.0"
 kotlin-atomicfu = { id = "org.jetbrains.kotlin.plugin.atomicfu", version.ref = "kotlin" }
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
