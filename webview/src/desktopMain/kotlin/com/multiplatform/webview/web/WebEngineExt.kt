@@ -93,6 +93,7 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
 
 internal fun CefBrowser.addLoadListener(
     state: WebViewState,
+    desktopWebView: DesktopWebView?,
     navigator: WebViewNavigator,
 ) {
     this.client.addLoadHandler(
@@ -113,7 +114,7 @@ internal fun CefBrowser.addLoadListener(
                 } else {
                     state.loadingState = LoadingState.Finished
                     if (url != null && url != lastLoadedUrl) {
-                        state.webView?.injectJsBridge()
+                        desktopWebView?.injectJsBridge()
                         lastLoadedUrl = url
                     }
                 }
