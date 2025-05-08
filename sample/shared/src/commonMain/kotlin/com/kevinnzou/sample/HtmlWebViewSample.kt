@@ -1,9 +1,14 @@
 package com.kevinnzou.sample
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -16,10 +21,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color.Companion.LightGray
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavHostController
 import co.touchlab.kermit.Logger
 import com.kevinnzou.sample.eventbus.FlowEventBus
@@ -32,8 +42,10 @@ import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
+import com.multiplatform.webview.web.rememberWebViewSnapshot
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
 /**
  * Created By Kevin Zou On 2023/9/8
@@ -55,6 +67,11 @@ internal fun BasicWebViewWithHTMLSample(navHostController: NavHostController? = 
     val webViewNavigator = rememberWebViewNavigator()
     val jsBridge = rememberWebViewJsBridge(webViewNavigator)
     var jsRes by mutableStateOf("Evaluate JavaScript")
+    val webViewSnapshot = rememberWebViewSnapshot()
+
+    val coroutineScope = rememberCoroutineScope()
+    var webViewSnapshotResult: ImageBitmap? by remember { mutableStateOf(null) }
+
     LaunchedEffect(Unit) {
         initWebView(webViewState)
         initJsBridge(jsBridge)
@@ -82,11 +99,16 @@ internal fun BasicWebViewWithHTMLSample(navHostController: NavHostController? = 
                     captureBackPresses = false,
                     navigator = webViewNavigator,
                     webViewJsBridge = jsBridge,
+                    webViewSnapshot = webViewSnapshot
                 )
-                Button(
-                    onClick = {
-                        webViewNavigator.evaluateJavaScript(
-                            """
+                Column(
+                    Modifier.align(Alignment.BottomCenter).padding(bottom = 30.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Button(
+                        onClick = {
+                            webViewNavigator.evaluateJavaScript(
+                                """
                             document.getElementById("subtitle").innerText = "Hello from KMM!";
                             window.kmpJsBridge.callNative("Greet",JSON.stringify({message: "Hello"}),
                                 function (data) {
@@ -96,13 +118,50 @@ internal fun BasicWebViewWithHTMLSample(navHostController: NavHostController? = 
                             );
                             callJS();
                             """.trimIndent(),
+                            ) {
+                                jsRes = it
+                            }
+                        },
+                        modifier = Modifier,
+                    ) {
+                        Text(jsRes)
+                    }
+
+                    Spacer(Modifier.height(12.dp))
+
+                    Button(
+                        onClick = {
+                            coroutineScope.launch {
+                                webViewSnapshotResult = webViewSnapshot.takeSnapshot(null)
+                            }
+                        },
+                        modifier = Modifier,
+                    ) {
+                        Text("Take Snapshot")
+                    }
+                }
+
+                // When WebView's Bitmap image is captured, show snapshot in dialog
+                webViewSnapshotResult?.let { bitmap ->
+                    Dialog(onDismissRequest = { }) {
+                        Column(
+                            modifier = Modifier
+                                .background(LightGray)
+                                .padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
-                            jsRes = it
+                            Text("Preview of WebView snapshot")
+                            Spacer(Modifier.size(16.dp))
+                            Image(
+                                bitmap = bitmap,
+                                contentDescription = "Preview of WebViewSnapshot"
+                            )
+                            Spacer(Modifier.size(4.dp))
+                            Button(onClick = { webViewSnapshotResult = null }) {
+                                Text("Close Snapshot Preview")
+                            }
                         }
-                    },
-                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 50.dp),
-                ) {
-                    Text(jsRes)
+                    }
                 }
             }
         }
