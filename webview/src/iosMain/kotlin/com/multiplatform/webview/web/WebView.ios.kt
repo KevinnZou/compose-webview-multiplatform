@@ -141,6 +141,8 @@ fun IOSWebView(
                         showsVerticalScrollIndicator = it.showVerticalScrollIndicator
                     }
                 }
+
+                this.setInspectable(state.webSettings.iOSWebSettings.isInspectable)
             }.also {
                 val iosWebView = IOSWebView(it, scope, webViewJsBridge)
                 state.webView = iosWebView
