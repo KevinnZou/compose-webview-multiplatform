@@ -54,15 +54,11 @@ import kotlinx.coroutines.flow.filter
 @Composable
 internal fun BasicWebViewSample(navHostController: NavHostController? = null) {
     val initialUrl = "https://github.com/KevinnZou/compose-webview-multiplatform"
-    val state = rememberWebViewState(url = initialUrl)
-    DisposableEffect(Unit) {
-        state.webSettings.apply {
-            logSeverity = KLogSeverity.Debug
-            customUserAgentString =
-                "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1) AppleWebKit/625.20 (KHTML, like Gecko) Version/14.3.43 Safari/625.20"
-        }
-
-        onDispose { }
+    val state = rememberWebViewState(url = initialUrl) {
+        logSeverity = KLogSeverity.Debug
+        customUserAgentString =
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1) AppleWebKit/625.20 (KHTML, like Gecko) Version/14.3.43 Safari/625.20"
+        iOSWebSettings.isInspectable = true
     }
     val navigator = rememberWebViewNavigator()
     var textFieldValue by remember(state.lastLoadedUrl) {

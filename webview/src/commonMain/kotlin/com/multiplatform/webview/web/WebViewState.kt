@@ -110,6 +110,7 @@ class WebViewState(webContent: WebContent) {
 fun rememberWebViewState(
     url: String,
     additionalHttpHeaders: Map<String, String> = emptyMap(),
+    extraSettings: WebSettings.() -> Unit = {},
 ): WebViewState =
 // Rather than using .apply {} here we will recreate the state, this prevents
     // a recomposition loop when the webview updates the url itself.
@@ -126,6 +127,7 @@ fun rememberWebViewState(
                 url = url,
                 additionalHttpHeaders = additionalHttpHeaders,
             )
+        extraSettings(this.webSettings)
     }
 
 /**
