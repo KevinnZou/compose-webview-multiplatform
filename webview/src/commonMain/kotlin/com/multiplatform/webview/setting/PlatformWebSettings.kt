@@ -251,7 +251,6 @@ sealed class PlatformWebSettings {
          * Whether a user gesture is required to play media. The default is {@code true}.
          */
         var mediaPlaybackRequiresUserGesture: Boolean = true,
-
         /**
          * Whether the WebView supports inspection via MacOS Safari. The default value is {@code false}.
          */
