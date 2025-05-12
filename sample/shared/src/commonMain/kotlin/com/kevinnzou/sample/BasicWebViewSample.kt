@@ -19,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -54,16 +53,13 @@ import kotlinx.coroutines.flow.filter
 @Composable
 internal fun BasicWebViewSample(navHostController: NavHostController? = null) {
     val initialUrl = "https://github.com/KevinnZou/compose-webview-multiplatform"
-    val state = rememberWebViewState(url = initialUrl)
-    DisposableEffect(Unit) {
-        state.webSettings.apply {
+    val state =
+        rememberWebViewState(url = initialUrl) {
             logSeverity = KLogSeverity.Debug
             customUserAgentString =
                 "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1) AppleWebKit/625.20 (KHTML, like Gecko) Version/14.3.43 Safari/625.20"
+            iOSWebSettings.isInspectable = true
         }
-
-        onDispose { }
-    }
     val navigator = rememberWebViewNavigator()
     var textFieldValue by remember(state.lastLoadedUrl) {
         mutableStateOf(state.lastLoadedUrl)
