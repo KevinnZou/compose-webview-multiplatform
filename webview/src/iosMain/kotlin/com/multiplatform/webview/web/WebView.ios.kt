@@ -145,13 +145,13 @@ fun IOSWebView(
                 this.setInspectable(state.webSettings.iOSWebSettings.isInspectable)
             }.also {
                 val iosWebView = IOSWebView(it, scope, webViewJsBridge)
-                state.webView = iosWebView
+                state.webView.value = iosWebView
                 webViewJsBridge?.webView = iosWebView
             }
         },
         modifier = modifier,
         onRelease = {
-            state.webView = null
+            state.webView.value = null
             it.removeProgressObservers(
                 observer = observer,
             )

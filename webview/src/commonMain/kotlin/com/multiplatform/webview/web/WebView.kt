@@ -3,6 +3,8 @@ package com.multiplatform.webview.web
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
@@ -79,7 +81,7 @@ fun WebView(
     platformWebViewParams: PlatformWebViewParams? = null,
     factory: ((WebViewFactoryParam) -> NativeWebView)? = null,
 ) {
-    val webView = state.webView
+    val webView by state.webView.collectAsState()
 
     webView?.let { wv ->
         LaunchedEffect(wv, navigator) {
