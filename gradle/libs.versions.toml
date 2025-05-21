@@ -17,7 +17,7 @@ ktlint = "org.jlleitschuh.gradle.ktlint:11.6.1"
 maven-publish = "com.vanniktech.maven.publish:0.25.3"
 
 [libraries]
-android-activity-compose = "androidx.activity:activity-compose:1.8.2"
+android-activity-compose = "androidx.activity:activity-compose:1.10.1"
 android-appcompat = "androidx.appcompat:appcompat:1.6.1"
 android-webkit = "androidx.webkit:webkit:1.10.0"
 compose-navigation = "org.jetbrains.androidx.navigation:navigation-compose:2.8.0-alpha08"
