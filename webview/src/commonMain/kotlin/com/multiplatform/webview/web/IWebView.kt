@@ -1,5 +1,7 @@
 package com.multiplatform.webview.web
 
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.ImageBitmap
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 import compose_webview_multiplatform.webview.generated.resources.Res
@@ -223,4 +225,9 @@ interface IWebView {
      * Get the scroll offset of the WebView.
      */
     fun scrollOffset(): Pair<Int, Int>
+
+    /**
+     * Takes a snapshot of the WebView
+     */
+    fun takeSnapshot(rect: Rect?, completionHandler: (ImageBitmap?) -> Unit)
 }

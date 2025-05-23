@@ -30,6 +30,7 @@ actual fun ActualWebView(
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
     webViewJsBridge: WebViewJsBridge?,
+    webViewSnapshot: WebViewSnapshot?,
     onCreated: (NativeWebView) -> Unit,
     onDispose: (NativeWebView) -> Unit,
     platformWebViewParams: PlatformWebViewParams?,
@@ -41,6 +42,7 @@ actual fun ActualWebView(
         captureBackPresses = captureBackPresses,
         navigator = navigator,
         webViewJsBridge = webViewJsBridge,
+        webViewSnapshot = webViewSnapshot,
         onCreated = onCreated,
         onDispose = onDispose,
         factory = factory,
@@ -54,7 +56,8 @@ actual class PlatformWebViewParams
 
 /** Default WebView factory for iOS. */
 @OptIn(ExperimentalForeignApi::class)
-actual fun defaultWebViewFactory(param: WebViewFactoryParam) = WKWebView(frame = CGRectZero.readValue(), configuration = param.config)
+actual fun defaultWebViewFactory(param: WebViewFactoryParam) =
+    WKWebView(frame = CGRectZero.readValue(), configuration = param.config)
 
 /**
  * iOS WebView implementation.
@@ -67,6 +70,7 @@ fun IOSWebView(
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
     webViewJsBridge: WebViewJsBridge?,
+    webViewSnapshot: WebViewSnapshot?,
     onCreated: (NativeWebView) -> Unit,
     onDispose: (NativeWebView) -> Unit,
     factory: (WebViewFactoryParam) -> NativeWebView,
@@ -123,9 +127,9 @@ fun IOSWebView(
                         (it.iOSWebSettings.backgroundColor ?: it.backgroundColor).toUIColor()
                     val scrollViewColor =
                         (
-                            it.iOSWebSettings.underPageBackgroundColor
-                                ?: it.backgroundColor
-                        ).toUIColor()
+                                it.iOSWebSettings.underPageBackgroundColor
+                                    ?: it.backgroundColor
+                                ).toUIColor()
                     setOpaque(it.iOSWebSettings.opaque)
                     if (!it.iOSWebSettings.opaque) {
                         setBackgroundColor(backgroundColor)
@@ -147,6 +151,7 @@ fun IOSWebView(
                 val iosWebView = IOSWebView(it, scope, webViewJsBridge)
                 state.webView = iosWebView
                 webViewJsBridge?.webView = iosWebView
+                webViewSnapshot?.webView = iosWebView
             }
         },
         modifier = modifier,

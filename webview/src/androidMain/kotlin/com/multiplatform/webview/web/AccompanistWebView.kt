@@ -65,6 +65,7 @@ fun AccompanistWebView(
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
     webViewJsBridge: WebViewJsBridge? = null,
+    webViewSnapshot: WebViewSnapshot? = null,
     onCreated: (WebView) -> Unit = {},
     onDispose: (WebView) -> Unit = {},
     client: AccompanistWebViewClient = remember { AccompanistWebViewClient() },
@@ -101,6 +102,7 @@ fun AccompanistWebView(
             captureBackPresses,
             navigator,
             webViewJsBridge,
+            webViewSnapshot,
             onCreated,
             onDispose,
             client,
@@ -143,6 +145,7 @@ fun AccompanistWebView(
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
     webViewJsBridge: WebViewJsBridge? = null,
+    webViewSnapshot: WebViewSnapshot? = null,
     onCreated: (WebView) -> Unit = {},
     onDispose: (WebView) -> Unit = {},
     client: AccompanistWebViewClient = remember { AccompanistWebViewClient() },
@@ -234,6 +237,7 @@ fun AccompanistWebView(
                 val androidWebView = AndroidWebView(it, scope, webViewJsBridge)
                 state.webView = androidWebView
                 webViewJsBridge?.webView = androidWebView
+                webViewSnapshot?.webView = androidWebView
             }
         },
         modifier = modifier,

@@ -1,15 +1,27 @@
 package com.multiplatform.webview.web
 
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.toSkiaRect
 import com.multiplatform.webview.jsbridge.WKJsMessageHandler
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 import com.multiplatform.webview.util.getPlatformVersionDouble
+import com.multiplatform.webview.util.toCGRect
+import com.multiplatform.webview.util.toImageBitmap
 import kotlinx.cinterop.BetaInteropApi
+import kotlinx.cinterop.CValue
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.memScoped
+import kotlinx.cinterop.objcPtr
+import kotlinx.cinterop.readValue
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.CoroutineScope
+import platform.CoreGraphics.CGFloat
+import platform.CoreGraphics.CGRect
+import platform.CoreGraphics.CGRectGetHeight
+import platform.CoreGraphics.CGRectMake
 import platform.Foundation.HTTPBody
 import platform.Foundation.HTTPMethod
 import platform.Foundation.NSBundle
@@ -18,6 +30,8 @@ import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSURL
 import platform.Foundation.create
 import platform.Foundation.setValue
+import platform.UIKit.UIScreen
+import platform.WebKit.WKSnapshotConfiguration
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
 import platform.darwin.NSObjectMeta
@@ -179,6 +193,26 @@ class IOSWebView(
         offset.useContents {
             return Pair(x.toInt(), y.toInt())
         }
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    override fun takeSnapshot(rect: Rect?, completionHandler: (ImageBitmap?) -> Unit) {
+        val snapshotConfig = WKSnapshotConfiguration()
+        rect?.let {
+            snapshotConfig.rect = it.toCGRect()
+        }
+        webView.takeSnapshotWithConfiguration(
+            snapshotConfiguration = snapshotConfig,
+            completionHandler = { image, error ->
+                if (error != null) {
+                    KLogger.e("takeSnapshot error: ${error}")
+                    completionHandler.invoke(null)
+                } else {
+                    KLogger.e("takeSnapshot success")
+                    completionHandler.invoke(image?.toImageBitmap())
+                }
+            }
+        )
     }
 
     private class BundleMarker : NSObject() {
