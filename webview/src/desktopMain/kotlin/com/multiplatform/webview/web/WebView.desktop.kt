@@ -1,16 +1,16 @@
+@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+
 package com.multiplatform.webview.web
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
-import compose_webview_multiplatform.webview.generated.resources.Res
 import dev.datlag.kcef.KCEF
 import dev.datlag.kcef.KCEFBrowser
 import dev.datlag.kcef.KCEFClient
 import org.cef.browser.CefRendering
 import org.cef.browser.CefRequestContext
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
  * Desktop WebView implementation.
@@ -74,13 +74,14 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
                 param.rendering,
                 param.transparent,
             )
-        is WebContent.File ->
+        is WebContent.File -> {
             param.client.createBrowserWithHtml(
                 param.fileContent,
                 KCEFBrowser.BLANK_URI,
                 param.rendering,
                 param.transparent,
             )
+        }
         else ->
             param.client.createBrowser(
                 KCEFBrowser.BLANK_URI,
@@ -93,7 +94,6 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
 /**
  * Desktop WebView implementation.
  */
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun DesktopWebView(
     state: WebViewState,
@@ -117,21 +117,13 @@ fun DesktopWebView(
                 }
             }
         }
-    val scope = rememberCoroutineScope()
-    val fileContent by produceState("", state.content) {
-        value =
-            if (state.content is WebContent.File) {
-                val res = Res.readBytes("assets/${(state.content as WebContent.File).fileName}")
-                res.decodeToString().trimIndent()
-            } else {
-                ""
-            }
-    }
 
+    val scope = rememberCoroutineScope()
     val browser: KCEFBrowser? =
-        remember(client, state.webSettings, fileContent) {
-            client?.let { factory(WebViewFactoryParam(state, client, fileContent)) }
+        remember(client, state.webSettings) {
+            client?.let { factory(WebViewFactoryParam(state, client, "")) }
         }
+
     val desktopWebView: DesktopWebView? =
         remember(browser) {
             browser?.let { DesktopWebView(browser, scope, webViewJsBridge) }

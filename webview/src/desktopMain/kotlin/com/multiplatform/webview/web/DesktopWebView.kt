@@ -1,3 +1,5 @@
+@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
+
 package com.multiplatform.webview.web
 
 import com.multiplatform.webview.jsbridge.JsMessage
@@ -5,6 +7,8 @@ import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 import dev.datlag.kcef.KCEFBrowser
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import org.cef.browser.CefBrowser
 import org.cef.browser.CefFrame
@@ -14,6 +18,8 @@ import org.cef.handler.CefMessageRouterHandlerAdapter
 import org.cef.network.CefPostData
 import org.cef.network.CefPostDataElement
 import org.cef.network.CefRequest
+import org.jetbrains.compose.resources.InternalResourceApi
+import org.jetbrains.compose.resources.readResourceBytes
 
 actual typealias NativeWebView = KCEFBrowser
 
@@ -63,12 +69,50 @@ class DesktopWebView(
             "DesktopWebView loadHtml"
         }
         if (html != null) {
-            webView.loadHtml(html, baseUrl ?: KCEFBrowser.BLANK_URI)
+            try {
+                webView.loadHtml(html, baseUrl ?: KCEFBrowser.BLANK_URI)
+            } catch (e: Exception) {
+                KLogger.e { "DesktopWebView loadHtml error: ${e.message}" }
+            }
+        } else {
+            KLogger.e { "DesktopWebView loadHtml: HTML content is null" }
         }
     }
 
+    @OptIn(InternalResourceApi::class)
     override suspend fun loadHtmlFile(fileName: String) {
-        // TODO
+        try {
+            val res = readResourceBytes("assets/$fileName")
+            val content = res.decodeToString().trimIndent()
+
+            // Inline external resources (CSS and JS) since we can't use custom base URLs
+            val htmlWithInlinedResources = inlineExternalResources(content, fileName)
+
+            // Load HTML content with JS bridge and inline external resources with a bit delay
+            delay(200)
+            webView.loadHtml(htmlWithInlinedResources)
+        } catch (e: Exception) {
+            // Load error page using data URL
+            val errorHtml = """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Error Loading File</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; margin: 20px; color: #333; }
+                        .error { color: red; }
+                    </style>
+                </head>
+                <body>
+                    <h2 class="error">Error Loading File</h2>
+                    <p>Could not load file: $fileName</p>
+                    <p>Error: ${e.message}</p>
+                </body>
+                </html>
+                """.trimIndent()
+            delay(200)
+            webView.loadHtml(errorHtml)
+        }
     }
 
     override fun postUrl(
@@ -162,6 +206,53 @@ class DesktopWebView(
             }
         router.addHandler(handler, false)
         webView.client.addMessageRouter(router)
+    }
+
+    @OptIn(InternalResourceApi::class)
+    private fun inlineExternalResources(htmlContent: String, baseFileName: String): String {
+        var modifiedHtml = htmlContent
+
+        // Extract base path for relative resources
+        val basePath = if (baseFileName.contains("/")) {
+            baseFileName.substringBeforeLast("/") + "/"
+        } else {
+            ""
+        }
+
+        try {
+            // Inline CSS files
+            val cssPattern = """<link\s+[^>]*href\s*=\s*["']([^"']+\.css)["'][^>]*>""".toRegex(RegexOption.IGNORE_CASE)
+            modifiedHtml = cssPattern.replace(modifiedHtml) { matchResult ->
+                val cssFile = matchResult.groupValues[1]
+                try {
+                    val cssRes = runBlocking { readResourceBytes("assets/$basePath$cssFile") }
+                    val cssContent = cssRes.decodeToString()
+                    "<style>\n$cssContent\n</style>"
+                } catch (e: Exception) {
+                    KLogger.e { "DesktopWebView: Could not inline CSS $cssFile: ${e.message}" }
+                    matchResult.value // Keep original if can't inline
+                }
+            }
+
+            // Inline JS files
+            val jsPattern = """<script\s+[^>]*src\s*=\s*["']([^"']+\.js)["'][^>]*></script>""".toRegex(RegexOption.IGNORE_CASE)
+            modifiedHtml = jsPattern.replace(modifiedHtml) { matchResult ->
+                val jsFile = matchResult.groupValues[1]
+                try {
+                    val jsRes = runBlocking { readResourceBytes("assets/$basePath$jsFile") }
+                    val jsContent = jsRes.decodeToString()
+                    "<script>\n$jsContent\n</script>"
+                } catch (e: Exception) {
+                    KLogger.e { "DesktopWebView: Could not inline JS $jsFile: ${e.message}" }
+                    matchResult.value // Keep original if can't inline
+                }
+            }
+
+        } catch (e: Exception) {
+            KLogger.e { "DesktopWebView: Error during resource inlining: ${e.message}" }
+        }
+
+        return modifiedHtml
     }
 
     override fun saveState(): WebViewBundle? {
