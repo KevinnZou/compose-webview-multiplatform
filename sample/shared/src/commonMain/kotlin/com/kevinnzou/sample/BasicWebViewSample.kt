@@ -1,18 +1,23 @@
 package com.kevinnzou.sample
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -69,73 +74,84 @@ internal fun BasicWebViewSample(navHostController: NavHostController? = null) {
         mutableStateOf(state.lastLoadedUrl)
     }
     MaterialTheme {
-        Column {
-            TopAppBar(
-                title = { Text(text = "WebView Sample") },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (navigator.canGoBack) {
-                            navigator.navigateBack()
-                        } else {
-                            navHostController?.popBackStack()
+        Scaffold { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+            ) {
+                TopAppBar(
+                    modifier = Modifier.background(
+                        color = MaterialTheme.colors.primary
+                    ).padding(
+                        top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+                    ),
+                    title = { Text(text = "WebView Sample") },
+                    navigationIcon = {
+                        IconButton(onClick = {
+                            if (navigator.canGoBack) {
+                                navigator.navigateBack()
+                            } else {
+                                navHostController?.popBackStack()
+                            }
+                        }) {
+                            Icon(
+                                imageVector = Icons.Default.ArrowBack,
+                                contentDescription = "Back",
+                            )
                         }
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back",
+                    },
+                )
+
+                Row {
+                    Box(modifier = Modifier.weight(1f)) {
+                        if (state.errorsForCurrentRequest.isNotEmpty()) {
+                            Image(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = "Error",
+                                colorFilter = ColorFilter.tint(Color.Red),
+                                modifier =
+                                    Modifier
+                                        .align(Alignment.CenterEnd)
+                                        .padding(8.dp),
+                            )
+                        }
+
+                        OutlinedTextField(
+                            value = textFieldValue ?: "",
+                            onValueChange = { textFieldValue = it },
+                            modifier = Modifier.fillMaxWidth(),
                         )
                     }
-                },
-            )
 
-            Row {
-                Box(modifier = Modifier.weight(1f)) {
-                    if (state.errorsForCurrentRequest.isNotEmpty()) {
-                        Image(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Error",
-                            colorFilter = ColorFilter.tint(Color.Red),
-                            modifier =
-                                Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .padding(8.dp),
-                        )
+                    Button(
+                        onClick = {
+                            textFieldValue?.let {
+                                navigator.loadUrl(it)
+                            }
+                        },
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                    ) {
+                        Text("Go")
                     }
+                }
 
-                    OutlinedTextField(
-                        value = textFieldValue ?: "",
-                        onValueChange = { textFieldValue = it },
+                val loadingState = state.loadingState
+                if (loadingState is LoadingState.Loading) {
+                    LinearProgressIndicator(
+                        progress = loadingState.progress,
                         modifier = Modifier.fillMaxWidth(),
                     )
                 }
 
-                Button(
-                    onClick = {
-                        textFieldValue?.let {
-                            navigator.loadUrl(it)
-                        }
-                    },
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                ) {
-                    Text("Go")
-                }
-            }
-
-            val loadingState = state.loadingState
-            if (loadingState is LoadingState.Loading) {
-                LinearProgressIndicator(
-                    progress = loadingState.progress,
-                    modifier = Modifier.fillMaxWidth(),
+                WebView(
+                    state = state,
+                    modifier =
+                        Modifier
+                            .fillMaxSize(),
+                    navigator = navigator,
                 )
             }
-
-            WebView(
-                state = state,
-                modifier =
-                    Modifier
-                        .fillMaxSize(),
-                navigator = navigator,
-            )
         }
     }
 }

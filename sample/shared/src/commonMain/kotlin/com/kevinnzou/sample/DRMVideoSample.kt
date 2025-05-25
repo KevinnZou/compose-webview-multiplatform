@@ -1,10 +1,16 @@
 package com.kevinnzou.sample
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -42,30 +48,43 @@ internal fun DRMVideoSample(navHostController: NavHostController? = null) {
     val navigator = rememberWebViewNavigator()
 
     MaterialTheme {
-        Column {
-            TopAppBar(
-                title = { Text(text = "DRM Video Sample") },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (navigator.canGoBack) {
-                            navigator.navigateBack()
-                        } else {
-                            navHostController?.popBackStack()
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                },
-            )
+        Scaffold { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
+            ) {
+                Column {
+                    TopAppBar(
+                        modifier = Modifier.background(
+                            color = MaterialTheme.colors.primary
+                        ).padding(
+                            top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+                        ),
+                        title = { Text(text = "DRM Video Sample") },
+                        navigationIcon = {
+                            IconButton(onClick = {
+                                if (navigator.canGoBack) {
+                                    navigator.navigateBack()
+                                } else {
+                                    navHostController?.popBackStack()
+                                }
+                            }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = "Back",
+                                )
+                            }
+                        },
+                    )
 
-            WebView(
-                state = state,
-                modifier = Modifier.fillMaxSize(),
-                navigator = navigator,
-            )
+                    WebView(
+                        state = state,
+                        modifier = Modifier.fillMaxSize(),
+                        navigator = navigator,
+                    )
+                }
+            }
         }
     }
 }
