@@ -71,7 +71,7 @@ actual fun getPlatformWebViewParams(): PlatformWebViewParams? {
         }
 
     LaunchedEffect(key1 = fileChooserIntent) {
-        if (fileChooserIntent != null) {
+        fileChooserIntent?.let { fileChooserIntent ->
             try {
                 launcher.launch(fileChooserIntent)
             } catch (e: ActivityNotFoundException) {

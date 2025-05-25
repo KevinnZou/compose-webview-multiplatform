@@ -2,6 +2,7 @@
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.android.library)
     alias(libs.plugins.compose.multiplatorm)
     alias(libs.plugins.dokka)
@@ -11,8 +12,7 @@ plugins {
 
 kotlin {
 //    explicitApi = ExplicitApiMode.Strict
-
-    targetHierarchy.default()
+    applyDefaultHierarchyTemplate()
 
     androidTarget {
         publishLibraryVariants("release")
@@ -62,10 +62,6 @@ kotlin {
 android {
     compileSdk = (findProperty("android.compileSdk") as String).toInt()
     namespace = "com.multiplatform.webview"
-
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
-    sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {
         minSdk = (findProperty("android.minSdk") as String).toInt()
