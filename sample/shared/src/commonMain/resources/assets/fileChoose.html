@@ -1,25 +1,179 @@
 <html>
 <head>
-    <header>
-        <meta name='viewport'
-              content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'>
-    </header>
+    <meta name='viewport'
+          content='width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no'>
     <link rel="stylesheet" type="text/css" href="styles.css">
     <title>Compose WebView Multiplatform</title>
 </head>
 <body>
-<h1>Compose WebView Multiplatform</h1>
-<div>
-    <text>image: </text>
-    <input type="file" multiple name="image" id="imageChoose" accept="image/*">
-</div>
-<div>
-    <text>video: </text>
-    <input type="file" multiple name="video" id="videoChoose" accept="video/*">
-</div>
-<div>
-    <text>audio: </text>
-    <input type="file" multiple name="audio" id="audioChoose" accept="audio/*">
-</div>
+<header>
+    <h1>Compose WebView Multiplatform</h1>
+</header>
+<main>
+    <div class="upload-container">
+        <div class="upload-dummy" style="display: none;"></div>
+        <div class="upload-card">
+            <label for="imageChoose" class="upload-label">Upload Images</label>
+            <input type="file" multiple name="upload-input" id="imageChoose" accept="image/*"
+                   class="upload-input">
+            <div id="imagePreview" class="preview-area"></div>
+        </div>
+        <div class="upload-card">
+            <label for="videoChoose" class="upload-label">Upload Videos</label>
+            <input type="file" multiple name="upload-input" id="videoChoose" accept="video/*"
+                   class="upload-input">
+            <div id="videoPreview" class="preview-area"></div>
+        </div>
+        <div class="upload-card">
+            <label for="audioChoose" class="upload-label">Upload Audio</label>
+            <input type="file" multiple name="upload-input" id="audioChoose" accept="audio/*"
+                   class="upload-input">
+            <div id="audioPreview" class="preview-area"></div>
+        </div>
+    </div>
+</main>
+<script>
+
+    // File upload preview functionality
+    function handleFileSelect(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const preview = document.getElementById('preview');
+                preview.innerHTML = ''; // Clear previous preview
+
+                const file = input.files[0];
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+                const fileURL = e.target.result;
+
+                if (['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(fileExtension)) {
+                    // Image file
+                    const img = document.createElement('img');
+                    img.src = fileURL;
+                    img.style.maxWidth = '100%';
+                    preview.appendChild(img);
+                } else if (['mp4', 'webm', 'ogg', 'mov'].includes(fileExtension)) {
+                    // Video file
+                    const video = document.createElement('video');
+                    video.src = fileURL;
+                    video.controls = true;
+                    video.style.maxWidth = '100%';
+                    preview.appendChild(video);
+                } else if (['mp3', 'wav', 'ogg', 'flac'].includes(fileExtension)) {
+                    // Audio file
+                    const audio = document.createElement('audio');
+                    audio.src = fileURL;
+                    audio.controls = true;
+                    preview.appendChild(audio);
+                } else {
+                    // Other file types
+                    const message = document.createElement('p');
+                    message.textContent = 'Unsupported file type: ' + file.name;
+                    preview.appendChild(message);
+                }
+            };
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function initFilePreview() {
+        const fileInput = document.getElementById('fileInput');
+        if (fileInput) {
+            fileInput.addEventListener('change', function () {
+                handleFileSelect(this);
+            });
+        }
+    }
+
+    document.getElementById('imageChoose').addEventListener('change', function (event) {
+        const previewArea = document.getElementById('imagePreview');
+        previewArea.innerHTML = '';
+        if (event.target.files.length > 0) {
+            for (let i = 0; i < event.target.files.length; i++) {
+                const file = event.target.files[i];
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const container = document.createElement('div');
+                    container.className = 'preview-item image-preview';
+
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.alt = file.name;
+                    container.appendChild(img);
+
+                    const fileName = document.createElement('div');
+                    fileName.className = 'file-name';
+                    fileName.textContent = file.name;
+                    container.appendChild(fileName);
+
+                    previewArea.appendChild(container);
+                };
+                reader.readAsDataURL(file);
+            }
+        } else {
+            previewArea.style.display = 'none';
+        }
+    });
+
+    document.getElementById('videoChoose').addEventListener('change', function (event) {
+        const previewArea = document.getElementById('videoPreview');
+        previewArea.innerHTML = '';
+        if (event.target.files.length > 0) {
+            for (let i = 0; i < event.target.files.length; i++) {
+                const file = event.target.files[i];
+                const container = document.createElement('div');
+                container.className = 'preview-item video-preview';
+
+                const video = document.createElement('video');
+                const objectURL = URL.createObjectURL(file);
+                video.src = objectURL;
+                video.controls = true;
+                container.appendChild(video);
+
+                const fileName = document.createElement('div');
+                fileName.className = 'file-name';
+                fileName.textContent = file.name;
+                container.appendChild(fileName);
+
+                previewArea.appendChild(container);
+
+                // Revoke the object URL when the video is no longer needed
+                video.addEventListener('loadeddata', function () {
+                    URL.revokeObjectURL(objectURL);
+                });
+            }
+        } else {
+            previewArea.style.display = 'none';
+        }
+    });
+
+    document.getElementById('audioChoose').addEventListener('change', function (event) {
+        const previewArea = document.getElementById('audioPreview');
+        previewArea.innerHTML = '';
+        if (event.target.files.length > 0) {
+            for (let i = 0; i < event.target.files.length; i++) {
+                const file = event.target.files[i];
+                const container = document.createElement('div');
+                container.className = 'preview-item audio-preview';
+
+                const audio = document.createElement('audio');
+                audio.src = URL.createObjectURL(file);
+                audio.controls = true;
+                container.appendChild(audio);
+
+                const fileName = document.createElement('div');
+                fileName.className = 'file-name';
+                fileName.textContent = file.name;
+                container.appendChild(fileName);
+
+                previewArea.appendChild(container);
+            }
+        } else {
+            previewArea.style.display = 'none';
+        }
+    });
+</script>
 </body>
 </html>
