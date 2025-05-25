@@ -6,6 +6,7 @@ import com.multiplatform.webview.util.KLogger
 import com.multiplatform.webview.util.getPlatformVersionDouble
 import com.multiplatform.webview.util.notZero
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.ObjCSignatureOverride
 import platform.CoreGraphics.CGPointMake
 import platform.Foundation.HTTPMethod
 import platform.Foundation.NSError
@@ -34,6 +35,7 @@ class WKNavigationDelegate(
     /**
      * Called when the web view begins to receive web content.
      */
+    @ObjCSignatureOverride
     override fun webView(
         webView: WKWebView,
         didStartProvisionalNavigation: WKNavigation?,
@@ -49,6 +51,7 @@ class WKNavigationDelegate(
     /**
      * Called when the web view receives a server redirect.
      */
+    @ObjCSignatureOverride
     override fun webView(
         webView: WKWebView,
         didCommitNavigation: WKNavigation?,
@@ -66,6 +69,7 @@ class WKNavigationDelegate(
      * Called when the web view finishes loading.
      */
     @OptIn(ExperimentalForeignApi::class)
+    @ObjCSignatureOverride
     override fun webView(
         webView: WKWebView,
         didFinishNavigation: WKNavigation?,
