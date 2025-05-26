@@ -126,23 +126,21 @@
                 const container = document.createElement('div');
                 container.className = 'preview-item video-preview';
 
-                const video = document.createElement('video');
-                const objectURL = URL.createObjectURL(file);
-                video.src = objectURL;
-                video.controls = true;
-                container.appendChild(video);
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const video = document.createElement('video');
+                    video.src = e.target.result;
+                    video.controls = true;
+                    container.appendChild(video);
 
-                const fileName = document.createElement('div');
-                fileName.className = 'file-name';
-                fileName.textContent = file.name;
-                container.appendChild(fileName);
+                    const fileName = document.createElement('div');
+                    fileName.className = 'file-name';
+                    fileName.textContent = file.name;
+                    container.appendChild(fileName);
 
-                previewArea.appendChild(container);
-
-                // Revoke the object URL when the video is no longer needed
-                video.addEventListener('loadeddata', function () {
-                    URL.revokeObjectURL(objectURL);
-                });
+                    previewArea.appendChild(container);
+                };
+                reader.readAsDataURL(file);
             }
         } else {
             previewArea.style.display = 'none';

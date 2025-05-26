@@ -110,7 +110,7 @@ fun WebView(
                     }
 
                     is WebContent.File -> {
-                        wv.loadHtmlFile(content.fileName)
+                        wv.loadHtmlFile(content.fileName, content.readType)
                     }
 
                     is WebContent.Post -> {

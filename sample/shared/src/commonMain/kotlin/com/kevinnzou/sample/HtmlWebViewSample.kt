@@ -22,7 +22,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -36,9 +35,11 @@ import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.WebViewFileReadType
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
+import compose_webview_multiplatform.sample.shared.generated.resources.Res
 import kotlinx.coroutines.flow.filter
 
 /**
@@ -55,7 +56,8 @@ internal fun BasicWebViewWithHTMLSample(navHostController: NavHostController? = 
     val html = HtmlRes.html
     val webViewState =
         rememberWebViewStateWithHTMLFile(
-            fileName = "index.html",
+            fileName = Res.getUri("files/samples/index.html"),
+            readType = WebViewFileReadType.COMPOSE_RESOURCE_FILES,
         )
 //    val webViewState = rememberWebViewStateWithHTMLData(html)
     val webViewNavigator = rememberWebViewNavigator()

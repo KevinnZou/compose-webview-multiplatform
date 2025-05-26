@@ -24,12 +24,14 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import com.kevinnzou.sample.MainWebView
+import com.multiplatform.webview.util.addTempDirectoryRemovalHook
 import dev.datlag.kcef.KCEF
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
 fun main() = application {
+    addTempDirectoryRemovalHook()
     Window(onCloseRequest = ::exitApplication, title = "Compose WebView Multiplatform") {
         var restartRequired by remember { mutableStateOf(false) }
         var downloading by remember { mutableStateOf(0F) }

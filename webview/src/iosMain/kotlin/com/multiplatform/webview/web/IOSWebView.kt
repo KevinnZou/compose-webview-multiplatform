@@ -18,6 +18,8 @@ import platform.Foundation.NSMutableURLRequest
 import platform.Foundation.NSURL
 import platform.Foundation.create
 import platform.Foundation.setValue
+import platform.Foundation.NSString
+import platform.Foundation.stringByDeletingLastPathComponent
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
 import platform.darwin.NSObjectMeta
@@ -84,10 +86,65 @@ class IOSWebView(
         )
     }
 
-    override suspend fun loadHtmlFile(fileName: String) {
-        val res = NSBundle.mainBundle.resourcePath + "/compose-resources/assets/" + fileName
-        val url = NSURL.fileURLWithPath(res)
-        webView.loadFileURL(url, url)
+    override suspend fun loadHtmlFile(fileName: String, readType: WebViewFileReadType) {
+        KLogger.i { "Attempting to load HTML file: $fileName with readType: $readType" }
+        try {
+            val fileURL: NSURL
+            var readAccessURL: NSURL? = null
+
+            when (readType) {
+                WebViewFileReadType.ASSET_RESOURCES -> {
+                    val resourcePath = (NSBundle.mainBundle.resourcePath ?: "") + "/compose-resources/assets/" + fileName
+                    fileURL = NSURL.fileURLWithPath(resourcePath)
+                    
+                    val parentDir = (resourcePath as NSString).stringByDeletingLastPathComponent()
+                    if (parentDir.isNotBlank()) {
+                         readAccessURL = NSURL.fileURLWithPath(parentDir)
+                    } else {
+                         readAccessURL = NSURL.fileURLWithPath(NSBundle.mainBundle.resourcePath!!)
+                    }
+                    KLogger.i { "FROM_RAW_RESOURCES: fileURL=${fileURL.absoluteString}, readAccessURL=${readAccessURL?.absoluteString}" }
+                }
+                WebViewFileReadType.COMPOSE_RESOURCE_FILES -> {
+                    fileURL = NSURL(string = fileName)
+                    val readAccessURLPath = (fileName as NSString).stringByDeletingLastPathComponent()
+                    readAccessURL = NSURL(string = readAccessURLPath)
+                    KLogger.i { "FROM_COMPOSE_RESOURCE_FILES: fileURL=${fileURL.absoluteString}, readAccessURL=${readAccessURL?.absoluteString}" }
+                }
+            }
+
+            if (!fileURL.isFileURL()) {
+                KLogger.e { "The determined fileURL is not a valid file URL: ${fileURL.absoluteString}" }
+                loadHtml("<html><body>Error: Not a file URL: ${fileURL.absoluteString}</body></html>")
+                return
+            }
+
+            // Ensure readAccessURL is valid, otherwise WKWebView might not load local resources.
+            val finalReadAccessURL = readAccessURL
+            
+            if (finalReadAccessURL.path.isNullOrEmpty()) {
+                 KLogger.e { "Critical: finalReadAccessURL is null or has an empty path. Cannot load file with proper read access for ${fileURL.absoluteString}" }
+                 loadHtml("<html><body>Error: Cannot determine read access URL for ${fileURL.absoluteString}</body></html>")
+                 return
+            }
+
+            KLogger.i { "Final - Loading fileURL: ${fileURL.absoluteString}" }
+            KLogger.i { "Final - Allowing read access to: ${finalReadAccessURL.absoluteString}" }
+
+            webView.loadFileURL(fileURL, finalReadAccessURL)
+        } catch (e: Exception) {
+            KLogger.e(e) { "Error loading HTML file: $fileName (readType: $readType)" }
+            val errorHtml = """
+                <!DOCTYPE html>
+                <html><head><title>Error</title></head>
+                <body>
+                    <h1>Error Loading File</h1>
+                    <p>Could not load: $fileName (readType: $readType)</p>
+                    <p>Error: ${e.message}</p>
+                </body></html>
+            """.trimIndent()
+            loadHtml(errorHtml)
+        }
     }
 
     @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)

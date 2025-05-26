@@ -24,6 +24,7 @@ import androidx.navigation.NavHostController
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.PlatformWebViewParams
 import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.WebViewFileReadType
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
 
@@ -34,11 +35,14 @@ import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
  */
 @Composable
 internal fun FileChooseWebViewSample(navHostController: NavHostController? = null) {
-    val webViewState = rememberWebViewStateWithHTMLFile(fileName = "fileChoose.html")
+    val webViewState = rememberWebViewStateWithHTMLFile(
+        fileName = "fileChoose.html",
+        readType = WebViewFileReadType.ASSET_RESOURCES
+    )
     val webViewNavigator = rememberWebViewNavigator()
     LaunchedEffect(Unit) {
         webViewState.webSettings.zoomLevel = 1.0
-        
+
         webViewState.webSettings.apply {
             zoomLevel = 1.0
             logSeverity = KLogSeverity.Debug

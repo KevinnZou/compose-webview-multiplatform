@@ -29,6 +29,7 @@ sealed class WebContent {
 
     data class File(
         val fileName: String,
+        val readType: WebViewFileReadType
     ) : WebContent()
 
     /**

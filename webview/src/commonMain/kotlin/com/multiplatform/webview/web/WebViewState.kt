@@ -217,14 +217,51 @@ fun rememberWebViewStateWithHTMLData(
 /**
  * Creates a WebView state for HTML file loading that is remembered across Compositions.
  *
- * @param fileName The file to load in the WebView
- * Please note that the file should be placed in the commonMain/resources/assets folder.
- * The fileName just need to be the relative path to the assets folder.
+ * @param fileName The file path or URI string to load in the WebView. The exact format and
+ *                 interpretation of this string (e.g., relative path, absolute URI)
+ *                 depend on the value of the [readType] parameter.
+ * @param readType Specifies the method and source location for loading the HTML file.
+ *                 This parameter is of type [WebViewFileReadType] and dictates how the
+ *                 [fileName] should be treated by the underlying platform-specific WebView
+ *                 implementation.
+ *
+ *                 Possible values for `readType` and their implications for `fileName`:
+ *                 - **`WebViewFileReadType.ASSET_RESOURCES` (Default)**:
+ *                     - **Android**: Expects `fileName` to be a path relative to the
+ *                       Android `assets` folder (e.g., "index.html" or "www/index.html").
+ *                       The WebView will typically load this using a "file:///android_asset/"-based URL.
+ *                     - **iOS**: Expects `fileName` to be a path relative to the main
+ *                       bundle's resources, often within a specific assets or resources directory
+ *                       conventionally used (e.g., "assets/index.html" or a path resolved via
+ *                       `NSBundle.mainBundle.pathForResource`). The `loadHtmlFile` implementation
+ *                       constructs an appropriate `file:///` URL to this bundled resource.
+ *                     - **Desktop (JAR)**: Expects `fileName` to be a path relative to a
+ *                       predefined root within the JAR's classpath, typically an "assets"
+ *                       folder (e.g., "index.html" would be loaded from "/assets/index.html"
+ *                       within the JAR).
+ *
+ *                 - **`WebViewFileReadType.COMPOSE_RESOURCE_FILES`**:
+ *                     - **All Platforms**: Expects `fileName` to be the URI string
+ *                       obtained from `org.jetbrains.compose.resources.Res.getUri("files/your_file.html")`.
+ *                       This is the recommended approach for platform-agnostic file access
+ *                       using Compose Multiplatform resources.
+ *                       - **Android**: `Res.getUri()` typically returns a "file:///android_asset/composeResources/files/..." URI.
+ *                       - **iOS**: `Res.getUri()` typically returns an absolute "file:///..." URI pointing to the resource within the app bundle.
+ *                       - **Desktop (JAR)**: `Res.getUri()` typically returns a "jar:file:///path/to/your.jar!/composeResources/files/..." URI.
+ *                       The platform-specific `loadHtmlFile` implementations are responsible for correctly parsing these URIs.
+ *
+ *                 The default value is `WebViewFileReadType.ASSET_RESOURCES`.
+ *
+ * @see WebViewFileReadType
+ * @see WebContent.File
  */
 @Composable
-fun rememberWebViewStateWithHTMLFile(fileName: String): WebViewState =
+fun rememberWebViewStateWithHTMLFile(
+    fileName: String,
+    readType: WebViewFileReadType = WebViewFileReadType.ASSET_RESOURCES
+): WebViewState =
     remember {
-        WebViewState(WebContent.File(fileName))
+        WebViewState(WebContent.File(fileName, readType))
     }.apply {
-        this.content = WebContent.File(fileName)
+        this.content = WebContent.File(fileName,readType)
     }
