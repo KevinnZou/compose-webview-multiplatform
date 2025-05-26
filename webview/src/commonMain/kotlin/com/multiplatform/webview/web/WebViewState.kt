@@ -258,10 +258,22 @@ fun rememberWebViewStateWithHTMLData(
 @Composable
 fun rememberWebViewStateWithHTMLFile(
     fileName: String,
-    readType: WebViewFileReadType = WebViewFileReadType.ASSET_RESOURCES
+    readType: WebViewFileReadType
 ): WebViewState =
     remember {
         WebViewState(WebContent.File(fileName, readType))
     }.apply {
         this.content = WebContent.File(fileName,readType)
+    }
+
+
+@Composable
+@Deprecated("Use the overloaded rememberWebViewStateWithHTMLFile(fileName: String, readType: WebViewFileReadType) instead. Pass readType = WebViewFileReadType.ASSET_RESOURCES explicitly to make the loading source clear.")
+fun rememberWebViewStateWithHTMLFile(
+    fileName: String
+): WebViewState =
+    remember {
+        WebViewState(WebContent.File(fileName,  WebViewFileReadType.ASSET_RESOURCES))
+    }.apply {
+        this.content = WebContent.File(fileName,WebViewFileReadType.ASSET_RESOURCES)
     }
