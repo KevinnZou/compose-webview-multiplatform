@@ -2,6 +2,7 @@ package com.multiplatform.webview.web
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -78,11 +79,11 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
                 param.transparent,
             )
         is WebContent.File -> {
-            param.client.createBrowserWithHtml(
-                param.fileContent,
+            param.client.createBrowser(
                 KCEFBrowser.BLANK_URI,
                 param.rendering,
                 param.transparent,
+                param.requestContext,
             )
         }
         else ->
@@ -123,21 +124,28 @@ fun DesktopWebView(
 
     val scope = rememberCoroutineScope()
     val browser: KCEFBrowser? =
-        remember(client, state.webSettings) {
+        remember(client, state.webSettings, state.content) {
             client?.let { factory(WebViewFactoryParam(state, client, "")) }
         }
 
     val desktopWebView: DesktopWebView? =
-        remember(browser) {
-            browser?.let { DesktopWebView(browser, scope, webViewJsBridge) }
+        remember(browser, state.content) {
+            browser?.let {
+                DesktopWebView(browser, scope, webViewJsBridge)
+            }
         }
+
+    LaunchedEffect(desktopWebView) {
+        desktopWebView?.let { webView ->
+            state.webView = webView
+            webViewJsBridge?.webView = webView
+        }
+    }
 
     browser?.let {
         SwingPanel(
             factory = {
                 onCreated(it)
-                state.webView = desktopWebView
-                webViewJsBridge?.webView = desktopWebView
                 browser.apply {
                     addDisplayHandler(state)
                     addLoadListener(state, navigator)
