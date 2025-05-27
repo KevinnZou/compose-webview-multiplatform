@@ -75,6 +75,7 @@ class DesktopWebView(
                 webView.loadHtml(html, baseUrl ?: KCEFBrowser.BLANK_URI)
             } catch (e: Exception) {
                 KLogger.e { "DesktopWebView loadHtml error: ${e.message}" }
+                e.printStackTrace()
             }
         } else {
             KLogger.e { "DesktopWebView loadHtml: HTML content is null" }
@@ -127,7 +128,7 @@ class DesktopWebView(
                         }
                     }
 
-                    delay(200)
+                    delay(500)
                     webView.loadURL("file://${outFile.absolutePath}")
                 }
 
@@ -150,19 +151,19 @@ class DesktopWebView(
                     for (entry in jarFile.entries()) {
                         if (entry.name.startsWith(pathInJar.substringBeforeLast("/")) && !entry.isDirectory) {
                             val file =
-                                java.io.File(tempDirectory, entry.name.substringAfterLast("/"))
+                                File(tempDirectory, entry.name.substringAfterLast("/"))
                             file.outputStream().use { output ->
                                 jarFile.getInputStream(entry).copyTo(output)
                             }
                         }
                     }
 
-                    val htmlFile = java.io.File(tempDirectory, pathInJar.substringAfterLast("/"))
+                    val htmlFile = File(tempDirectory, pathInJar.substringAfterLast("/"))
                     if (!htmlFile.exists()) {
                         throw Exception("Extracted HTML file not found: ${htmlFile.absolutePath}")
                     }
 
-                    delay(200)
+                    delay(500)
                     webView.loadURL("file://${htmlFile.absolutePath}")
                 }
             }

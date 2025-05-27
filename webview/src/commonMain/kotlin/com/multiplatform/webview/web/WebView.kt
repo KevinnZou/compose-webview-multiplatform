@@ -83,9 +83,6 @@ fun WebView(
     webView?.let { wv ->
         LaunchedEffect(wv, navigator) {
             with(navigator) {
-                KLogger.d {
-                    "wv.handleNavigationEvents()"
-                }
                 wv.handleNavigationEvents()
             }
         }
@@ -93,37 +90,7 @@ fun WebView(
         // Handle content loading for all platforms
         LaunchedEffect(wv, state) {
             snapshotFlow { state.content }.collect { content ->
-                when (content) {
-                    is WebContent.Url -> {
-                        state.lastLoadedUrl = content.url
-                        wv.loadUrl(content.url, content.additionalHttpHeaders)
-                    }
-
-                    is WebContent.Data -> {
-                        wv.loadHtml(
-                            content.data,
-                            content.baseUrl,
-                            content.mimeType,
-                            content.encoding,
-                            content.historyUrl,
-                        )
-                    }
-
-                    is WebContent.File -> {
-                        wv.loadHtmlFile(content.fileName, content.readType)
-                    }
-
-                    is WebContent.Post -> {
-                        wv.postUrl(
-                            content.url,
-                            content.postData,
-                        )
-                    }
-
-                    is WebContent.NavigatorOnly -> {
-                        // NO-OP
-                    }
-                }
+                wv.loadContent(content)
             }
         }
 
@@ -160,9 +127,6 @@ fun WebView(
 
     DisposableEffect(Unit) {
         onDispose {
-            KLogger.d {
-                "WebView DisposableEffect"
-            }
             webViewJsBridge?.clear()
         }
     }
