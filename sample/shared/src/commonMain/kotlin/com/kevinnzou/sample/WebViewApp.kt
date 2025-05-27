@@ -2,16 +2,21 @@ package com.kevinnzou.sample
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,6 +66,19 @@ internal fun WebViewApp() {
 @Composable
 fun MainScreen(controller: NavController) {
     Scaffold { innerPadding ->
+        TopAppBar(
+            modifier =
+                Modifier
+                    .background(
+                        color = MaterialTheme.colors.primary,
+                    ).padding(
+                        top =
+                            WindowInsets.statusBars
+                                .asPaddingValues()
+                                .calculateTopPadding(),
+                    ),
+            title = { Text(text = "WebView Sample") },
+        )
         Column(
             modifier =
                 Modifier

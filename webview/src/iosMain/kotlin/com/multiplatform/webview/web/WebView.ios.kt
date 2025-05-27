@@ -125,36 +125,36 @@ fun IOSWebView(
                     )
                     this.navigationDelegate = navigationDelegate
 
-                state.webSettings.let {
-                    val backgroundColor =
-                        (it.iOSWebSettings.backgroundColor ?: it.backgroundColor).toUIColor()
-                    val scrollViewColor =
-                        (
-                            it.iOSWebSettings.underPageBackgroundColor
-                                ?: it.backgroundColor
-                        ).toUIColor()
-                    setOpaque(it.iOSWebSettings.opaque)
-                    if (!it.iOSWebSettings.opaque) {
-                        setBackgroundColor(backgroundColor)
-                        scrollView.setBackgroundColor(scrollViewColor)
+                    state.webSettings.let {
+                        val backgroundColor =
+                            (it.iOSWebSettings.backgroundColor ?: it.backgroundColor).toUIColor()
+                        val scrollViewColor =
+                            (
+                                it.iOSWebSettings.underPageBackgroundColor
+                                    ?: it.backgroundColor
+                            ).toUIColor()
+                        setOpaque(it.iOSWebSettings.opaque)
+                        if (!it.iOSWebSettings.opaque) {
+                            setBackgroundColor(backgroundColor)
+                            scrollView.setBackgroundColor(scrollViewColor)
+                        }
+                        scrollView.pinchGestureRecognizer?.enabled = it.supportZoom
                     }
-                    scrollView.pinchGestureRecognizer?.enabled = it.supportZoom
-                }
-                state.webSettings.iOSWebSettings.let {
-                    with(scrollView) {
-                        bounces = it.bounces
-                        scrollEnabled = it.scrollEnabled
-                        showsHorizontalScrollIndicator = it.showHorizontalScrollIndicator
-                        showsVerticalScrollIndicator = it.showVerticalScrollIndicator
+                    state.webSettings.iOSWebSettings.let {
+                        with(scrollView) {
+                            bounces = it.bounces
+                            scrollEnabled = it.scrollEnabled
+                            showsHorizontalScrollIndicator = it.showHorizontalScrollIndicator
+                            showsVerticalScrollIndicator = it.showVerticalScrollIndicator
+                        }
                     }
-                }
 
-                this.setInspectable(state.webSettings.iOSWebSettings.isInspectable)
-            }.also {
-                val iosWebView = IOSWebView(it, scope, webViewJsBridge)
-                state.webView = iosWebView
-                webViewJsBridge?.webView = iosWebView
-            }
+                    this.setInspectable(state.webSettings.iOSWebSettings.isInspectable)
+                }.also {
+                    val iosWebView = IOSWebView(it, scope, webViewJsBridge)
+                    state.webView = iosWebView
+                    webViewJsBridge?.webView = iosWebView
+                }
         },
         modifier = modifier,
         onRelease = {
