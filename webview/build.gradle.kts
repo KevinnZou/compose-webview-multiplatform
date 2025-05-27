@@ -1,5 +1,8 @@
 @file:Suppress("UNUSED_VARIABLE", "OPT_IN_USAGE")
 
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.compose)
@@ -30,6 +33,22 @@ kotlin {
             isStatic = true
         }
         iosTarget.setUpiOSObserver()
+    }
+
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser {
+            val rootDirPath = project.rootDir.path
+            val projectDirPath = project.projectDir.path
+            commonWebpackConfig {
+                devServer = (devServer ?: KotlinWebpackConfig.DevServer()).apply {
+                    static = (static ?: mutableListOf()).apply {
+                        add(rootDirPath)
+                        add(projectDirPath)
+                    }
+                }
+            }
+        }
     }
 
     sourceSets {
