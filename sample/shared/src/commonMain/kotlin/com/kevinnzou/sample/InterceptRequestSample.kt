@@ -98,17 +98,20 @@ internal fun InterceptRequestSample(navHostController: NavHostController? = null
     MaterialTheme {
         Scaffold { innerPadding ->
             Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
             ) {
                 Column {
                     TopAppBar(
-                        modifier = Modifier.background(
-                            color = MaterialTheme.colors.primary
-                        ).padding(
-                            top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-                        ),
+                        modifier =
+                            Modifier
+                                .background(
+                                    color = MaterialTheme.colors.primary,
+                                ).padding(
+                                    top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
+                                ),
                         title = { Text(text = "Intercept Request Sample") },
                         navigationIcon = {
                             IconButton(onClick = {
@@ -130,7 +133,7 @@ internal fun InterceptRequestSample(navHostController: NavHostController? = null
                     Text(
                         text =
                             "This sample demonstrates how to intercept requests in WebView. " +
-                                    "When the URL contains 'kotlin', the request will be redirected to 'https://kotlinlang.org/docs/multiplatform.html'.",
+                                "When the URL contains 'kotlin', the request will be redirected to 'https://kotlinlang.org/docs/multiplatform.html'.",
                         modifier = Modifier.padding(8.dp),
                     )
 

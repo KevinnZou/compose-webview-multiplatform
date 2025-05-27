@@ -1,8 +1,15 @@
 package com.multiplatform.webview.web
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateObserver
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
@@ -35,7 +42,7 @@ fun HtmlView(
     modifier: Modifier = Modifier,
     navigator: HtmlViewNavigator = rememberHtmlViewNavigator(),
     onCreated: (Element) -> Unit = {},
-    onDispose: (Element) -> Unit = {}
+    onDispose: (Element) -> Unit = {},
 ) {
     val scope = rememberCoroutineScope()
     val element = remember { mutableStateOf<Element?>(null) }
@@ -49,19 +56,20 @@ fun HtmlView(
     val componentReady = remember { mutableStateOf(false) }
 
     Box(
-        modifier = modifier.onGloballyPositioned { coordinates ->
-            val location = coordinates.positionInWindow().round()
-            val size = coordinates.size
-            if (componentReady.value) {
-                changeCoordinates(
-                    componentInfo.component,
-                    size.width / density,
-                    size.height / density,
-                    location.x / density,
-                    location.y / density
-                )
-            }
-        }
+        modifier =
+            modifier.onGloballyPositioned { coordinates ->
+                val location = coordinates.positionInWindow().round()
+                val size = coordinates.size
+                if (componentReady.value) {
+                    changeCoordinates(
+                        componentInfo.component,
+                        size.width / density,
+                        size.height / density,
+                        location.x / density,
+                        location.y / density,
+                    )
+                }
+            },
     ) {
         focusSwitcher.Content()
     }
@@ -79,69 +87,71 @@ fun HtmlView(
         state.htmlElement = componentInfo.component
         onCreated(componentInfo.component)
 
-        componentInfo.updater = Updater(componentInfo.component) { iframe ->
-            if (!eventsInitialized.value) {
-                eventsInitialized.value = true
+        componentInfo.updater =
+            Updater(componentInfo.component) { iframe ->
+                if (!eventsInitialized.value) {
+                    eventsInitialized.value = true
 
-                val loadCallback: (Event) -> Unit = {
-                    state.loadingState = HtmlLoadingState.Finished()
+                    val loadCallback: (Event) -> Unit = {
+                        state.loadingState = HtmlLoadingState.Finished()
 
-                    try {
-                        val title = getIframeTitleJs(iframe)
-                        if (title != null) {
-                            state.pageTitle = title
+                        try {
+                            val title = getIframeTitleJs(iframe)
+                            if (title != null) {
+                                state.pageTitle = title
+                            }
+
+                            val href = getIframeUrlJs(iframe)
+                            if (href != null && href != "about:blank") {
+                                state.lastLoadedUrl = href
+                            }
+                        } catch (e: Exception) {
+                            // Cross-origin restrictions might prevent access
                         }
+                    }
 
-                        val href = getIframeUrlJs(iframe)
-                        if (href != null && href != "about:blank") {
-                            state.lastLoadedUrl = href
-                        }
-                    } catch (e: Exception) {
-                        // Cross-origin restrictions might prevent access
+                    val errorCallback: (Event) -> Unit = {
+                        state.loadingState =
+                            HtmlLoadingState.Finished(
+                                isError = true,
+                                errorMessage = "Failed to load content",
+                            )
+                    }
+
+                    iframe.addEventListener("load", loadCallback)
+                    iframe.addEventListener("error", errorCallback)
+
+                    scope.launch {
+                        navigator.handleNavigationEvents(iframe)
                     }
                 }
 
-                val errorCallback: (Event) -> Unit = {
-                    state.loadingState = HtmlLoadingState.Finished(
-                        isError = true,
-                        errorMessage = "Failed to load content"
-                    )
+                when (val content = state.content) {
+                    is HtmlContent.Url -> {
+                        setUrlJs(iframe, content.url)
+                        state.loadingState = HtmlLoadingState.Loading
+                    }
+
+                    is HtmlContent.Data -> {
+                        setHtmlContentJs(iframe, content.data)
+                        state.loadingState = HtmlLoadingState.Loading
+                        addContentIdentifierJs(iframe)
+                    }
+
+                    is HtmlContent.Post -> {
+                        // POST requests not directly supported in iframe
+                    }
+
+                    HtmlContent.NavigatorOnly -> {
+                        // No content update needed
+                    }
                 }
 
-                iframe.addEventListener("load", loadCallback)
-                iframe.addEventListener("error", errorCallback)
-
-                scope.launch {
-                    navigator.handleNavigationEvents(iframe)
-                }
+                setStyleJs(iframe, "border", "none")
+                setStyleJs(iframe, "width", "100%")
+                setStyleJs(iframe, "height", "100%")
+                setStyleJs(iframe, "overflow", "auto")
             }
-
-            when (val content = state.content) {
-                is HtmlContent.Url -> {
-                    setUrlJs(iframe, content.url)
-                    state.loadingState = HtmlLoadingState.Loading
-                }
-
-                is HtmlContent.Data -> {
-                    setHtmlContentJs(iframe, content.data)
-                    state.loadingState = HtmlLoadingState.Loading
-                    addContentIdentifierJs(iframe)
-                }
-
-                is HtmlContent.Post -> {
-                    // POST requests not directly supported in iframe
-                }
-
-                HtmlContent.NavigatorOnly -> {
-                    // No content update needed
-                }
-            }
-
-            setStyleJs(iframe, "border", "none")
-            setStyleJs(iframe, "width", "100%")
-            setStyleJs(iframe, "height", "100%")
-            setStyleJs(iframe, "overflow", "auto")
-        }
 
         onDispose {
             (root as Element).removeChild(componentInfo.container)
@@ -173,7 +183,7 @@ class ComponentInfo<T : Element> {
  */
 class FocusSwitcher<T : Element>(
     private val info: ComponentInfo<T>,
-    private val focusManager: FocusManager
+    private val focusManager: FocusManager,
 ) {
     private val backwardRequester = FocusRequester()
     private val forwardRequester = FocusRequester()
@@ -214,8 +224,7 @@ class FocusSwitcher<T : Element>(
                             moveForward()
                         }
                     }
-                }
-                .focusTarget()
+                }.focusTarget(),
         )
         Box(
             Modifier
@@ -231,8 +240,7 @@ class FocusSwitcher<T : Element>(
                             moveBackward()
                         }
                     }
-                }
-                .focusTarget()
+                }.focusTarget(),
         )
     }
 }
@@ -242,13 +250,14 @@ class FocusSwitcher<T : Element>(
  */
 class Updater<T : Element>(
     private val component: T,
-    update: (T) -> Unit
+    update: (T) -> Unit,
 ) {
     private var isDisposed = false
 
-    private val snapshotObserver = SnapshotStateObserver { command ->
-        command()
-    }
+    private val snapshotObserver =
+        SnapshotStateObserver { command ->
+            command()
+        }
 
     private val scheduleUpdate = { _: T ->
         if (isDisposed.not()) {
@@ -290,7 +299,7 @@ fun HtmlViewUrl(
     url: String,
     modifier: Modifier = Modifier,
     headers: Map<String, String> = emptyMap(),
-    navigator: HtmlViewNavigator = rememberHtmlViewNavigator()
+    navigator: HtmlViewNavigator = rememberHtmlViewNavigator(),
 ) {
     val state = rememberHtmlViewState()
 
@@ -303,7 +312,7 @@ fun HtmlViewUrl(
         modifier = modifier,
         navigator = navigator,
         onCreated = {},
-        onDispose = {}
+        onDispose = {},
     )
 }
 
@@ -315,7 +324,7 @@ fun HtmlViewContent(
     htmlContent: String,
     modifier: Modifier = Modifier,
     baseUrl: String? = null,
-    navigator: HtmlViewNavigator = rememberHtmlViewNavigator()
+    navigator: HtmlViewNavigator = rememberHtmlViewNavigator(),
 ) {
     val state = rememberHtmlViewState()
 
@@ -328,7 +337,7 @@ fun HtmlViewContent(
         modifier = modifier,
         navigator = navigator,
         onCreated = {},
-        onDispose = {}
+        onDispose = {},
     )
 }
 
@@ -336,11 +345,10 @@ fun HtmlViewContent(
  * Create and remember an HtmlViewState instance
  */
 @Composable
-fun rememberHtmlViewState(): HtmlViewState {
-    return remember { HtmlViewState() }
-}
+fun rememberHtmlViewState(): HtmlViewState = remember { HtmlViewState() }
 
 // Container for HTML elements
-val LocalLayerContainer = staticCompositionLocalOf {
-    document.body!!
-}
+val LocalLayerContainer =
+    staticCompositionLocalOf {
+        document.body!!
+    }

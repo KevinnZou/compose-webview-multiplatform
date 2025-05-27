@@ -16,8 +16,10 @@ import platform.darwin.NSObject
  * Observer for the WKWebView's loading state
  */
 @ExperimentalForeignApi
-class WKWebViewObserver(private val state: WebViewState, private val navigator: WebViewNavigator) :
-    NSObject(),
+class WKWebViewObserver(
+    private val state: WebViewState,
+    private val navigator: WebViewNavigator,
+) : NSObject(),
     ObserverProtocol {
     override fun observeValueForKeyPath(
         keyPath: String?,

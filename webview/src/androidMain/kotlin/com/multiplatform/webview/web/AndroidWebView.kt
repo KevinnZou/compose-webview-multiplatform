@@ -48,7 +48,10 @@ class AndroidWebView(
         webView.loadDataWithBaseURL(baseUrl, html, mimeType, encoding, historyUrl)
     }
 
-    override suspend fun loadHtmlFile(fileName: String, readType: WebViewFileReadType) {
+    override suspend fun loadHtmlFile(
+        fileName: String,
+        readType: WebViewFileReadType,
+    ) {
         KLogger.d { "loadHtmlFile: $fileName, readType: $readType" }
         try {
             when (readType) {
@@ -143,9 +146,7 @@ class AndroidWebView(
         webViewJsBridge?.dispatch(JsMessage(id, method, params))
     }
 
-    override fun scrollOffset(): Pair<Int, Int> {
-        return Pair(webView.scrollX, webView.scrollY)
-    }
+    override fun scrollOffset(): Pair<Int, Int> = Pair(webView.scrollX, webView.scrollY)
 
     override fun saveState(): WebViewBundle? {
         val bundle = WebViewBundle()

@@ -36,8 +36,8 @@ enum class KLogSeverity {
     Assert,
 }
 
-fun KLogSeverity.toKermitSeverity(): Severity {
-    return when (this) {
+fun KLogSeverity.toKermitSeverity(): Severity =
+    when (this) {
         KLogSeverity.Verbose -> Severity.Verbose
         KLogSeverity.Debug -> Severity.Debug
         KLogSeverity.Info -> Severity.Info
@@ -45,4 +45,3 @@ fun KLogSeverity.toKermitSeverity(): Severity {
         KLogSeverity.Error -> Severity.Error
         KLogSeverity.Assert -> Severity.Assert
     }
-}

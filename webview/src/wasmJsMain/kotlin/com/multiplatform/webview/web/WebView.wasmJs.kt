@@ -7,9 +7,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import kotlinx.browser.document
+import kotlinx.coroutines.launch
 import org.w3c.dom.Element
 import org.w3c.dom.HTMLIFrameElement
-import kotlinx.coroutines.launch
 
 /**
  * Platform-specific parameters for the WebView factory in WebAssembly/JavaScript.
@@ -42,34 +42,37 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView {
 /**
  * Factory function for creating a WebView with WebSettings applied.
  */
-fun createWebViewWithSettings(param: WebViewFactoryParam, settings: com.multiplatform.webview.setting.WebSettings): NativeWebView {
+fun createWebViewWithSettings(
+    param: WebViewFactoryParam,
+    settings: com.multiplatform.webview.setting.WebSettings,
+): NativeWebView {
     val iframe = param.existingElement ?: document.createElement("iframe") as HTMLIFrameElement
     val wasmSettings = settings.wasmJSWebSettings
 
     iframe.style.apply {
         width = "100%"
         height = "100%"
-        
+
         border = if (wasmSettings.showBorder) wasmSettings.borderStyle else "none"
-        
+
         val bgColor = (wasmSettings.backgroundColor ?: settings.backgroundColor)
         if (bgColor != androidx.compose.ui.graphics.Color.Transparent) {
             backgroundColor = "#${bgColor.value.toString(16).padStart(8, '0').substring(2)}"
         }
-        
+
         wasmSettings.customContainerStyle?.let { customStyle ->
             cssText += "; $customStyle"
         }
     }
-    
+
     if (wasmSettings.enableSandbox) {
         iframe.setAttribute("sandbox", wasmSettings.sandboxPermissions)
     }
-    
+
     if (wasmSettings.allowFullscreen) {
         iframe.setAttribute("allowfullscreen", "true")
     }
-    
+
     if (wasmSettings.enableConsoleLogging) {
         consoleLogJs("WasmJS WebView created with settings")
     }
@@ -81,13 +84,12 @@ fun createWebViewWithSettings(param: WebViewFactoryParam, settings: com.multipla
  * Simple state adapter for WebView state synchronization
  */
 @Composable
-internal fun rememberWebViewStateAdapter(commonWebViewState: WebViewState): WebViewStateAdapter {
-    return remember(commonWebViewState) { WebViewStateAdapter(commonWebViewState) }
-}
+internal fun rememberWebViewStateAdapter(commonWebViewState: WebViewState): WebViewStateAdapter =
+    remember(commonWebViewState) { WebViewStateAdapter(commonWebViewState) }
 
 internal class WebViewStateAdapter(
     private val commonWebViewState: WebViewState,
-    private val wasmWebViewState: WasmJsWebViewState = WasmJsWebViewState()
+    private val wasmWebViewState: WasmJsWebViewState = WasmJsWebViewState(),
 ) {
     fun syncFromCommon() {
         when (val content = commonWebViewState.content) {
@@ -112,32 +114,32 @@ internal class WebViewStateAdapter(
                 wasmWebViewState.content = ""
             }
         }
-        
+
         commonWebViewState.lastLoadedUrl?.let {
             wasmWebViewState.lastLoadedUrl = it
         }
-        
+
         commonWebViewState.pageTitle?.let {
             wasmWebViewState.pageTitle = it
         }
     }
-    
+
     fun syncToCommon() {
         wasmWebViewState.lastLoadedUrl?.let {
             commonWebViewState.lastLoadedUrl = it
         }
-        
+
         wasmWebViewState.pageTitle?.let {
             commonWebViewState.pageTitle = it
         }
-        
+
         if (wasmWebViewState.isLoading) {
             commonWebViewState.loadingState = LoadingState.Loading(0f)
         } else {
             commonWebViewState.loadingState = LoadingState.Finished
         }
     }
-    
+
     fun getWasmWebViewState(): WasmJsWebViewState = wasmWebViewState
 }
 
@@ -154,7 +156,7 @@ actual fun ActualWebView(
     onCreated: (NativeWebView) -> Unit,
     onDispose: (NativeWebView) -> Unit,
     platformWebViewParams: PlatformWebViewParams?,
-    factory: (WebViewFactoryParam) -> NativeWebView
+    factory: (WebViewFactoryParam) -> NativeWebView,
 ) {
     val scope = rememberCoroutineScope()
     val stateAdapter = rememberWebViewStateAdapter(state)
@@ -170,32 +172,37 @@ actual fun ActualWebView(
             }
         }
     }
-    
+
     LaunchedEffect(state.content) {
         stateAdapter.syncFromCommon()
-        
+
         when (state.content) {
             is WebContent.Url -> {
-                htmlViewState.content = HtmlContent.Url(
-                    (state.content as WebContent.Url).url, 
-                    (state.content as WebContent.Url).additionalHttpHeaders
-                )
+                htmlViewState.content =
+                    HtmlContent.Url(
+                        (state.content as WebContent.Url).url,
+                        (state.content as WebContent.Url).additionalHttpHeaders,
+                    )
             }
             is WebContent.Data -> {
                 val data = (state.content as WebContent.Data).data
-                val htmlWithBridge = if (webViewJsBridge != null) {
-                    injectJsBridgeToHtml(data, webViewJsBridge.jsBridgeName)
-                } else data
-                
-                htmlViewState.content = HtmlContent.Data(
-                    htmlWithBridge,
-                    (state.content as WebContent.Data).baseUrl
-                )
+                val htmlWithBridge =
+                    if (webViewJsBridge != null) {
+                        injectJsBridgeToHtml(data, webViewJsBridge.jsBridgeName)
+                    } else {
+                        data
+                    }
+
+                htmlViewState.content =
+                    HtmlContent.Data(
+                        htmlWithBridge,
+                        (state.content as WebContent.Data).baseUrl,
+                    )
             }
             is WebContent.File -> {
                 val fileName = (state.content as WebContent.File).fileName
                 val fileReadType = (state.content as WebContent.File).readType
-                
+
                 val webView = state.webView
                 if (webView != null) {
                     webView.loadHtmlFile(fileName, fileReadType)
@@ -204,62 +211,75 @@ actual fun ActualWebView(
                 }
             }
             is WebContent.Post -> {
-                htmlViewState.content = HtmlContent.Url(
-                    (state.content as WebContent.Post).url
-                )
+                htmlViewState.content =
+                    HtmlContent.Url(
+                        (state.content as WebContent.Post).url,
+                    )
             }
             is WebContent.NavigatorOnly -> {
                 // No action needed
             }
         }
     }
-    
+
     LaunchedEffect(htmlViewState.lastLoadedUrl, htmlViewState.pageTitle, htmlViewState.loadingState) {
         val wasmState = stateAdapter.getWasmWebViewState()
-        
+
         htmlViewState.lastLoadedUrl?.let { wasmState.lastLoadedUrl = it }
         htmlViewState.pageTitle?.let { wasmState.pageTitle = it }
-        
-        wasmState.isLoading = when (htmlViewState.loadingState) {
-            is HtmlLoadingState.Loading -> true
-            is HtmlLoadingState.Finished -> false
-            else -> false
-        }
-        
+
+        wasmState.isLoading =
+            when (htmlViewState.loadingState) {
+                is HtmlLoadingState.Loading -> true
+                is HtmlLoadingState.Finished -> false
+                else -> false
+            }
+
         stateAdapter.syncToCommon()
     }
-    
+
     HtmlView(
         state = htmlViewState,
         modifier = modifier,
         navigator = htmlNavigator,
         onCreated = { element ->
-            val nativeWebView = if (state.webSettings.wasmJSWebSettings.let { 
-                it.backgroundColor != null || it.showBorder || it.enableSandbox || 
-                it.customContainerStyle != null || it.enableConsoleLogging 
-            }) {
-                createWebViewWithSettings(WebViewFactoryParam().apply {
-                    existingElement = element as? HTMLIFrameElement
-                }, state.webSettings)
-            } else {
-                factory(WebViewFactoryParam().apply {
-                    existingElement = element as? HTMLIFrameElement
-                })
-            }
-            
-            val webViewWrapper = WasmJsWebView(
-                element = element,
-                webView = nativeWebView,
-                scope = scope,
-                webViewJsBridge = webViewJsBridge
-            )
-            
+            val nativeWebView =
+                if (state.webSettings.wasmJSWebSettings.let {
+                        it.backgroundColor != null ||
+                            it.showBorder ||
+                            it.enableSandbox ||
+                            it.customContainerStyle != null ||
+                            it.enableConsoleLogging
+                    }
+                ) {
+                    createWebViewWithSettings(
+                        WebViewFactoryParam().apply {
+                            existingElement = element as? HTMLIFrameElement
+                        },
+                        state.webSettings,
+                    )
+                } else {
+                    factory(
+                        WebViewFactoryParam().apply {
+                            existingElement = element as? HTMLIFrameElement
+                        },
+                    )
+                }
+
+            val webViewWrapper =
+                WasmJsWebView(
+                    element = element,
+                    webView = nativeWebView,
+                    scope = scope,
+                    webViewJsBridge = webViewJsBridge,
+                )
+
             state.webView = webViewWrapper
-            
+
             if (webViewJsBridge != null && element is HTMLIFrameElement) {
                 setupJsBridgeForWasm(element, webViewJsBridge, webViewWrapper)
             }
-            
+
             if (state.content is WebContent.File) {
                 val fileName = (state.content as WebContent.File).fileName
                 val readType = (state.content as WebContent.File).readType
@@ -267,15 +287,15 @@ actual fun ActualWebView(
                     webViewWrapper.loadHtmlFile(fileName, readType)
                 }
             }
-            
+
             onCreated(nativeWebView)
         },
         onDispose = { element ->
-            state.webView?.let { 
+            state.webView?.let {
                 onDispose(it.webView)
                 state.webView = null
             }
-        }
+        },
     )
 }
 
@@ -285,36 +305,37 @@ actual fun ActualWebView(
 private fun setupJsBridgeForWasm(
     element: HTMLIFrameElement,
     webViewJsBridge: WebViewJsBridge,
-    webViewWrapper: WasmJsWebView
+    webViewWrapper: WasmJsWebView,
 ) {
     val messageHandler: (org.w3c.dom.events.Event) -> Unit = { event ->
         val messageEvent = event as org.w3c.dom.MessageEvent
-        
+
         if (messageEvent.source == element.contentWindow && messageEvent.data != null) {
             try {
                 val dataString = messageEvent.data.toString()
-                
+
                 if (dataString.contains("kmpJsBridge") && dataString.startsWith("{")) {
                     val actionPattern = """"action"\s*:\s*"([^"]*)"""".toRegex()
                     val paramsPattern = """"params"\s*:\s*"((?:[^"\\]|\\.)*)"""".toRegex()
                     val callbackPattern = """"callbackId"\s*:\s*(\d+)""".toRegex()
-                    
+
                     val actionMatch = actionPattern.find(dataString)
                     val paramsMatch = paramsPattern.find(dataString)
                     val callbackMatch = callbackPattern.find(dataString)
-                    
+
                     if (actionMatch != null) {
                         val action = actionMatch.groupValues[1]
                         val rawParams = paramsMatch?.groupValues?.get(1) ?: "{}"
                         val params = rawParams.replace("\\\"", "\"").replace("\\\\", "\\")
                         val callbackId = callbackMatch?.groupValues?.get(1)?.toIntOrNull() ?: 0
-                        
-                        val jsMessage = com.multiplatform.webview.jsbridge.JsMessage(
-                            callbackId = callbackId,
-                            methodName = action,
-                            params = params
-                        )
-                        
+
+                        val jsMessage =
+                            com.multiplatform.webview.jsbridge.JsMessage(
+                                callbackId = callbackId,
+                                methodName = action,
+                                params = params,
+                            )
+
                         webViewJsBridge.dispatch(jsMessage)
                     }
                 }
@@ -323,7 +344,7 @@ private fun setupJsBridgeForWasm(
             }
         }
     }
-    
+
     kotlinx.browser.window.addEventListener("message", messageHandler)
     webViewJsBridge.webView = webViewWrapper
 }

@@ -70,17 +70,23 @@ internal fun BasicWebViewWithHTMLSample(navHostController: NavHostController? = 
     MaterialTheme {
         Scaffold { innerPadding ->
             Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
             ) {
                 Column {
                     TopAppBar(
-                        modifier = Modifier.background(
-                            color = MaterialTheme.colors.primary
-                        ).padding(
-                            top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-                        ),
+                        modifier =
+                            Modifier
+                                .background(
+                                    color = MaterialTheme.colors.primary,
+                                ).padding(
+                                    top =
+                                        WindowInsets.statusBars
+                                            .asPaddingValues()
+                                            .calculateTopPadding(),
+                                ),
                         title = { Text(text = "Html Sample") },
                         navigationIcon = {
                             IconButton(onClick = {
@@ -94,10 +100,8 @@ internal fun BasicWebViewWithHTMLSample(navHostController: NavHostController? = 
                         },
                         actions = {
                             // Evaluate JavaScript button
-                            Button(
-                                onClick = {
-                                    webViewNavigator.evaluateJavaScript(
-                                        """
+                            val jsCode =
+                                """
                                 document.getElementById("subtitle").innerText = "Hello from KMP!";
                                 window.kmpJsBridge.callNative("Greet",JSON.stringify({message: "Hello"}),
                                     function (data) {
@@ -106,19 +110,25 @@ internal fun BasicWebViewWithHTMLSample(navHostController: NavHostController? = 
                                     }
                                 );
                                 callJS();
-                                """.trimIndent(),
-                                    ) {
+                                """.trimIndent()
+
+                            Button(
+                                onClick = {
+                                    webViewNavigator.evaluateJavaScript(jsCode) {
                                         jsRes = it
                                     }
                                 },
                                 modifier = Modifier.padding(horizontal = 4.dp),
-                                colors = ButtonDefaults.buttonColors(
-                                    backgroundColor = Color.White,
-                                    contentColor = MaterialTheme.colors.primary
-                                )
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        backgroundColor = Color.White,
+                                        contentColor = MaterialTheme.colors.primary,
+                                    ),
                             ) {
-                                Text("Run JS", 
-                                    style = MaterialTheme.typography.caption)
+                                Text(
+                                    "Run JS",
+                                    style = MaterialTheme.typography.caption,
+                                )
                             }
                         },
                     )

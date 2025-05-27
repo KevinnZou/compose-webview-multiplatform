@@ -12,8 +12,8 @@ import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
@@ -35,10 +35,11 @@ import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
  */
 @Composable
 internal fun FileChooseWebViewSample(navHostController: NavHostController? = null) {
-    val webViewState = rememberWebViewStateWithHTMLFile(
-        fileName = "fileChoose.html",
-        readType = WebViewFileReadType.ASSET_RESOURCES
-    )
+    val webViewState =
+        rememberWebViewStateWithHTMLFile(
+            fileName = "fileChoose.html",
+            readType = WebViewFileReadType.ASSET_RESOURCES,
+        )
     val webViewNavigator = rememberWebViewNavigator()
     LaunchedEffect(Unit) {
         webViewState.webSettings.zoomLevel = 1.0
@@ -61,17 +62,23 @@ internal fun FileChooseWebViewSample(navHostController: NavHostController? = nul
     MaterialTheme {
         Scaffold { innerPadding ->
             Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
             ) {
                 Column {
                     TopAppBar(
-                        modifier = Modifier.background(
-                            color = MaterialTheme.colors.primary
-                        ).padding(
-                            top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-                        ),
+                        modifier =
+                            Modifier
+                                .background(
+                                    color = MaterialTheme.colors.primary,
+                                ).padding(
+                                    top =
+                                        WindowInsets.statusBars
+                                            .asPaddingValues()
+                                            .calculateTopPadding(),
+                                ),
                         title = { Text(text = "Html Sample") },
                         navigationIcon = {
                             IconButton(onClick = {

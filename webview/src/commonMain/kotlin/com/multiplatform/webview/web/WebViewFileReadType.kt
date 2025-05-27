@@ -14,5 +14,5 @@ package com.multiplatform.webview.web
  */
 enum class WebViewFileReadType {
     ASSET_RESOURCES,
-    COMPOSE_RESOURCE_FILES
+    COMPOSE_RESOURCE_FILES,
 }

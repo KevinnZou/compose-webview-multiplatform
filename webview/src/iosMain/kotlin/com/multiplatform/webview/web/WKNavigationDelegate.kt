@@ -29,7 +29,8 @@ import platform.darwin.NSObject
 class WKNavigationDelegate(
     private val state: WebViewState,
     private val navigator: WebViewNavigator,
-) : NSObject(), WKNavigationDelegateProtocol {
+) : NSObject(),
+    WKNavigationDelegateProtocol {
     private var isRedirect = false
 
     /**
@@ -127,7 +128,9 @@ class WKNavigationDelegate(
         KLogger.info {
             "Outer decidePolicyForNavigationAction: $url $isRedirect $decidePolicyForNavigationAction"
         }
-        if (url != null && !isRedirect &&
+        if (
+            url != null &&
+            !isRedirect &&
             navigator.requestInterceptor != null &&
             decidePolicyForNavigationAction.targetFrame?.mainFrame != false
         ) {

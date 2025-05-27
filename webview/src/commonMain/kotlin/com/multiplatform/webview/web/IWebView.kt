@@ -83,7 +83,7 @@ interface IWebView {
             is WebContent.File ->
                 loadHtmlFile(
                     content.fileName,
-                    content.readType
+                    content.readType,
                 )
 
             is WebContent.Post ->
@@ -118,7 +118,10 @@ interface IWebView {
      *
      * @param fileName The name of the HTML file to load.
      */
-    suspend fun loadHtmlFile(fileName: String, readType: WebViewFileReadType)
+    suspend fun loadHtmlFile(
+        fileName: String,
+        readType: WebViewFileReadType,
+    )
 
     /**
      * Posts the given data to the given URL.

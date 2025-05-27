@@ -77,11 +77,12 @@ object IOSCookieManager : CookieManager {
     override suspend fun removeCookies(url: String) =
         suspendCancellableCoroutine {
             cookieStore.getAllCookies { cookies ->
-                cookies?.filter { cookie ->
-                    cookie is NSHTTPCookie && url.contains(cookie.domain)
-                }?.forEach { cookie ->
-                    cookieStore.deleteCookie(cookie as NSHTTPCookie) {}
-                }
+                cookies
+                    ?.filter { cookie ->
+                        cookie is NSHTTPCookie && url.contains(cookie.domain)
+                    }?.forEach { cookie ->
+                        cookieStore.deleteCookie(cookie as NSHTTPCookie) {}
+                    }
                 it.resume(Unit, {})
             }
         }

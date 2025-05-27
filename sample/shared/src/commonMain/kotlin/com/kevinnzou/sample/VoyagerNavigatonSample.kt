@@ -35,11 +35,13 @@ fun VoyagerNavigationSample(navHostController: NavHostController? = null) {
         Scaffold(
             topBar = {
                 TopAppBar(
-                    modifier = Modifier.background(
-                        color = MaterialTheme.colors.primary
-                    ).padding(
-                        top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-                    ),
+                    modifier =
+                        Modifier
+                            .background(
+                                color = MaterialTheme.colors.primary,
+                            ).padding(
+                                top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
+                            ),
                     title = { Text(text = "SaveState Sample") },
                     navigationIcon = {
                         IconButton(onClick = {

@@ -1,14 +1,17 @@
 package com.multiplatform.webview.web
 
-
 /**
  * Creates JavaScript bridge code that can be used for communication between Kotlin and JavaScript
  * @param jsBridgeName Name of the JavaScript bridge object in browser window
  * @param isIife Whether to wrap the code in an Immediately Invoked Function Expression
  * @return JavaScript code for bridge implementation
  */
-internal fun createJsBridgeScript(jsBridgeName: String, isIife: Boolean = false): String {
-    val bridgeObjectCode = """
+internal fun createJsBridgeScript(
+    jsBridgeName: String,
+    isIife: Boolean = false,
+): String {
+    val bridgeObjectCode =
+        """
         window.$jsBridgeName = {
             _callbacks: {},
             _callbackId: 0,
@@ -59,7 +62,7 @@ internal fun createJsBridgeScript(jsBridgeName: String, isIife: Boolean = false)
                 console.error('Error processing callback message:', e);
             }
         });
-    """.trimIndent()
+        """.trimIndent()
 
     return if (isIife) {
         """
@@ -72,7 +75,6 @@ internal fun createJsBridgeScript(jsBridgeName: String, isIife: Boolean = false)
     }
 }
 
-
 /**
  * Helper function to inject JS bridge into HTML content
  *
@@ -80,23 +82,28 @@ internal fun createJsBridgeScript(jsBridgeName: String, isIife: Boolean = false)
  * @param jsBridgeName Name of the bridge object in JavaScript
  * @return HTML content with bridge injected
  */
-fun injectJsBridgeToHtml(htmlContent: String, jsBridgeName: String): String {
+fun injectJsBridgeToHtml(
+    htmlContent: String,
+    jsBridgeName: String,
+): String {
     // Only inject if it has a proper bridge implementation
     // We look for specific bridge functions like callNative in the content
     if (htmlContent.contains("window.$jsBridgeName") &&
         htmlContent.contains("$jsBridgeName.callNative") &&
-        htmlContent.contains("$jsBridgeName._callbacks")) {
+        htmlContent.contains("$jsBridgeName._callbacks")
+    ) {
         return htmlContent
     }
 
     // Create bridge initialization script wrapped in script tags
     val bridgeScriptContent = createJsBridgeScript(jsBridgeName)
-    val bridgeScript = """
-    <script>
-    // Initialize JS bridge
-    $bridgeScriptContent
-    </script>
-    """.trimIndent()
+    val bridgeScript =
+        """
+        <script>
+        // Initialize JS bridge
+        $bridgeScriptContent
+        </script>
+        """.trimIndent()
 
     // Insert script before end of head tag
     if (htmlContent.contains("</head>")) {

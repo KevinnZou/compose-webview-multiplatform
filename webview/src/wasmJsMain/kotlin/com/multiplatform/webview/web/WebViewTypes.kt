@@ -6,25 +6,24 @@ import androidx.compose.runtime.setValue
 
 /**
  * State class for WebView component
- * 
- * Holds the current state of a WebView including URL, content, loading status, etc.
+ * * Holds the current state of a WebView including URL, content, loading status, etc.
  */
 class WasmJsWebViewState(
     initialUrl: String = "",
-    initialContent: String = ""
+    initialContent: String = "",
 ) {
     /** Current URL to be loaded */
     var url: String by mutableStateOf(initialUrl)
-    
+
     /** HTML content to be displayed */
     var content: String by mutableStateOf(initialContent)
-    
+
     /** Last URL that was successfully loaded */
     var lastLoadedUrl: String? by mutableStateOf(null)
-    
+
     /** Whether the WebView is currently loading content */
     var isLoading: Boolean by mutableStateOf(false)
-    
+
     /** Title of the current page */
     var pageTitle: String? by mutableStateOf(null)
 
@@ -32,15 +31,14 @@ class WasmJsWebViewState(
      * Convert WebViewState to HtmlContent
      * @return HtmlContent representation of the current state
      */
-    internal fun getHtmlContent(): HtmlContent {
-        return if (content.isNotBlank()) {
+    internal fun getHtmlContent(): HtmlContent =
+        if (content.isNotBlank()) {
             HtmlContent.Data(content)
         } else if (url.isNotBlank()) {
             HtmlContent.Url(url)
         } else {
             HtmlContent.NavigatorOnly
         }
-    }
 }
 
 /**
@@ -48,19 +46,25 @@ class WasmJsWebViewState(
  */
 sealed class HtmlContent {
     /** URL-based content with optional HTTP headers */
-    data class Url(val url: String, val additionalHttpHeaders: Map<String, String> = emptyMap()) : HtmlContent()
-    
+    data class Url(
+        val url: String,
+        val additionalHttpHeaders: Map<String, String> = emptyMap(),
+    ) : HtmlContent()
+
     /** HTML data content with optional parameters */
     data class Data(
         val data: String,
         val baseUrl: String? = null,
         val mimeType: String? = null,
         val encoding: String? = "utf-8",
-        val historyUrl: String? = null
+        val historyUrl: String? = null,
     ) : HtmlContent()
-    
+
     /** POST request content */
-    data class Post(val url: String, val postData: ByteArray) : HtmlContent() {
+    data class Post(
+        val url: String,
+        val postData: ByteArray,
+    ) : HtmlContent() {
         override fun equals(other: Any?): Boolean {
             if (this === other) return true
             if (other == null || this::class != other::class) return false
@@ -90,12 +94,15 @@ sealed class HtmlContent {
 sealed class HtmlLoadingState {
     /** Initial state before any loading has started */
     data object Initializing : HtmlLoadingState()
-    
+
     /** Content is currently being loaded */
     data object Loading : HtmlLoadingState()
-    
+
     /** Loading has finished, with success or error flag */
-    data class Finished(val isError: Boolean = false, val errorMessage: String? = null) : HtmlLoadingState()
+    data class Finished(
+        val isError: Boolean = false,
+        val errorMessage: String? = null,
+    ) : HtmlLoadingState()
 }
 
 /**

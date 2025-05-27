@@ -11,6 +11,6 @@ actual class WebViewBundle {
 
     constructor(history: List<String>, currentIndex: Int) {
         this.history = history
-        this.currentIndex = currentIndex  
+        this.currentIndex = currentIndex
     }
 }

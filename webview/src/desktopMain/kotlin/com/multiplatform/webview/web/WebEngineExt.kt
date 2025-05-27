@@ -17,9 +17,7 @@ import kotlin.math.ln
 /**
  * Created By Kevin Zou On 2023/9/12
  */
-internal fun CefBrowser.getCurrentUrl(): String? {
-    return this.url
-}
+internal fun CefBrowser.getCurrentUrl(): String? = this.url
 
 internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
     this.client.addDisplayHandler(
@@ -61,9 +59,7 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
             override fun onTooltip(
                 browser: CefBrowser?,
                 text: String?,
-            ): Boolean {
-                return false
-            }
+            ) = false
 
             override fun onStatusMessage(
                 browser: CefBrowser?,
@@ -77,16 +73,12 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
                 message: String?,
                 source: String?,
                 line: Int,
-            ): Boolean {
-                return false
-            }
+            ) = false
 
             override fun onCursorChange(
                 browser: CefBrowser?,
                 cursorType: Int,
-            ): Boolean {
-                return false
-            }
+            ) = false
         },
     )
 }

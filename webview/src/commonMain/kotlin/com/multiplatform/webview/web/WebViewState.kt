@@ -25,7 +25,9 @@ import com.multiplatform.webview.util.isZero
  * A state holder to hold the state for the WebView. In most cases this will be remembered
  * using the rememberWebViewState(uri) function.
  */
-class WebViewState(webContent: WebContent) {
+class WebViewState(
+    webContent: WebContent,
+) {
     /**
      * The last loaded url. This is updated when a new page is loaded.
      */
@@ -210,7 +212,11 @@ fun rememberWebViewStateWithHTMLData(
     }.apply {
         this.content =
             WebContent.Data(
-                data, baseUrl, encoding, mimeType, historyUrl,
+                data,
+                baseUrl,
+                encoding,
+                mimeType,
+                historyUrl,
             )
     }
 
@@ -258,22 +264,24 @@ fun rememberWebViewStateWithHTMLData(
 @Composable
 fun rememberWebViewStateWithHTMLFile(
     fileName: String,
-    readType: WebViewFileReadType
+    readType: WebViewFileReadType,
 ): WebViewState =
     remember {
         WebViewState(WebContent.File(fileName, readType))
     }.apply {
-        this.content = WebContent.File(fileName,readType)
+        this.content = WebContent.File(fileName, readType)
     }
 
-
 @Composable
-@Deprecated("Use the overloaded rememberWebViewStateWithHTMLFile(fileName: String, readType: WebViewFileReadType) instead. Pass readType = WebViewFileReadType.ASSET_RESOURCES explicitly to make the loading source clear.")
-fun rememberWebViewStateWithHTMLFile(
-    fileName: String
-): WebViewState =
+@Deprecated(
+    "Use the overloaded " +
+        "rememberWebViewStateWithHTMLFile(fileName: String, readType: WebViewFileReadType) " +
+        "instead. Pass readType = WebViewFileReadType.ASSET_RESOURCES explicitly to make " +
+        "the loading source clear.",
+)
+fun rememberWebViewStateWithHTMLFile(fileName: String): WebViewState =
     remember {
-        WebViewState(WebContent.File(fileName,  WebViewFileReadType.ASSET_RESOURCES))
+        WebViewState(WebContent.File(fileName, WebViewFileReadType.ASSET_RESOURCES))
     }.apply {
-        this.content = WebContent.File(fileName,WebViewFileReadType.ASSET_RESOURCES)
+        this.content = WebContent.File(fileName, WebViewFileReadType.ASSET_RESOURCES)
     }

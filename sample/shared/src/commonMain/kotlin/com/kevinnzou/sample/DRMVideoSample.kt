@@ -50,17 +50,23 @@ internal fun DRMVideoSample(navHostController: NavHostController? = null) {
     MaterialTheme {
         Scaffold { innerPadding ->
             Column(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
             ) {
                 Column {
                     TopAppBar(
-                        modifier = Modifier.background(
-                            color = MaterialTheme.colors.primary
-                        ).padding(
-                            top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
-                        ),
+                        modifier =
+                            Modifier
+                                .background(
+                                    color = MaterialTheme.colors.primary,
+                                ).padding(
+                                    top =
+                                        WindowInsets.statusBars
+                                            .asPaddingValues()
+                                            .calculateTopPadding(),
+                                ),
                         title = { Text(text = "DRM Video Sample") },
                         navigationIcon = {
                             IconButton(onClick = {

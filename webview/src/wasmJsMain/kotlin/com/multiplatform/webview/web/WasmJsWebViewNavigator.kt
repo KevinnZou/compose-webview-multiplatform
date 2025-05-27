@@ -1,19 +1,27 @@
 package com.multiplatform.webview.web
 
-import androidx.compose.runtime.*
-import kotlinx.coroutines.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 import org.w3c.dom.Element
 
 /**
  * HtmlViewNavigator provides navigation functionality for HtmlView
  */
-class HtmlViewNavigator(private val coroutineScope: CoroutineScope) {
+class HtmlViewNavigator(
+    private val coroutineScope: CoroutineScope,
+) {
     private val navigationEvents = MutableSharedFlow<NavigationEvent>()
 
     var canGoBack by mutableStateOf(false)
         internal set
-        
+
     var canGoForward by mutableStateOf(false)
         internal set
 
@@ -60,7 +68,10 @@ class HtmlViewNavigator(private val coroutineScope: CoroutineScope) {
         coroutineScope.launch { navigationEvents.emit(NavigationEvent.StopLoading) }
     }
 
-    fun loadUrl(url: String, additionalHttpHeaders: Map<String, String> = emptyMap()) {
+    fun loadUrl(
+        url: String,
+        additionalHttpHeaders: Map<String, String> = emptyMap(),
+    ) {
         coroutineScope.launch {
             navigationEvents.emit(NavigationEvent.LoadUrl(url, additionalHttpHeaders))
         }
@@ -71,7 +82,7 @@ class HtmlViewNavigator(private val coroutineScope: CoroutineScope) {
         baseUrl: String? = null,
         mimeType: String? = null,
         encoding: String? = "utf-8",
-        historyUrl: String? = null
+        historyUrl: String? = null,
     ) {
         coroutineScope.launch {
             navigationEvents.emit(
@@ -80,13 +91,16 @@ class HtmlViewNavigator(private val coroutineScope: CoroutineScope) {
                     baseUrl,
                     mimeType,
                     encoding,
-                    historyUrl
-                )
+                    historyUrl,
+                ),
             )
         }
     }
 
-    fun evaluateJavaScript(script: String, callback: ((String) -> Unit)? = null) {
+    fun evaluateJavaScript(
+        script: String,
+        callback: ((String) -> Unit)? = null,
+    ) {
         coroutineScope.launch {
             navigationEvents.emit(NavigationEvent.EvaluateJavaScript(script, callback))
         }
@@ -103,18 +117,30 @@ class HtmlViewNavigator(private val coroutineScope: CoroutineScope) {
 
     private sealed class NavigationEvent {
         data object Back : NavigationEvent()
+
         data object Forward : NavigationEvent()
+
         data object Reload : NavigationEvent()
+
         data object StopLoading : NavigationEvent()
-        data class LoadUrl(val url: String, val additionalHttpHeaders: Map<String, String>) : NavigationEvent()
+
+        data class LoadUrl(
+            val url: String,
+            val additionalHttpHeaders: Map<String, String>,
+        ) : NavigationEvent()
+
         data class LoadHtml(
             val data: String,
             val baseUrl: String?,
             val mimeType: String?,
             val encoding: String?,
-            val historyUrl: String?
+            val historyUrl: String?,
         ) : NavigationEvent()
-        data class EvaluateJavaScript(val script: String, val callback: ((String) -> Unit)?) : NavigationEvent()
+
+        data class EvaluateJavaScript(
+            val script: String,
+            val callback: ((String) -> Unit)?,
+        ) : NavigationEvent()
     }
 }
 

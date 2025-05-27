@@ -1,5 +1,3 @@
-@file:Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-
 package com.multiplatform.webview.web
 
 import com.multiplatform.webview.jsbridge.JsMessage
@@ -19,6 +17,7 @@ import org.cef.network.CefPostData
 import org.cef.network.CefPostDataElement
 import org.cef.network.CefRequest
 import org.jetbrains.compose.resources.InternalResourceApi
+import java.io.File
 import java.io.InputStreamReader
 import java.net.JarURLConnection
 import java.net.URI
@@ -83,14 +82,18 @@ class DesktopWebView(
     }
 
     @OptIn(InternalResourceApi::class)
-    override suspend fun loadHtmlFile(fileName: String, readType: WebViewFileReadType) {
+    override suspend fun loadHtmlFile(
+        fileName: String,
+        readType: WebViewFileReadType,
+    ) {
         var attemptedResourcePath = fileName // For logging in case of error
         try {
             when (readType) {
                 WebViewFileReadType.ASSET_RESOURCES -> {
                     val path = fileName.removePrefix("/")
                     attemptedResourcePath = "assets/$path"
-                    val inputStream = this::class.java.classLoader.getResourceAsStream(attemptedResourcePath)
+                    val inputStream =
+                        this::class.java.classLoader.getResourceAsStream(attemptedResourcePath)
                     if (inputStream == null) {
                         throw Exception("Resource not found: $attemptedResourcePath (for readType: $readType)")
                     }
@@ -112,7 +115,8 @@ class DesktopWebView(
                             val jarFile = connection.jarFile
                             for (entry in jarFile.entries()) {
                                 if (entry.name.startsWith(basePath) && !entry.isDirectory) {
-                                    val file = java.io.File(tempDirectory, entry.name.substringAfterLast("/"))
+                                    val file =
+                                        File(tempDirectory, entry.name.substringAfterLast("/"))
                                     if (!file.exists()) {
                                         jarFile.getInputStream(entry).use { input ->
                                             file.outputStream().use { input.copyTo(it) }
@@ -126,6 +130,7 @@ class DesktopWebView(
                     delay(200)
                     webView.loadURL("file://${outFile.absolutePath}")
                 }
+
                 WebViewFileReadType.COMPOSE_RESOURCE_FILES -> {
                     // fileName is expected to be a URI string from Res.getUri(), like "jar:file:..." or "file:///..."
 
@@ -144,7 +149,8 @@ class DesktopWebView(
 
                     for (entry in jarFile.entries()) {
                         if (entry.name.startsWith(pathInJar.substringBeforeLast("/")) && !entry.isDirectory) {
-                            val file = java.io.File(tempDirectory, entry.name.substringAfterLast("/"))
+                            val file =
+                                java.io.File(tempDirectory, entry.name.substringAfterLast("/"))
                             file.outputStream().use { output ->
                                 jarFile.getInputStream(entry).copyTo(output)
                             }
@@ -161,7 +167,8 @@ class DesktopWebView(
                 }
             }
         } catch (e: Exception) {
-            val errorHtml = """
+            val errorHtml =
+                """
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -281,62 +288,68 @@ class DesktopWebView(
     }
 
     @OptIn(InternalResourceApi::class)
-    private fun inlineExternalResources(htmlContent: String, basePathInJar: String): String {
+    private fun inlineExternalResources(
+        htmlContent: String,
+        basePathInJar: String,
+    ): String {
         var modifiedHtml = htmlContent
 
         try {
             // Inline CSS files
             val cssPattern =
-                """<link\s+[^>]*href\s*=\s*["']([^"']+\.css)["'][^>]*>""".toRegex(RegexOption.IGNORE_CASE)
-            modifiedHtml = cssPattern.replace(modifiedHtml) { matchResult ->
-                val cssFile = matchResult.groupValues[1]
-                try {
-                    val resourcePath = "$basePathInJar$cssFile".removePrefix("/")
-                    val cssInputStream =
-                        this::class.java.classLoader.getResourceAsStream(resourcePath)
-                    if (cssInputStream != null) {
-                        val cssContent = InputStreamReader(
-                            cssInputStream,
-                            StandardCharsets.UTF_8
-                        ).use { it.readText() }
-                        "<style>\n$cssContent\n</style>"
-                    } else {
-                        KLogger.e { "DesktopWebView: CSS resource not found for inlining: $resourcePath" }
-                        matchResult.value // Keep original if can't inline
+                """<link\s+[^>]*href\s*=\s*["']([^"']+\.css)["'][^>]*>"""
+                    .toRegex(RegexOption.IGNORE_CASE)
+            modifiedHtml =
+                cssPattern.replace(modifiedHtml) { matchResult ->
+                    val cssFile = matchResult.groupValues[1]
+                    try {
+                        val resourcePath = "$basePathInJar$cssFile".removePrefix("/")
+                        val cssInputStream =
+                            this::class.java.classLoader.getResourceAsStream(resourcePath)
+                        if (cssInputStream != null) {
+                            val cssContent =
+                                InputStreamReader(
+                                    cssInputStream,
+                                    StandardCharsets.UTF_8,
+                                ).use { it.readText() }
+                            "<style>\n$cssContent\n</style>"
+                        } else {
+                            KLogger.e { "DesktopWebView: CSS resource not found for inlining: $resourcePath" }
+                            matchResult.value // Keep original if can't inline
+                        }
+                    } catch (e: Exception) {
+                        KLogger.e { "DesktopWebView: Could not inline CSS $cssFile: ${e.message}" }
+                        matchResult.value
                     }
-                } catch (e: Exception) {
-                    KLogger.e { "DesktopWebView: Could not inline CSS $cssFile: ${e.message}" }
-                    matchResult.value
                 }
-            }
 
             // Inline JS files
             val jsPattern =
-                """<script\s+[^>]*src\s*=\s*["']([^"']+\.js)["'][^>]*></script>""".toRegex(
-                    RegexOption.IGNORE_CASE
-                )
-            modifiedHtml = jsPattern.replace(modifiedHtml) { matchResult ->
-                val jsFile = matchResult.groupValues[1]
-                try {
-                    val resourcePath = "$basePathInJar$jsFile".removePrefix("/")
-                    val jsInputStream =
-                        this::class.java.classLoader.getResourceAsStream(resourcePath)
-                    if (jsInputStream != null) {
-                        val jsContent = InputStreamReader(
-                            jsInputStream,
-                            StandardCharsets.UTF_8
-                        ).use { it.readText() }
-                        "<script>\n$jsContent\n</script>"
-                    } else {
-                        KLogger.e { "DesktopWebView: JS resource not found for inlining: $resourcePath" }
-                        matchResult.value // Keep original if can't inline
+                """<script\s+[^>]*src\s*=\s*["']([^"']+\.js)["'][^>]*></script>"""
+                    .toRegex(RegexOption.IGNORE_CASE)
+            modifiedHtml =
+                jsPattern.replace(modifiedHtml) { matchResult ->
+                    val jsFile = matchResult.groupValues[1]
+                    try {
+                        val resourcePath = "$basePathInJar$jsFile".removePrefix("/")
+                        val jsInputStream =
+                            this::class.java.classLoader.getResourceAsStream(resourcePath)
+                        if (jsInputStream != null) {
+                            val jsContent =
+                                InputStreamReader(
+                                    jsInputStream,
+                                    StandardCharsets.UTF_8,
+                                ).use { it.readText() }
+                            "<script>\n$jsContent\n</script>"
+                        } else {
+                            KLogger.e { "DesktopWebView: JS resource not found for inlining: $resourcePath" }
+                            matchResult.value // Keep original if can't inline
+                        }
+                    } catch (e: Exception) {
+                        KLogger.e { "DesktopWebView: Could not inline JS $jsFile: ${e.message}" }
+                        matchResult.value
                     }
-                } catch (e: Exception) {
-                    KLogger.e { "DesktopWebView: Could not inline JS $jsFile: ${e.message}" }
-                    matchResult.value
                 }
-            }
-
         } catch (e: Exception) {
             KLogger.e { "DesktopWebView: Error during resource inlining: ${e.message}" }
         }
@@ -344,11 +357,7 @@ class DesktopWebView(
         return modifiedHtml
     }
 
-    override fun saveState(): WebViewBundle? {
-        return null
-    }
+    override fun saveState(): WebViewBundle? = null
 
-    override fun scrollOffset(): Pair<Int, Int> {
-        return Pair(0, 0)
-    }
+    override fun scrollOffset(): Pair<Int, Int> = Pair(0, 0)
 }

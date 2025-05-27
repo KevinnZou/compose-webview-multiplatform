@@ -15,9 +15,7 @@ import kotlinx.coroutines.launch
  * Created By Kevin Zou On 2023/12/6
  */
 class GreetJsMessageHandler : IJsMessageHandler {
-    override fun methodName(): String {
-        return "Greet"
-    }
+    override fun methodName(): String = "Greet"
 
     override fun handle(
         message: JsMessage,

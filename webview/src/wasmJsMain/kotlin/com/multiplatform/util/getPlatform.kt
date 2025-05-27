@@ -1,13 +1,10 @@
 package com.multiplatform.webview.util
 
-internal actual fun getPlatform(): Platform {
-    return Platform.Desktop
-}
+internal actual fun getPlatform(): Platform = Platform.Desktop
 
-internal actual fun getPlatformVersion(): String {
+internal actual fun getPlatformVersion(): String =
     // TODO
-    return "11.0"
-}
+    "11.0"
 
 internal actual fun getPlatformVersionDouble(): Double {
     val systemVersion = getPlatformVersion()
