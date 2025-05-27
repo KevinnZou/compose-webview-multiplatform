@@ -48,11 +48,30 @@ class AndroidWebView(
         webView.loadDataWithBaseURL(baseUrl, html, mimeType, encoding, historyUrl)
     }
 
-    override suspend fun loadHtmlFile(fileName: String) {
-        KLogger.d {
-            "loadHtmlFile: $fileName"
+    override suspend fun loadHtmlFile(
+        fileName: String,
+        readType: WebViewFileReadType,
+    ) {
+        KLogger.d { "loadHtmlFile: $fileName, readType: $readType" }
+        try {
+            when (readType) {
+                WebViewFileReadType.ASSET_RESOURCES -> {
+                    // Assumes fileName is the path within the assets/ directory
+                    webView.loadUrl("file:///android_asset/$fileName")
+                }
+
+                WebViewFileReadType.COMPOSE_RESOURCE_FILES -> {
+                    // Assumes fileName is the path within the composeResources/files directory
+                    // fileName here is expected to be the URI from Res.getUri()
+                    webView.loadUrl(fileName)
+                }
+            }
+        } catch (e: Exception) {
+            KLogger.e(e) { "Error loading HTML file: $fileName" }
+            val errorHtml =
+                "<html><body><h1>Error</h1><p>Could not load file: $fileName. Error: ${e.message}</p></body></html>"
+            webView.loadDataWithBaseURL(null, errorHtml, "text/html", "UTF-8", null)
         }
-        webView.loadUrl("file:///android_asset/$fileName")
     }
 
     override fun postUrl(
@@ -127,9 +146,7 @@ class AndroidWebView(
         webViewJsBridge?.dispatch(JsMessage(id, method, params))
     }
 
-    override fun scrollOffset(): Pair<Int, Int> {
-        return Pair(webView.scrollX, webView.scrollY)
-    }
+    override fun scrollOffset(): Pair<Int, Int> = Pair(webView.scrollX, webView.scrollY)
 
     override fun saveState(): WebViewBundle? {
         val bundle = WebViewBundle()

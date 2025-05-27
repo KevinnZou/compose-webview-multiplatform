@@ -8,5 +8,7 @@ sealed interface WebRequestInterceptResult {
 
     data object Reject : WebRequestInterceptResult
 
-    class Modify(val request: WebRequest) : WebRequestInterceptResult
+    class Modify(
+        val request: WebRequest,
+    ) : WebRequestInterceptResult
 }

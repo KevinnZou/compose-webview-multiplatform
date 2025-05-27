@@ -2,13 +2,9 @@ package com.multiplatform.webview.util
 
 import android.os.Build
 
-internal actual fun getPlatform(): Platform {
-    return Platform.Android
-}
+internal actual fun getPlatform(): Platform = Platform.Android
 
-internal actual fun getPlatformVersion(): String {
-    return Build.VERSION.RELEASE
-}
+internal actual fun getPlatformVersion(): String = Build.VERSION.RELEASE
 
 internal actual fun getPlatformVersionDouble(): Double {
     val systemVersion = getPlatformVersion()

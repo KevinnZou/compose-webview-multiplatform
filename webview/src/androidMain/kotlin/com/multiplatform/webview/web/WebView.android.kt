@@ -31,13 +31,16 @@ actual fun ActualWebView(
         onCreated = onCreated,
         onDispose = onDispose,
         client = platformWebViewParams?.client ?: remember { AccompanistWebViewClient() },
-        chromeClient = platformWebViewParams?.chromeClient ?: remember { AccompanistWebChromeClient() },
+        chromeClient =
+            platformWebViewParams?.chromeClient ?: remember { AccompanistWebChromeClient() },
         factory = { factory(WebViewFactoryParam(it)) },
     )
 }
 
 /** Android WebView factory parameters: a context. */
-actual data class WebViewFactoryParam(val context: Context)
+actual data class WebViewFactoryParam(
+    val context: Context,
+)
 
 /** Default WebView factory for Android. */
 actual fun defaultWebViewFactory(param: WebViewFactoryParam) = android.webkit.WebView(param.context)

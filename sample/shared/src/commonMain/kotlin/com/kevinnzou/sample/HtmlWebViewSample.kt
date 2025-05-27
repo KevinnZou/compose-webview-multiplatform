@@ -1,13 +1,18 @@
 package com.kevinnzou.sample
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.Button
+import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -17,8 +22,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import co.touchlab.kermit.Logger
@@ -30,9 +35,11 @@ import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.jsbridge.rememberWebViewJsBridge
 import com.multiplatform.webview.util.KLogSeverity
 import com.multiplatform.webview.web.WebView
+import com.multiplatform.webview.web.WebViewFileReadType
 import com.multiplatform.webview.web.WebViewState
 import com.multiplatform.webview.web.rememberWebViewNavigator
 import com.multiplatform.webview.web.rememberWebViewStateWithHTMLFile
+import compose_webview_multiplatform.sample.shared.generated.resources.Res
 import kotlinx.coroutines.flow.filter
 
 /**
@@ -49,7 +56,8 @@ internal fun BasicWebViewWithHTMLSample(navHostController: NavHostController? = 
     val html = HtmlRes.html
     val webViewState =
         rememberWebViewStateWithHTMLFile(
-            fileName = "index.html",
+            fileName = Res.getUri("files/samples/index.html"),
+            readType = WebViewFileReadType.COMPOSE_RESOURCE_FILES,
         )
 //    val webViewState = rememberWebViewStateWithHTMLData(html)
     val webViewNavigator = rememberWebViewNavigator()
@@ -60,49 +68,79 @@ internal fun BasicWebViewWithHTMLSample(navHostController: NavHostController? = 
         initJsBridge(jsBridge)
     }
     MaterialTheme {
-        Column {
-            TopAppBar(
-                title = { Text(text = "Html Sample") },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navHostController?.popBackStack()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                },
-            )
+        Scaffold { innerPadding ->
+            Column(
+                modifier =
+                    Modifier
+                        .padding(innerPadding)
+                        .fillMaxSize(),
+            ) {
+                Column {
+                    TopAppBar(
+                        modifier =
+                            Modifier
+                                .background(
+                                    color = MaterialTheme.colors.primary,
+                                ).padding(
+                                    top =
+                                        WindowInsets.statusBars
+                                            .asPaddingValues()
+                                            .calculateTopPadding(),
+                                ),
+                        title = { Text(text = "Html Sample") },
+                        navigationIcon = {
+                            IconButton(onClick = {
+                                navHostController?.popBackStack()
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "Back",
+                                )
+                            }
+                        },
+                        actions = {
+                            // Evaluate JavaScript button
+                            val jsCode =
+                                """
+                                document.getElementById("subtitle").innerText = "Hello from KMP!";
+                                window.kmpJsBridge.callNative("Greet",JSON.stringify({message: "Hello"}),
+                                    function (data) {
+                                        document.getElementById("subtitle").innerText = data;
+                                        console.log("Greet from Native: " + data);
+                                    }
+                                );
+                                callJS();
+                                """.trimIndent()
 
-            Box(Modifier.fillMaxSize()) {
-                WebView(
-                    state = webViewState,
-                    modifier = Modifier.fillMaxSize(),
-                    captureBackPresses = false,
-                    navigator = webViewNavigator,
-                    webViewJsBridge = jsBridge,
-                )
-                Button(
-                    onClick = {
-                        webViewNavigator.evaluateJavaScript(
-                            """
-                            document.getElementById("subtitle").innerText = "Hello from KMM!";
-                            window.kmpJsBridge.callNative("Greet",JSON.stringify({message: "Hello"}),
-                                function (data) {
-                                    document.getElementById("subtitle").innerText = data;
-                                    console.log("Greet from Native: " + data);
-                                }
-                            );
-                            callJS();
-                            """.trimIndent(),
-                        ) {
-                            jsRes = it
-                        }
-                    },
-                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 50.dp),
-                ) {
-                    Text(jsRes)
+                            Button(
+                                onClick = {
+                                    webViewNavigator.evaluateJavaScript(jsCode) {
+                                        jsRes = it
+                                    }
+                                },
+                                modifier = Modifier.padding(horizontal = 4.dp),
+                                colors =
+                                    ButtonDefaults.buttonColors(
+                                        backgroundColor = Color.White,
+                                        contentColor = MaterialTheme.colors.primary,
+                                    ),
+                            ) {
+                                Text(
+                                    "Run JS",
+                                    style = MaterialTheme.typography.caption,
+                                )
+                            }
+                        },
+                    )
+
+                    // WebView without overlay buttons
+                    WebView(
+                        state = webViewState,
+                        modifier = Modifier.fillMaxSize(),
+                        captureBackPresses = false,
+                        navigator = webViewNavigator,
+                        webViewJsBridge = jsBridge,
+                    )
                 }
             }
         }

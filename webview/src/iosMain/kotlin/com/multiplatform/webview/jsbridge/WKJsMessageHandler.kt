@@ -14,9 +14,10 @@ import platform.darwin.NSObject
 /**
  * A JS message handler for WKWebView.
  */
-class WKJsMessageHandler(private val webViewJsBridge: WebViewJsBridge) :
-    WKScriptMessageHandlerProtocol,
-    NSObject() {
+class WKJsMessageHandler(
+    private val webViewJsBridge: WebViewJsBridge,
+) : NSObject(),
+    WKScriptMessageHandlerProtocol {
     override fun userContentController(
         userContentController: WKUserContentController,
         didReceiveScriptMessage: WKScriptMessage,

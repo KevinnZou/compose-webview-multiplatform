@@ -1,20 +1,23 @@
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.compose.multiplatorm)
     alias(libs.plugins.kotlin.atomicfu)
+    alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.multiplatform)
     alias(libs.plugins.kotlin.serialization)
 }
 
 @OptIn(org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi::class)
 kotlin {
-    targetHierarchy.default()
+    applyDefaultHierarchyTemplate()
 
     androidTarget {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "17"
-            }
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
 
@@ -30,14 +33,33 @@ kotlin {
         }
     }
 
-    sourceSets {
+    @OptIn(ExperimentalWasmDsl::class)
+    wasmJs {
+        browser {
+            val rootDirPath = project.rootDir.path
+            val projectDirPath = project.projectDir.path
+            commonWebpackConfig {
+                devServer =
+                    (devServer ?: KotlinWebpackConfig.DevServer())
+                        .apply {
+                            static =
+                                (static ?: mutableListOf()).apply {
+                                    add(rootDirPath)
+                                    add(projectDirPath)
+                                }
+                        }
+            }
+        }
+    }
 
+    sourceSets {
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)
             implementation(compose.components.resources)
             implementation(libs.compose.navigation)
+            implementation(libs.material.icons.core)
             implementation(libs.kermit)
             implementation(libs.kotlin.serialization.json)
             implementation(libs.kotlin.atomicfu)
@@ -57,7 +79,6 @@ kotlin {
             api(libs.android.appcompat)
             implementation(libs.kotlin.coroutines.android)
         }
-
         val desktopMain by getting
         desktopMain.dependencies {
             implementation(compose.desktop.common)
@@ -68,10 +89,8 @@ kotlin {
 
 android {
     namespace = "com.kevinnzou.sample"
-    compileSdk = 34
+    compileSdk = 36
 
-    sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
-    sourceSets["main"].res.srcDirs("src/androidMain/res")
     sourceSets["main"].resources.srcDirs("src/commonMain/resources")
 
     defaultConfig {

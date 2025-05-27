@@ -15,9 +15,11 @@ import platform.Foundation.HTTPMethod
 import platform.Foundation.NSBundle
 import platform.Foundation.NSData
 import platform.Foundation.NSMutableURLRequest
+import platform.Foundation.NSString
 import platform.Foundation.NSURL
 import platform.Foundation.create
 import platform.Foundation.setValue
+import platform.Foundation.stringByDeletingLastPathComponent
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
 import platform.darwin.NSObjectMeta
@@ -48,7 +50,6 @@ class IOSWebView(
         url: String,
         additionalHttpHeaders: Map<String, String>,
     ) {
-        KLogger.d { "Load url: $url" }
         val request =
             NSMutableURLRequest.requestWithURL(
                 URL = NSURL(string = url),
@@ -84,10 +85,76 @@ class IOSWebView(
         )
     }
 
-    override suspend fun loadHtmlFile(fileName: String) {
-        val res = NSBundle.mainBundle.resourcePath + "/compose-resources/assets/" + fileName
-        val url = NSURL.fileURLWithPath(res)
-        webView.loadFileURL(url, url)
+    override suspend fun loadHtmlFile(
+        fileName: String,
+        readType: WebViewFileReadType,
+    ) {
+        try {
+            val fileURL: NSURL
+            var readAccessURL: NSURL? = null
+
+            when (readType) {
+                WebViewFileReadType.ASSET_RESOURCES -> {
+                    val resourcePath =
+                        (NSBundle.mainBundle.resourcePath ?: "") +
+                            "/compose-resources/assets/" + fileName
+                    fileURL = NSURL.fileURLWithPath(resourcePath)
+
+                    val parentDir = (resourcePath as NSString).stringByDeletingLastPathComponent()
+                    if (parentDir.isNotBlank()) {
+                        readAccessURL = NSURL.fileURLWithPath(parentDir)
+                    } else {
+                        readAccessURL = NSURL.fileURLWithPath(NSBundle.mainBundle.resourcePath!!)
+                    }
+                }
+
+                WebViewFileReadType.COMPOSE_RESOURCE_FILES -> {
+                    fileURL = NSURL(string = fileName)
+                    val readAccessURLPath =
+                        (fileName as NSString).stringByDeletingLastPathComponent()
+                    readAccessURL = NSURL(string = readAccessURLPath)
+                }
+            }
+
+            if (!fileURL.isFileURL()) {
+                KLogger.e {
+                    "The determined fileURL is not a valid file URL: ${fileURL.absoluteString}"
+                }
+                loadHtml(
+                    "<html><body>Error: Not a file URL: ${fileURL.absoluteString}</body></html>",
+                )
+                return
+            }
+
+            val finalReadAccessURL = readAccessURL
+
+            if (finalReadAccessURL.path.isNullOrEmpty()) {
+                KLogger.e {
+                    "Critical: finalReadAccessURL is null or has an empty path. " +
+                        "Cannot load file with proper read access for ${fileURL.absoluteString}"
+                }
+                loadHtml(
+                    "<html><body>Error: Cannot determine read access URL " +
+                        "for ${fileURL.absoluteString}</body></html>",
+                )
+                return
+            }
+
+            webView.loadFileURL(fileURL, finalReadAccessURL)
+        } catch (e: Exception) {
+            KLogger.e(e) { "Error loading HTML file: $fileName (readType: $readType)" }
+            val errorHtml =
+                """
+                <!DOCTYPE html>
+                <html><head><title>Error</title></head>
+                <body>
+                    <h1>Error Loading File</h1>
+                    <p>Could not load: $fileName (readType: $readType)</p>
+                    <p>Error: ${e.message}</p>
+                </body></html>
+                """.trimIndent()
+            loadHtml(errorHtml)
+        }
     }
 
     @OptIn(ExperimentalForeignApi::class, BetaInteropApi::class)
@@ -135,7 +202,6 @@ class IOSWebView(
                 KLogger.e { "evaluateJavaScript error: $error" }
                 callback.invoke(error.localizedDescription())
             } else {
-                KLogger.info { "evaluateJavaScript result: $result" }
                 callback.invoke(result?.toString() ?: "")
             }
         }
@@ -143,9 +209,6 @@ class IOSWebView(
 
     override fun injectJsBridge() {
         if (webViewJsBridge == null) return
-        KLogger.info {
-            "iOS WebView injectJsBridge"
-        }
         super.injectJsBridge()
         val callIOS =
             """
@@ -157,7 +220,6 @@ class IOSWebView(
     }
 
     override fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
-        KLogger.info { "injectBridge" }
         val jsMessageHandler = WKJsMessageHandler(webViewJsBridge)
         webView.configuration.userContentController.apply {
             addScriptMessageHandler(jsMessageHandler, "iosJsBridge")

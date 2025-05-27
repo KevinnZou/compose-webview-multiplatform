@@ -7,7 +7,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
-import com.multiplatform.webview.util.getPlatform
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.merge
 
@@ -91,47 +90,45 @@ fun WebView(
             }
         }
 
-        // Desktop will handle the first load by itself
-        if (!getPlatform().isDesktop()) {
-            LaunchedEffect(wv, state) {
-                snapshotFlow { state.content }.collect { content ->
-                    when (content) {
-                        is WebContent.Url -> {
-                            state.lastLoadedUrl = content.url
-                            wv.loadUrl(content.url, content.additionalHttpHeaders)
-                        }
+        // Handle content loading for all platforms
+        LaunchedEffect(wv, state) {
+            snapshotFlow { state.content }.collect { content ->
+                when (content) {
+                    is WebContent.Url -> {
+                        state.lastLoadedUrl = content.url
+                        wv.loadUrl(content.url, content.additionalHttpHeaders)
+                    }
 
-                        is WebContent.Data -> {
-                            wv.loadHtml(
-                                content.data,
-                                content.baseUrl,
-                                content.mimeType,
-                                content.encoding,
-                                content.historyUrl,
-                            )
-                        }
+                    is WebContent.Data -> {
+                        wv.loadHtml(
+                            content.data,
+                            content.baseUrl,
+                            content.mimeType,
+                            content.encoding,
+                            content.historyUrl,
+                        )
+                    }
 
-                        is WebContent.File -> {
-                            wv.loadHtmlFile(content.fileName)
-                        }
+                    is WebContent.File -> {
+                        wv.loadHtmlFile(content.fileName, content.readType)
+                    }
 
-                        is WebContent.Post -> {
-                            wv.postUrl(
-                                content.url,
-                                content.postData,
-                            )
-                        }
+                    is WebContent.Post -> {
+                        wv.postUrl(
+                            content.url,
+                            content.postData,
+                        )
+                    }
 
-                        is WebContent.NavigatorOnly -> {
-                            // NO-OP
-                        }
+                    is WebContent.NavigatorOnly -> {
+                        // NO-OP
                     }
                 }
             }
         }
 
         // inject the js bridge when the webview is loaded.
-        if (webViewJsBridge != null && !getPlatform().isDesktop()) {
+        if (webViewJsBridge != null) {
             LaunchedEffect(wv, state) {
                 val loadingStateFlow =
                     snapshotFlow { state.loadingState }.filter { it is LoadingState.Finished }

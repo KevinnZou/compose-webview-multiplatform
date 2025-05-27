@@ -1,18 +1,23 @@
 package com.kevinnzou.sample
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material.Button
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
@@ -91,81 +96,97 @@ internal fun InterceptRequestSample(navHostController: NavHostController? = null
         mutableStateOf(state.lastLoadedUrl)
     }
     MaterialTheme {
-        Column {
-            TopAppBar(
-                title = { Text(text = "Intercept Request Sample") },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        if (navigator.canGoBack) {
-                            navigator.navigateBack()
-                        } else {
-                            navHostController?.popBackStack()
-                        }
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Back",
-                        )
-                    }
-                },
-            )
-
-            @Suppress("ktlint:standard:max-line-length")
-            Text(
-                text =
-                    "This sample demonstrates how to intercept requests in WebView. " +
-                        "When the URL contains 'kotlin', the request will be redirected to 'https://kotlinlang.org/docs/multiplatform.html'.",
-                modifier = Modifier.padding(8.dp),
-            )
-
-            Row {
-                Box(modifier = Modifier.weight(1f)) {
-                    if (state.errorsForCurrentRequest.isNotEmpty()) {
-                        Image(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Error",
-                            colorFilter = ColorFilter.tint(Color.Red),
-                            modifier =
-                                Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .padding(8.dp),
-                        )
-                    }
-
-                    OutlinedTextField(
-                        value = textFieldValue ?: "",
-                        onValueChange = { textFieldValue = it },
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                }
-
-                Button(
-                    onClick = {
-                        textFieldValue?.let {
-                            navigator.loadUrl(it)
-                        }
-                    },
-                    modifier = Modifier.align(Alignment.CenterVertically),
-                ) {
-                    Text("Go")
-                }
-            }
-
-            val loadingState = state.loadingState
-            if (loadingState is LoadingState.Loading) {
-                LinearProgressIndicator(
-                    progress = loadingState.progress,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
-
-            WebView(
-                state = state,
+        Scaffold { innerPadding ->
+            Column(
                 modifier =
                     Modifier
+                        .padding(innerPadding)
                         .fillMaxSize(),
-                navigator = navigator,
-            )
+            ) {
+                Column {
+                    TopAppBar(
+                        modifier =
+                            Modifier
+                                .background(
+                                    color = MaterialTheme.colors.primary,
+                                ).padding(
+                                    top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding(),
+                                ),
+                        title = { Text(text = "Intercept Request Sample") },
+                        navigationIcon = {
+                            IconButton(onClick = {
+                                if (navigator.canGoBack) {
+                                    navigator.navigateBack()
+                                } else {
+                                    navHostController?.popBackStack()
+                                }
+                            }) {
+                                Icon(
+                                    imageVector = Icons.Default.ArrowBack,
+                                    contentDescription = "Back",
+                                )
+                            }
+                        },
+                    )
+
+                    @Suppress("ktlint:standard:max-line-length")
+                    Text(
+                        text =
+                            "This sample demonstrates how to intercept requests in WebView. " +
+                                "When the URL contains 'kotlin', the request will be redirected to 'https://kotlinlang.org/docs/multiplatform.html'.",
+                        modifier = Modifier.padding(8.dp),
+                    )
+
+                    Row {
+                        Box(modifier = Modifier.weight(1f)) {
+                            if (state.errorsForCurrentRequest.isNotEmpty()) {
+                                Image(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Error",
+                                    colorFilter = ColorFilter.tint(Color.Red),
+                                    modifier =
+                                        Modifier
+                                            .align(Alignment.CenterEnd)
+                                            .padding(8.dp),
+                                )
+                            }
+
+                            OutlinedTextField(
+                                value = textFieldValue ?: "",
+                                onValueChange = { textFieldValue = it },
+                                modifier = Modifier.fillMaxWidth(),
+                            )
+                        }
+
+                        Button(
+                            onClick = {
+                                textFieldValue?.let {
+                                    navigator.loadUrl(it)
+                                }
+                            },
+                            modifier = Modifier.align(Alignment.CenterVertically),
+                        ) {
+                            Text("Go")
+                        }
+                    }
+
+                    val loadingState = state.loadingState
+                    if (loadingState is LoadingState.Loading) {
+                        LinearProgressIndicator(
+                            progress = loadingState.progress,
+                            modifier = Modifier.fillMaxWidth(),
+                        )
+                    }
+
+                    WebView(
+                        state = state,
+                        modifier =
+                            Modifier
+                                .fillMaxSize(),
+                        navigator = navigator,
+                    )
+                }
+            }
         }
     }
 }

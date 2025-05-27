@@ -35,13 +35,15 @@ interface IJsMessageHandler {
 /**
  * Decode the params of [JsMessage] to the given type.
  */
-inline fun <reified T : Any> IJsMessageHandler.processParams(message: JsMessage): T {
-    return Json.decodeFromString(message.params)
-}
+inline fun <reified T : Any> IJsMessageHandler.processParams(message: JsMessage): T =
+    Json.decodeFromString(
+        message.params,
+    )
 
 /**
  * Encode the given data to a JSON string.
  */
-inline fun <reified T : Any> IJsMessageHandler.dataToJsonString(res: T): String {
-    return Json.encodeToString(res)
-}
+inline fun <reified T : Any> IJsMessageHandler.dataToJsonString(res: T): String =
+    Json.encodeToString(
+        res,
+    )
