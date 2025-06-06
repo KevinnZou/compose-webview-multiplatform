@@ -15,9 +15,7 @@ import kotlinx.coroutines.launch
  * Created By Kevin Zou On 2023/12/6
  */
 class GreetJsMessageHandler : IJsMessageHandler {
-    override fun methodName(): String {
-        return "Greet"
-    }
+    override fun methodName(): String = "Greet"
 
     override fun handle(
         message: JsMessage,
@@ -28,7 +26,7 @@ class GreetJsMessageHandler : IJsMessageHandler {
             "Greet Handler Get Message: $message"
         }
         val param = processParams<GreetModel>(message)
-        val data = GreetModel("KMM Received ${param.message}")
+        val data = GreetModel("KMP Received ${param.message}")
         callback(dataToJsonString(data))
 //        EventBus.post(NavigationEvent())
         navigator?.coroutineScope?.launch {

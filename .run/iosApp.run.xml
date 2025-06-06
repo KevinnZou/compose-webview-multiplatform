@@ -1,0 +1,11 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration name="iosApp" CONFIG_VERSION="1" EXEC_TARGET_ID="B611C1CD-2B48-439C-99F1-7D42CFADF467"
+        XCODE_CONFIGURATION="Debug" XCODE_PROJECT="$PROJECT_DIR$/sample/iosApp/iosApp.xcodeproj"
+        XCODE_SCHEME="iosApp"
+        default="false" factoryName="iOS Application"
+        type="KmmRunConfiguration">
+        <method v="2">
+            <option name="com.jetbrains.kmm.ios.BuildIOSAppTask" enabled="true" />
+        </method>
+    </configuration>
+</component>

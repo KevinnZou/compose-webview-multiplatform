@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.createBitmap
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
@@ -165,76 +166,77 @@ fun AccompanistWebView(
 
     AndroidView(
         factory = { context ->
-            (factory?.invoke(context) ?: WebView(context)).apply {
-                onCreated(this)
+            (factory?.invoke(context) ?: WebView(context))
+                .apply {
+                    onCreated(this)
 
-                this.layoutParams = layoutParams
+                    this.layoutParams = layoutParams
 
-                state.viewState?.let {
-                    this.restoreState(it)
-                }
-
-                chromeClient.context = context
-                webChromeClient = chromeClient
-                webViewClient = client
-
-                // Avoid covering other components
-                this.setLayerType(state.webSettings.androidWebSettings.layerType, null)
-
-                settings.apply {
-                    state.webSettings.let {
-                        javaScriptEnabled = it.isJavaScriptEnabled
-                        userAgentString = it.customUserAgentString
-                        allowFileAccessFromFileURLs = it.allowFileAccessFromFileURLs
-                        allowUniversalAccessFromFileURLs = it.allowUniversalAccessFromFileURLs
-                        setSupportZoom(it.supportZoom)
+                    state.viewState?.let {
+                        this.restoreState(it)
                     }
 
-                    state.webSettings.androidWebSettings.let {
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            safeBrowsingEnabled = it.safeBrowsingEnabled
+                    chromeClient.context = context
+                    webChromeClient = chromeClient
+                    webViewClient = client
+
+                    // Avoid covering other components
+                    this.setLayerType(state.webSettings.androidWebSettings.layerType, null)
+
+                    settings.apply {
+                        state.webSettings.let {
+                            javaScriptEnabled = it.isJavaScriptEnabled
+                            userAgentString = it.customUserAgentString
+                            allowFileAccessFromFileURLs = it.allowFileAccessFromFileURLs
+                            allowUniversalAccessFromFileURLs = it.allowUniversalAccessFromFileURLs
+                            setSupportZoom(it.supportZoom)
                         }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                            isAlgorithmicDarkeningAllowed = it.isAlgorithmicDarkeningAllowed
-                        }
-                        setBackgroundColor(state.webSettings.backgroundColor.toArgb())
-                        allowFileAccess = it.allowFileAccess
-                        textZoom = it.textZoom
-                        useWideViewPort = it.useWideViewPort
-                        standardFontFamily = it.standardFontFamily
-                        defaultFontSize = it.defaultFontSize
-                        loadsImagesAutomatically = it.loadsImagesAutomatically
-                        domStorageEnabled = it.domStorageEnabled
-                        mediaPlaybackRequiresUserGesture = it.mediaPlaybackRequiresUserGesture
-                    }
-                }
-                if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-                    val nightModeFlags =
-                        resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-                    if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
-                        WebSettingsCompat.setForceDark(
-                            this.settings,
-                            WebSettingsCompat.FORCE_DARK_ON,
-                        )
-                    } else {
-                        WebSettingsCompat.setForceDark(
-                            this.settings,
-                            WebSettingsCompat.FORCE_DARK_OFF,
-                        )
-                    }
 
-                    if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK_STRATEGY)) {
-                        WebSettingsCompat.setForceDarkStrategy(
-                            this.settings,
-                            WebSettingsCompat.DARK_STRATEGY_WEB_THEME_DARKENING_ONLY,
-                        )
+                        state.webSettings.androidWebSettings.let {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                safeBrowsingEnabled = it.safeBrowsingEnabled
+                            }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                isAlgorithmicDarkeningAllowed = it.isAlgorithmicDarkeningAllowed
+                            }
+                            setBackgroundColor(state.webSettings.backgroundColor.toArgb())
+                            allowFileAccess = it.allowFileAccess
+                            textZoom = it.textZoom
+                            useWideViewPort = it.useWideViewPort
+                            standardFontFamily = it.standardFontFamily
+                            defaultFontSize = it.defaultFontSize
+                            loadsImagesAutomatically = it.loadsImagesAutomatically
+                            domStorageEnabled = it.domStorageEnabled
+                            mediaPlaybackRequiresUserGesture = it.mediaPlaybackRequiresUserGesture
+                        }
                     }
+                    if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+                        val nightModeFlags =
+                            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+                        if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                            WebSettingsCompat.setForceDark(
+                                this.settings,
+                                WebSettingsCompat.FORCE_DARK_ON,
+                            )
+                        } else {
+                            WebSettingsCompat.setForceDark(
+                                this.settings,
+                                WebSettingsCompat.FORCE_DARK_OFF,
+                            )
+                        }
+
+                        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK_STRATEGY)) {
+                            WebSettingsCompat.setForceDarkStrategy(
+                                this.settings,
+                                WebSettingsCompat.DARK_STRATEGY_WEB_THEME_DARKENING_ONLY,
+                            )
+                        }
+                    }
+                }.also {
+                    val androidWebView = AndroidWebView(it, scope, webViewJsBridge)
+                    state.webView = androidWebView
+                    webViewJsBridge?.webView = androidWebView
                 }
-            }.also {
-                val androidWebView = AndroidWebView(it, scope, webViewJsBridge)
-                state.webView = androidWebView
-                webViewJsBridge?.webView = androidWebView
-            }
         },
         modifier = modifier,
         onReset = {},
@@ -466,7 +468,11 @@ open class AccompanistWebChromeClient : WebChromeClient() {
             }
 
             if (androidPermission != null) {
-                if (ContextCompat.checkSelfPermission(context, androidPermission) == PackageManager.PERMISSION_GRANTED) {
+                if (ContextCompat.checkSelfPermission(
+                        context,
+                        androidPermission,
+                    ) == PackageManager.PERMISSION_GRANTED
+                ) {
                     grantedPermissions.add(resource)
                     KLogger.d {
                         "onPermissionRequest permission [$androidPermission] was already granted for resource [$resource]"
@@ -488,11 +494,9 @@ open class AccompanistWebChromeClient : WebChromeClient() {
         }
     }
 
-    override fun getDefaultVideoPoster(): Bitmap? {
-        return if (state.webSettings.androidWebSettings.hideDefaultVideoPoster) {
-            Bitmap.createBitmap(50, 50, Bitmap.Config.ARGB_8888)
-        } else {
-            super.getDefaultVideoPoster()
+    override fun getDefaultVideoPoster(): Bitmap? =
+        when {
+            state.webSettings.androidWebSettings.hideDefaultVideoPoster -> createBitmap(50, 50)
+            else -> super.getDefaultVideoPoster()
         }
-    }
 }

@@ -21,6 +21,7 @@ Please use the following example as a reference.
 
 ```kotlin
 fun main() = application {
+    addTempDirectoryRemovalHook()
     Window(onCloseRequest = ::exitApplication) {
         var restartRequired by remember { mutableStateOf(false) }
         var downloading by remember { mutableStateOf(0F) }

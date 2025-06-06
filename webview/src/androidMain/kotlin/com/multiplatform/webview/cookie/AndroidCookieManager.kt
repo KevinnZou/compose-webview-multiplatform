@@ -30,21 +30,18 @@ object AndroidCookieManager : CookieManager {
         if (WebViewFeature.isFeatureSupported(WebViewFeature.GET_COOKIE_INFO)) {
             cookies =
                 CookieManagerCompat.getCookieInfo(
-                    androidCookieManager, url,
+                    androidCookieManager,
+                    url,
                 )
         } else {
             val cookiesString: String? = androidCookieManager.getCookie(url)
             if (!cookiesString.isNullOrBlank()) {
-                cookies =
-                    cookiesString.split("; ".toRegex())
-                        .dropLastWhile { it.isEmpty() }
+                cookies = cookiesString.split("; ".toRegex()).dropLastWhile<String>(String::isEmpty)
             }
         }
 
         for (cookie in cookies) {
-            val cookieParams =
-                cookie.split(";".toRegex())
-                    .dropLastWhile { it.isEmpty() }
+            val cookieParams = cookie.split(";".toRegex()).dropLastWhile<String>(String::isEmpty)
 
             if (cookieParams.isEmpty()) continue
 

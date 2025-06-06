@@ -34,7 +34,7 @@ MaterialTheme {
             onClick = {
                 webViewNavigator.evaluateJavaScript(
                     """
-                    document.getElementById("subtitle").innerText = "Hello from KMM!";
+                    document.getElementById("subtitle").innerText = "Hello from KMP!";
                     """.trimIndent(),
                 ) {
                     // handle the result
@@ -89,7 +89,7 @@ class GreetJsMessageHandler : IJsMessageHandler {
       "Greet Handler Get Message: $message"
     }
     val param = processParams<GreetModel>(message)
-    val data = GreetModel("KMM Received ${param.message}")
+    val data = GreetModel("KMP Received ${param.message}")
     callback(dataToJsonString(data))
   }
 }

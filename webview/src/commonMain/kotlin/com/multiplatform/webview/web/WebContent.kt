@@ -29,6 +29,7 @@ sealed class WebContent {
 
     data class File(
         val fileName: String,
+        val readType: WebViewFileReadType,
     ) : WebContent()
 
     /**
@@ -61,15 +62,14 @@ sealed class WebContent {
      * @return the current url
      */
     @Deprecated("Use state.lastLoadedUrl instead")
-    fun getCurrentUrl(): String? {
-        return when (this) {
+    fun getCurrentUrl(): String? =
+        when (this) {
             is Url -> url
             is Data -> baseUrl
             is File -> throw IllegalStateException("Unsupported")
             is Post -> url
             is NavigatorOnly -> throw IllegalStateException("Unsupported")
         }
-    }
 
     data object NavigatorOnly : WebContent()
 }

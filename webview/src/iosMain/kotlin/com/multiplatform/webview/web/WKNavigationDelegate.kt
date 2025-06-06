@@ -6,6 +6,7 @@ import com.multiplatform.webview.util.KLogger
 import com.multiplatform.webview.util.getPlatformVersionDouble
 import com.multiplatform.webview.util.notZero
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.ObjCSignatureOverride
 import platform.CoreGraphics.CGPointMake
 import platform.Foundation.HTTPMethod
 import platform.Foundation.NSError
@@ -28,12 +29,14 @@ import platform.darwin.NSObject
 class WKNavigationDelegate(
     private val state: WebViewState,
     private val navigator: WebViewNavigator,
-) : NSObject(), WKNavigationDelegateProtocol {
+) : NSObject(),
+    WKNavigationDelegateProtocol {
     private var isRedirect = false
 
     /**
      * Called when the web view begins to receive web content.
      */
+    @ObjCSignatureOverride
     override fun webView(
         webView: WKWebView,
         didStartProvisionalNavigation: WKNavigation?,
@@ -49,6 +52,7 @@ class WKNavigationDelegate(
     /**
      * Called when the web view receives a server redirect.
      */
+    @ObjCSignatureOverride
     override fun webView(
         webView: WKWebView,
         didCommitNavigation: WKNavigation?,
@@ -66,6 +70,7 @@ class WKNavigationDelegate(
      * Called when the web view finishes loading.
      */
     @OptIn(ExperimentalForeignApi::class)
+    @ObjCSignatureOverride
     override fun webView(
         webView: WKWebView,
         didFinishNavigation: WKNavigation?,
@@ -123,7 +128,9 @@ class WKNavigationDelegate(
         KLogger.info {
             "Outer decidePolicyForNavigationAction: $url $isRedirect $decidePolicyForNavigationAction"
         }
-        if (url != null && !isRedirect &&
+        if (
+            url != null &&
+            !isRedirect &&
             navigator.requestInterceptor != null &&
             decidePolicyForNavigationAction.targetFrame?.mainFrame != false
         ) {

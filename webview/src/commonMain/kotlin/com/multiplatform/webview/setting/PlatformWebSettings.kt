@@ -256,4 +256,48 @@ sealed class PlatformWebSettings {
          */
         var isInspectable: Boolean = false,
     ) : PlatformWebSettings()
+
+    /**
+     * WasmJS web settings
+     */
+    data class WasmJSWebSettings(
+        /**
+         * The background color of the iframe WebView. The default value is {@code null}.
+         * Will use WebSettings backgroundColor when null.
+         *
+         * @param backgroundColor a color value
+         */
+        var backgroundColor: Color? = null,
+        /**
+         * Whether the iframe should have a border. The default value is {@code false}.
+         */
+        var showBorder: Boolean = false,
+        /**
+         * The border style when showBorder is true. The default value is "1px solid #ccc".
+         */
+        var borderStyle: String = "1px solid #ccc",
+        /**
+         * Whether the iframe should be sandboxed. The default value is {@code false}.
+         * When true, applies sandbox restrictions for security.
+         */
+        var enableSandbox: Boolean = false,
+        /**
+         * Sandbox permissions when enableSandbox is true.
+         * The default allows scripts, same-origin, and forms.
+         */
+        var sandboxPermissions: String = "allow-scripts allow-same-origin allow-forms",
+        /**
+         * Whether to allow fullscreen mode. The default value is {@code true}.
+         */
+        var allowFullscreen: Boolean = true,
+        /**
+         * Custom CSS styles to apply to the iframe container.
+         * The default value is {@code null}.
+         */
+        var customContainerStyle: String? = null,
+        /**
+         * Whether to enable console logging for debugging. The default value is {@code false}.
+         */
+        var enableConsoleLogging: Boolean = false,
+    ) : PlatformWebSettings()
 }

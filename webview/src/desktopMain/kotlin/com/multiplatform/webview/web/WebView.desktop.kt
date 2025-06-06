@@ -1,16 +1,20 @@
 package com.multiplatform.webview.web
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.awt.SwingPanel
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
-import compose_webview_multiplatform.webview.generated.resources.Res
 import dev.datlag.kcef.KCEF
 import dev.datlag.kcef.KCEFBrowser
 import dev.datlag.kcef.KCEFClient
 import org.cef.browser.CefRendering
 import org.cef.browser.CefRequestContext
-import org.jetbrains.compose.resources.ExperimentalResourceApi
 
 /**
  * Desktop WebView implementation.
@@ -74,13 +78,14 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
                 param.rendering,
                 param.transparent,
             )
-        is WebContent.File ->
-            param.client.createBrowserWithHtml(
-                param.fileContent,
+        is WebContent.File -> {
+            param.client.createBrowser(
                 KCEFBrowser.BLANK_URI,
                 param.rendering,
                 param.transparent,
+                param.requestContext,
             )
+        }
         else ->
             param.client.createBrowser(
                 KCEFBrowser.BLANK_URI,
@@ -93,7 +98,6 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
 /**
  * Desktop WebView implementation.
  */
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun DesktopWebView(
     state: WebViewState,
@@ -117,32 +121,31 @@ fun DesktopWebView(
                 }
             }
         }
-    val scope = rememberCoroutineScope()
-    val fileContent by produceState("", state.content) {
-        value =
-            if (state.content is WebContent.File) {
-                val res = Res.readBytes("assets/${(state.content as WebContent.File).fileName}")
-                res.decodeToString().trimIndent()
-            } else {
-                ""
-            }
-    }
 
+    val scope = rememberCoroutineScope()
     val browser: KCEFBrowser? =
-        remember(client, state.webSettings, fileContent) {
-            client?.let { factory(WebViewFactoryParam(state, client, fileContent)) }
+        remember(client, state.webSettings, state.content) {
+            client?.let { factory(WebViewFactoryParam(state, client, "")) }
         }
+
     val desktopWebView: DesktopWebView? =
-        remember(browser) {
-            browser?.let { DesktopWebView(browser, scope, webViewJsBridge) }
+        remember(browser, state.content) {
+            browser?.let {
+                DesktopWebView(browser, scope, webViewJsBridge)
+            }
         }
+
+    LaunchedEffect(desktopWebView) {
+        desktopWebView?.let { webView ->
+            state.webView = webView
+            webViewJsBridge?.webView = webView
+        }
+    }
 
     browser?.let {
         SwingPanel(
             factory = {
                 onCreated(it)
-                state.webView = desktopWebView
-                webViewJsBridge?.webView = desktopWebView
                 browser.apply {
                     addDisplayHandler(state)
                     addLoadListener(state, navigator)

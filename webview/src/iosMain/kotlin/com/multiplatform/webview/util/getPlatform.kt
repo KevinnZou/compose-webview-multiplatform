@@ -2,13 +2,9 @@ package com.multiplatform.webview.util
 
 import platform.UIKit.UIDevice
 
-internal actual fun getPlatform(): Platform {
-    return Platform.IOS
-}
+internal actual fun getPlatform(): Platform = Platform.IOS
 
-internal actual fun getPlatformVersion(): String {
-    return UIDevice.currentDevice.systemVersion
-}
+internal actual fun getPlatformVersion(): String = UIDevice.currentDevice.systemVersion
 
 internal actual fun getPlatformVersionDouble(): Double {
     val systemVersion = getPlatformVersion()
