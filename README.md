@@ -22,8 +22,7 @@ developer ready to dive into open-source, we want you!
 
 > **Note**
 > This library is built using
->
-the [compose multiplatform library template](https://github.com/KevinnZou/compose-multiplatform-library-template).
+> the [compose multiplatform library template](https://github.com/KevinnZou/compose-multiplatform-library-template).
 > It supports automatic package publishing, documentation, and code style checking.
 
 This library can be considered as the Multiplatform version
@@ -409,23 +408,23 @@ Then they can pass it to the `rememberWebViewNavigator` method to intercept the 
 val navigator =
     rememberWebViewNavigator(
         requestInterceptor =
-        object : RequestInterceptor {
-            override fun onInterceptUrlRequest(
-                request: WebRequest,
-                navigator: WebViewNavigator,
-            ): WebRequestInterceptResult {
-                return if (request.url.contains("kotlin")) {
-                    WebRequestInterceptResult.Modify(
-                        WebRequest(
-                            url = "https://kotlinlang.org/docs/multiplatform.html",
-                            headers = mutableMapOf("info" to "test"),
-                        ),
-                    )
-                } else {
-                    WebRequestInterceptResult.Allow
+            object : RequestInterceptor {
+                override fun onInterceptUrlRequest(
+                    request: WebRequest,
+                    navigator: WebViewNavigator,
+                ): WebRequestInterceptResult {
+                    return if (request.url.contains("kotlin")) {
+                        WebRequestInterceptResult.Modify(
+                            WebRequest(
+                                url = "https://kotlinlang.org/docs/multiplatform.html",
+                                headers = mutableMapOf("info" to "test"),
+                            ),
+                        )
+                    } else {
+                        WebRequestInterceptResult.Allow
+                    }
                 }
-            }
-        },
+            },
     )
 ```
 
@@ -662,7 +661,7 @@ kotlin {
         commonMain {
             dependencies {
                 // use api since the desktop app need to access the Cef to initialize it.
-                api("io.github.kevinnzou:compose-webview-multiplatform:1.9.40")
+                api("io.github.kevinnzou:compose-webview-multiplatform:2.0.0")
             }
         }
     }
