@@ -7,6 +7,7 @@
 ![badge-android](http://img.shields.io/badge/platform-android-6EDB8D.svg?style=flat)
 ![badge-ios](http://img.shields.io/badge/platform-ios-CDCDCD.svg?style=flat)
 ![badge-desktop](http://img.shields.io/badge/platform-desktop-DB413D.svg?style=flat)
+![badge-desktop](https://img.shields.io/badge/platform-web-59B6EC.svg?style=flat)
 
 <img src="media/cmm-webview-sample.png" height="500">
 
