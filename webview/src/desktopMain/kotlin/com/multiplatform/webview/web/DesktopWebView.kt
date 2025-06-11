@@ -60,7 +60,7 @@ class DesktopWebView(
         }
     }
 
-    override fun loadHtml(
+    override suspend fun loadHtml(
         html: String?,
         baseUrl: String?,
         mimeType: String?,
@@ -72,6 +72,7 @@ class DesktopWebView(
         }
         if (html != null) {
             try {
+                delay(500)
                 webView.loadHtml(html, baseUrl ?: KCEFBrowser.BLANK_URI)
             } catch (e: Exception) {
                 KLogger.e { "DesktopWebView loadHtml error: ${e.message}" }
@@ -99,7 +100,7 @@ class DesktopWebView(
                         throw Exception("Resource not found: $attemptedResourcePath (for readType: $readType)")
                     }
 
-                    val outFile = java.io.File(tempDirectory, path.substringAfterLast("/"))
+                    val outFile = File(tempDirectory, path.substringAfterLast("/"))
                     outFile.outputStream().use { output ->
                         inputStream.copyTo(output)
                     }

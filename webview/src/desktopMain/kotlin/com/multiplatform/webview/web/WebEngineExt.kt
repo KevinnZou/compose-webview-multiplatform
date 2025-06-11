@@ -11,8 +11,6 @@ import org.cef.handler.CefDisplayHandler
 import org.cef.handler.CefLoadHandler
 import org.cef.handler.CefRequestHandlerAdapter
 import org.cef.network.CefRequest
-import kotlin.math.abs
-import kotlin.math.ln
 
 /**
  * Created By Kevin Zou On 2023/9/12
@@ -37,13 +35,12 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
             ) {
                 // https://magpcss.org/ceforum/viewtopic.php?t=11491
                 // https://github.com/KevinnZou/compose-webview-multiplatform/issues/46
+                // I found this formula much near to the other platforms, so I replace it
                 val givenZoomLevel = state.webSettings.zoomLevel
-                val realZoomLevel =
-                    if (givenZoomLevel >= 0.0) {
-                        ln(abs(givenZoomLevel)) / ln(1.2)
-                    } else {
-                        -ln(abs(givenZoomLevel)) / ln(1.2)
-                    }
+
+                val percentage = givenZoomLevel * 100.0
+                val realZoomLevel = (percentage - 100.0) / 25.0
+
                 KLogger.d { "titleProperty: $title" }
                 zoomLevel = realZoomLevel
                 state.pageTitle = title

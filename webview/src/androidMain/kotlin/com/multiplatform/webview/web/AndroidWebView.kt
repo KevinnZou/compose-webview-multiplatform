@@ -37,7 +37,7 @@ class AndroidWebView(
         webView.loadUrl(url, additionalHttpHeaders)
     }
 
-    override fun loadHtml(
+    override suspend fun loadHtml(
         html: String?,
         baseUrl: String?,
         mimeType: String?,

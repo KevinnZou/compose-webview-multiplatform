@@ -54,7 +54,7 @@ class WasmJsWebView(
         }
     }
 
-    override fun loadHtml(
+    override suspend fun loadHtml(
         html: String?,
         baseUrl: String?,
         mimeType: String?,
