@@ -11,8 +11,6 @@ import org.cef.handler.CefDisplayHandler
 import org.cef.handler.CefLoadHandler
 import org.cef.handler.CefRequestHandlerAdapter
 import org.cef.network.CefRequest
-import kotlin.math.abs
-import kotlin.math.ln
 
 /**
  * Created By Kevin Zou On 2023/9/12

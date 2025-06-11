@@ -207,7 +207,6 @@ sealed class PlatformWebSettings {
          * for them as well
          */
         var enableSandbox: Boolean = false,
-
         /**
          * The virtual subdomain prefix to be used with WebViewAssetLoader for local file access.
          *
@@ -219,7 +218,7 @@ sealed class PlatformWebSettings {
          * the WebViewAssetLoader will map it to the correct local file or asset if configured properly.
          * This URL should be used instead of file:// URLs to ensure secure and modern WebView behavior.
          */
-        var sandboxSubdomain: String = "/app/"
+        var sandboxSubdomain: String = "/app/",
     ) : PlatformWebSettings() {
         object LayerType {
             const val NONE = 0

@@ -212,12 +212,13 @@ fun AccompanistWebView(
                             mediaPlaybackRequiresUserGesture = it.mediaPlaybackRequiresUserGesture
 
                             if (it.enableSandbox) {
-                                client.assetLoader = WebViewAssetLoader.Builder()
-                                    .addPathHandler(
-                                        it.sandboxSubdomain,
-                                        InternalStoragePathHandler()
-                                    )
-                                    .build()
+                                client.assetLoader =
+                                    WebViewAssetLoader
+                                        .Builder()
+                                        .addPathHandler(
+                                            it.sandboxSubdomain,
+                                            InternalStoragePathHandler(),
+                                        ).build()
                             }
                         }
                     }
@@ -288,6 +289,7 @@ open class AccompanistWebViewClient : WebViewClient() {
         state.pageTitle = null
         state.lastLoadedUrl = url
         val supportZoom = if (state.webSettings.supportZoom) "yes" else "no"
+
         // set scale level
         @Suppress("ktlint:standard:max-line-length")
         val script =
@@ -297,7 +299,7 @@ open class AccompanistWebViewClient : WebViewClient() {
 
     override fun shouldInterceptRequest(
         view: WebView?,
-        request: WebResourceRequest?
+        request: WebResourceRequest?,
     ): WebResourceResponse? {
         val url = request?.url
         KLogger.d { "Intercepting request for URL: $url" }

@@ -221,13 +221,13 @@ class WebViewNavigator(
 
     fun loadHtmlFile(
         fileName: String,
-        readType: WebViewFileReadType = WebViewFileReadType.ASSET_RESOURCES
+        readType: WebViewFileReadType = WebViewFileReadType.ASSET_RESOURCES,
     ) {
         coroutineScope.launch {
             navigationEvents.emit(
                 NavigationEvent.LoadHtmlFile(
                     fileName,
-                    readType
+                    readType,
                 ),
             )
         }
@@ -310,5 +310,4 @@ class WebViewNavigator(
 fun rememberWebViewNavigator(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     requestInterceptor: RequestInterceptor? = null,
-): WebViewNavigator =
-    remember(coroutineScope) { WebViewNavigator(coroutineScope, requestInterceptor) }
+): WebViewNavigator = remember(coroutineScope) { WebViewNavigator(coroutineScope, requestInterceptor) }
