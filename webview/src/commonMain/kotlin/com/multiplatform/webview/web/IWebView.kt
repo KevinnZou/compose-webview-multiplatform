@@ -55,7 +55,7 @@ interface IWebView {
      * @param encoding The encoding of the data in the string.
      * @param historyUrl The history URL for the loaded HTML. Leave null to use about:blank.
      */
-    fun loadHtml(
+    suspend fun loadHtml(
         html: String? = null,
         baseUrl: String? = null,
         mimeType: String? = "text/html",

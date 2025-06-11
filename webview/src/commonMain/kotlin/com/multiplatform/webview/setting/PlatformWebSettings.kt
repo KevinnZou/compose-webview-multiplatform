@@ -188,6 +188,38 @@ sealed class PlatformWebSettings {
          * Default is [LayerType.HARDWARE]
          */
         var layerType: Int = LayerType.HARDWARE,
+        /**
+         * Enables sandboxing of local file access via WebViewAssetLoader.
+         *
+         * When true, instead of using file:// URLs (which are insecure and restrict modern features),
+         * the WebView uses WebViewAssetLoader to serve local files (assets/resources/internal storage)
+         * over secure virtual https:// URLs. This improves compatibility with cookies, service workers,
+         * and CSP (Content Security Policy), and prevents file access vulnerabilities.
+         *
+         * This must be used in combination with a proper PathHandler setup in your WebView client
+         * (e.g., mapping /app/ to internal files or app assets).
+         *
+         * For example, if your WebViewAssetLoader maps the path "/app/" to your internal storage,
+         * you can load a file by navigating to a virtual URL like:
+         * `https://appassets.androidplatform.net/app/index.html`
+         * (the standard host used by WebViewAssetLoader)
+         * This URL will internally resolve to your app's internal file path. and enable cookies
+         * for them as well
+         */
+        var enableSandbox: Boolean = false,
+
+        /**
+         * The virtual subdomain prefix to be used with WebViewAssetLoader for local file access.
+         *
+         * This is typically set to something like "/app/" or "/assets/" and must match the path
+         * used in your PathHandler configuration inside WebViewAssetLoader.
+         *
+         * When you load a URL such as `https://appassets.androidplatform.net/app/index.html`
+         * (the standard host used by WebViewAssetLoader) in your WebView,
+         * the WebViewAssetLoader will map it to the correct local file or asset if configured properly.
+         * This URL should be used instead of file:// URLs to ensure secure and modern WebView behavior.
+         */
+        var sandboxSubdomain: String = "/app/"
     ) : PlatformWebSettings() {
         object LayerType {
             const val NONE = 0

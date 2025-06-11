@@ -10,6 +10,7 @@ import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebResourceResponse
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -24,10 +25,12 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.createBitmap
 import androidx.webkit.WebSettingsCompat
+import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewFeature
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.request.WebRequestInterceptResult
+import com.multiplatform.webview.util.InternalStoragePathHandler
 import com.multiplatform.webview.util.KLogger
 
 /**
@@ -189,7 +192,6 @@ fun AccompanistWebView(
                             userAgentString = it.customUserAgentString
                             allowFileAccessFromFileURLs = it.allowFileAccessFromFileURLs
                             allowUniversalAccessFromFileURLs = it.allowUniversalAccessFromFileURLs
-                            setSupportZoom(it.supportZoom)
                         }
 
                         state.webSettings.androidWebSettings.let {
@@ -208,6 +210,15 @@ fun AccompanistWebView(
                             loadsImagesAutomatically = it.loadsImagesAutomatically
                             domStorageEnabled = it.domStorageEnabled
                             mediaPlaybackRequiresUserGesture = it.mediaPlaybackRequiresUserGesture
+
+                            if (it.enableSandbox) {
+                                client.assetLoader = WebViewAssetLoader.Builder()
+                                    .addPathHandler(
+                                        it.sandboxSubdomain,
+                                        InternalStoragePathHandler()
+                                    )
+                                    .build()
+                            }
                         }
                     }
                     if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
@@ -261,6 +272,8 @@ open class AccompanistWebViewClient : WebViewClient() {
         internal set
     private var isRedirect = false
 
+    var assetLoader: WebViewAssetLoader? = null
+
     override fun onPageStarted(
         view: WebView,
         url: String?,
@@ -274,12 +287,23 @@ open class AccompanistWebViewClient : WebViewClient() {
         state.errorsForCurrentRequest.clear()
         state.pageTitle = null
         state.lastLoadedUrl = url
-
+        val supportZoom = if (state.webSettings.supportZoom) "yes" else "no"
         // set scale level
         @Suppress("ktlint:standard:max-line-length")
         val script =
-            "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=${state.webSettings.zoomLevel}, maximum-scale=10.0, minimum-scale=0.1,user-scalable=yes');document.getElementsByTagName('head')[0].appendChild(meta);"
+            "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=${state.webSettings.zoomLevel}, maximum-scale=10.0, minimum-scale=0.1,user-scalable=$supportZoom');document.getElementsByTagName('head')[0].appendChild(meta);"
         navigator.evaluateJavaScript(script)
+    }
+
+    override fun shouldInterceptRequest(
+        view: WebView?,
+        request: WebResourceRequest?
+    ): WebResourceResponse? {
+        val url = request?.url
+        KLogger.d { "Intercepting request for URL: $url" }
+        return url?.let {
+            assetLoader?.shouldInterceptRequest(it)
+        } ?: super.shouldInterceptRequest(view, request)
     }
 
     override fun onPageFinished(

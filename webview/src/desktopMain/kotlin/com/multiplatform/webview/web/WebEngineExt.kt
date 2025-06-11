@@ -37,13 +37,12 @@ internal fun CefBrowser.addDisplayHandler(state: WebViewState) {
             ) {
                 // https://magpcss.org/ceforum/viewtopic.php?t=11491
                 // https://github.com/KevinnZou/compose-webview-multiplatform/issues/46
+                // I found this formula much near to the other platforms, so I replace it
                 val givenZoomLevel = state.webSettings.zoomLevel
-                val realZoomLevel =
-                    if (givenZoomLevel >= 0.0) {
-                        ln(abs(givenZoomLevel)) / ln(1.2)
-                    } else {
-                        -ln(abs(givenZoomLevel)) / ln(1.2)
-                    }
+
+                val percentage = givenZoomLevel * 100.0
+                val realZoomLevel = (percentage - 100.0) / 25.0
+
                 KLogger.d { "titleProperty: $title" }
                 zoomLevel = realZoomLevel
                 state.pageTitle = title

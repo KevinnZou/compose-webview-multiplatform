@@ -74,6 +74,7 @@ class WebViewNavigator(
 
         data class LoadHtmlFile(
             val fileName: String,
+            val readType: WebViewFileReadType,
         ) : NavigationEvent
 
         /**
@@ -140,7 +141,7 @@ class WebViewNavigator(
                         )
 
                     is NavigationEvent.LoadHtmlFile -> {
-                        loadHtmlFile(event.fileName)
+                        loadHtmlFile(event.fileName, event.readType)
                     }
 
                     is NavigationEvent.LoadUrl -> {
@@ -218,11 +219,15 @@ class WebViewNavigator(
         }
     }
 
-    fun loadHtmlFile(fileName: String) {
+    fun loadHtmlFile(
+        fileName: String,
+        readType: WebViewFileReadType = WebViewFileReadType.ASSET_RESOURCES
+    ) {
         coroutineScope.launch {
             navigationEvents.emit(
                 NavigationEvent.LoadHtmlFile(
                     fileName,
+                    readType
                 ),
             )
         }
@@ -305,4 +310,5 @@ class WebViewNavigator(
 fun rememberWebViewNavigator(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     requestInterceptor: RequestInterceptor? = null,
-): WebViewNavigator = remember(coroutineScope) { WebViewNavigator(coroutineScope, requestInterceptor) }
+): WebViewNavigator =
+    remember(coroutineScope) { WebViewNavigator(coroutineScope, requestInterceptor) }
