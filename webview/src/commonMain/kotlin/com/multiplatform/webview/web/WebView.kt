@@ -6,7 +6,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
-import com.multiplatform.webview.util.KLogger
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.merge
 
