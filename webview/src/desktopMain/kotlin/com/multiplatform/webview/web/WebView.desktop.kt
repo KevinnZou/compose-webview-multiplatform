@@ -72,9 +72,8 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
                 param.requestContext,
             )
         is WebContent.Data ->
-            param.client.createBrowserWithHtml(
-                content.data,
-                content.baseUrl ?: KCEFBrowser.BLANK_URI,
+            param.client.createBrowser(
+                KCEFBrowser.BLANK_URI,
                 param.rendering,
                 param.transparent,
             )
