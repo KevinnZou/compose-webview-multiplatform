@@ -10,6 +10,7 @@ import kotlinx.cinterop.allocArrayOf
 import kotlinx.cinterop.memScoped
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 import platform.Foundation.HTTPBody
 import platform.Foundation.HTTPMethod
 import platform.Foundation.NSBundle
@@ -50,20 +51,28 @@ class IOSWebView(
         url: String,
         additionalHttpHeaders: Map<String, String>,
     ) {
-        val request =
-            NSMutableURLRequest.requestWithURL(
-                URL = NSURL(string = url),
-            )
-        additionalHttpHeaders.all { (key, value) ->
-            request.setValue(
-                value = value,
-                forHTTPHeaderField = key,
-            )
-            true
+        try {
+            val request = NSMutableURLRequest.requestWithURL(URL = NSURL(string = url))
+            additionalHttpHeaders.forEach { (key, value) ->
+                request.setValue(value = value, forHTTPHeaderField = key)
+            }
+            webView.loadRequest(request = request)
+        } catch (e: Exception) {
+            KLogger.e { "The url is not a valid web URL: $url" }
+            scope.launch {
+                val errorHtml =
+                    """
+                <!DOCTYPE html>
+                <html><head><title>Error</title></head>
+                <body>
+                    <h1>Error Loading URL</h1>
+                    <p>Could not load: $url</p>
+                    <p>Error: ${e.message}</p>
+                </body></html>
+                """.trimIndent()
+                loadHtml(errorHtml)
+            }
         }
-        webView.loadRequest(
-            request = request,
-        )
     }
 
     override suspend fun loadHtml(
@@ -97,7 +106,7 @@ class IOSWebView(
                 WebViewFileReadType.ASSET_RESOURCES -> {
                     val resourcePath =
                         (NSBundle.mainBundle.resourcePath ?: "") +
-                            "/compose-resources/assets/" + fileName
+                                "/compose-resources/assets/" + fileName
                     fileURL = NSURL.fileURLWithPath(resourcePath)
 
                     val parentDir = (resourcePath as NSString).stringByDeletingLastPathComponent()
@@ -131,11 +140,11 @@ class IOSWebView(
             if (finalReadAccessURL.path.isNullOrEmpty()) {
                 KLogger.e {
                     "Critical: finalReadAccessURL is null or has an empty path. " +
-                        "Cannot load file with proper read access for ${fileURL.absoluteString}"
+                            "Cannot load file with proper read access for ${fileURL.absoluteString}"
                 }
                 loadHtml(
                     "<html><body>Error: Cannot determine read access URL " +
-                        "for ${fileURL.absoluteString}</body></html>",
+                            "for ${fileURL.absoluteString}</body></html>",
                 )
                 return
             }
