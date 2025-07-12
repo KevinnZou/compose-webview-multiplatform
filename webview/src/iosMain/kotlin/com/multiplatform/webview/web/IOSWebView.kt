@@ -12,21 +12,21 @@ import kotlinx.cinterop.useContents
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.HTTPBody
 import platform.Foundation.HTTPMethod
+import platform.Foundation.NSArray
 import platform.Foundation.NSBundle
 import platform.Foundation.NSData
+import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSMutableURLRequest
+import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSString
 import platform.Foundation.NSURL
+import platform.Foundation.NSUserDomainMask
 import platform.Foundation.create
 import platform.Foundation.setValue
 import platform.Foundation.stringByDeletingLastPathComponent
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
 import platform.darwin.NSObjectMeta
-import platform.Foundation.NSSearchPathForDirectoriesInDomains
-import platform.Foundation.NSDocumentDirectory
-import platform.Foundation.NSUserDomainMask
-import platform.Foundation.NSArray
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -59,15 +59,19 @@ class IOSWebView(
             val fileURL = NSURL(string = url)
             if (fileURL != null && fileURL.isFileURL()) {
                 // Use document directory for read access to fix real device issues
-                val documentPaths = NSSearchPathForDirectoriesInDomains(
-                    NSDocumentDirectory,
-                    NSUserDomainMask,
-                    true
-                ) as NSArray
-                val readAccessURL = if (documentPaths.count > 0u) {
-                    val documentPath = documentPaths.objectAtIndex(0u) as? String
-                    documentPath?.let { NSURL.fileURLWithPath(it) }
-                } else null
+                val documentPaths =
+                    NSSearchPathForDirectoriesInDomains(
+                        NSDocumentDirectory,
+                        NSUserDomainMask,
+                        true,
+                    ) as NSArray
+                val readAccessURL =
+                    if (documentPaths.count > 0u) {
+                        val documentPath = documentPaths.objectAtIndex(0u) as? String
+                        documentPath?.let { NSURL.fileURLWithPath(it) }
+                    } else {
+                        null
+                    }
 
                 if (readAccessURL != null) {
                     webView.loadFileURL(fileURL, readAccessURL)
@@ -124,7 +128,7 @@ class IOSWebView(
                 WebViewFileReadType.ASSET_RESOURCES -> {
                     val resourcePath =
                         (NSBundle.mainBundle.resourcePath ?: "") +
-                                "/compose-resources/assets/" + fileName
+                            "/compose-resources/assets/" + fileName
                     fileURL = NSURL.fileURLWithPath(resourcePath)
 
                     val parentDir = (resourcePath as NSString).stringByDeletingLastPathComponent()
@@ -158,11 +162,11 @@ class IOSWebView(
             if (finalReadAccessURL.path.isNullOrEmpty()) {
                 KLogger.e {
                     "Critical: finalReadAccessURL is null or has an empty path. " +
-                            "Cannot load file with proper read access for ${fileURL.absoluteString}"
+                        "Cannot load file with proper read access for ${fileURL.absoluteString}"
                 }
                 loadHtml(
                     "<html><body>Error: Cannot determine read access URL " +
-                            "for ${fileURL.absoluteString}</body></html>",
+                        "for ${fileURL.absoluteString}</body></html>",
                 )
                 return
             }
