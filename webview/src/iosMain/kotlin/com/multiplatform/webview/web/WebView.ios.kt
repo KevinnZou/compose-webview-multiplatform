@@ -167,11 +167,12 @@ fun IOSWebView(
         },
         properties =
             UIKitInteropProperties(
-                interactionMode = if (state.webSettings.iOSWebSettings.scrollEnabled) {
-                    UIKitInteropInteractionMode.NonCooperative
-                } else {
-                    UIKitInteropInteractionMode.Cooperative()
-                },
+                interactionMode =
+                    if (state.webSettings.iOSWebSettings.scrollEnabled) {
+                        UIKitInteropInteractionMode.NonCooperative
+                    } else {
+                        UIKitInteropInteractionMode.Cooperative()
+                    },
                 isNativeAccessibilityEnabled = true,
             ),
     )
