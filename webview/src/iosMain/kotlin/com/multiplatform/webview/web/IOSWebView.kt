@@ -12,11 +12,15 @@ import kotlinx.cinterop.useContents
 import kotlinx.coroutines.CoroutineScope
 import platform.Foundation.HTTPBody
 import platform.Foundation.HTTPMethod
+import platform.Foundation.NSArray
 import platform.Foundation.NSBundle
 import platform.Foundation.NSData
+import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSMutableURLRequest
+import platform.Foundation.NSSearchPathForDirectoriesInDomains
 import platform.Foundation.NSString
 import platform.Foundation.NSURL
+import platform.Foundation.NSUserDomainMask
 import platform.Foundation.create
 import platform.Foundation.setValue
 import platform.Foundation.stringByDeletingLastPathComponent
@@ -50,6 +54,33 @@ class IOSWebView(
         url: String,
         additionalHttpHeaders: Map<String, String>,
     ) {
+        // Check if it's a file URL
+        if (url.startsWith("file://")) {
+            val fileURL = NSURL(string = url)
+            if (fileURL != null && fileURL.isFileURL()) {
+                // Use document directory for read access to fix real device issues
+                val documentPaths =
+                    NSSearchPathForDirectoriesInDomains(
+                        NSDocumentDirectory,
+                        NSUserDomainMask,
+                        true,
+                    ) as NSArray
+                val readAccessURL =
+                    if (documentPaths.count > 0u) {
+                        val documentPath = documentPaths.objectAtIndex(0u) as? String
+                        documentPath?.let { NSURL.fileURLWithPath(it) }
+                    } else {
+                        null
+                    }
+
+                if (readAccessURL != null) {
+                    webView.loadFileURL(fileURL, readAccessURL)
+                    return
+                }
+            }
+        }
+
+        // Handle regular HTTP/HTTPS URLs
         val request =
             NSMutableURLRequest.requestWithURL(
                 URL = NSURL(string = url),
