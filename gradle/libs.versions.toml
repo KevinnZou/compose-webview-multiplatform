@@ -15,7 +15,7 @@ kotlin-atomicfu = { id = "org.jetbrains.kotlin.plugin.atomicfu", version.ref = "
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ktlint = "org.jlleitschuh.gradle.ktlint:12.3.0"
-maven-publish = "com.vanniktech.maven.publish:0.25.3"
+maven-publish = "com.vanniktech.maven.publish:0.34.0"
 
 [libraries]
 android-activity-compose = "androidx.activity:activity-compose:1.10.1"
