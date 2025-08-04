@@ -1,7 +1,9 @@
 @file:Suppress("UNUSED_VARIABLE", "OPT_IN_USAGE")
 
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig
+import java.net.URL
 
 plugins {
     alias(libs.plugins.kotlin.multiplatform)
@@ -114,6 +116,21 @@ fun org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget.setUpiOSObserver()
 }
 
 mavenPublishing {
-    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.S01, automaticRelease = true)
+    publishToMavenCentral(true)
     signAllPublications()
+}
+
+tasks.withType<DokkaTask>().configureEach {
+    offlineMode.set(true) // 是否离线模式
+    // 新版配置方式
+    dokkaSourceSets {
+        configureEach {
+            // 添加外部文档链接
+            externalDocumentationLink {
+                url.set(URL("https://developer.android.com/reference/kotlin/"))
+                // 指向本地 package-list 文件
+                packageListUrl.set(URL("file://$projectDir/docs/android-kotlin-package-list"))
+            }
+        }
+    }
 }
