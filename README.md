@@ -13,7 +13,8 @@
 
 
 > **Note**
-> This library is built using the [compose multiplatform library template](https://github.com/KevinnZou/compose-multiplatform-library-template).
+> This library is built using
+> the [compose multiplatform library template](https://github.com/KevinnZou/compose-multiplatform-library-template).
 > It supports automatic package publishing, documentation, and code style checking.
 
 This library can be considered as the Multiplatform version
@@ -652,7 +653,7 @@ kotlin {
         commonMain {
             dependencies {
                 // use api since the desktop app need to access the Cef to initialize it.
-                api("io.github.kevinnzou:compose-webview-multiplatform:2.0.1")
+                api("io.github.kevinnzou:compose-webview-multiplatform:2.0.2")
             }
         }
     }
