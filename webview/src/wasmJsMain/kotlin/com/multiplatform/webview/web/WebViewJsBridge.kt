@@ -19,7 +19,7 @@ internal fun createJsBridgeScript(
             postMessage: function(methodName, params, callbackId) {
                 // Send as JSON string instead of object to ensure proper parsing
                 var messageData = JSON.stringify({
-                    type: 'kmpJsBridge',
+                    type: '$jsBridgeName',
                     action: methodName,
                     params: params,
                     callbackId: callbackId || 0
@@ -55,7 +55,7 @@ internal fun createJsBridgeScript(
         window.addEventListener('message', function(event) {
             try {
                 var data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
-                if (data && data.type === 'kmpJsBridgeCallback') {
+                if (data && data.type === '$jsBridgeName') {
                     window.$jsBridgeName.onCallback(data.callbackId, data.message);
                 }
             } catch (e) {
