@@ -314,7 +314,7 @@ private fun setupJsBridgeForWasm(
             try {
                 val dataString = messageEvent.data.toString()
 
-                if (dataString.contains("kmpJsBridge") && dataString.startsWith("{")) {
+                if (dataString.contains(webViewJsBridge.jsBridgeName) && dataString.startsWith("{")) {
                     val actionPattern = """"action"\s*:\s*"([^"]*)"""".toRegex()
                     val paramsPattern = """"params"\s*:\s*"((?:[^"\\]|\\.)*)"""".toRegex()
                     val callbackPattern = """"callbackId"\s*:\s*(\d+)""".toRegex()

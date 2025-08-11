@@ -176,7 +176,7 @@ class WasmJsWebView(
                 try {
                     val dataString = messageEvent.data.toString()
 
-                    if (dataString.contains("kmpJsBridge")) {
+                    if (dataString.contains(webViewJsBridge.jsBridgeName)) {
                         val actionPattern = """action[=:][\s]*['"](.*?)['"]""".toRegex()
                         val paramsPattern = """params[=:][\s]*['"](.*?)['"]""".toRegex()
                         val callbackPattern = """callbackId[=:][\s]*(\d+)""".toRegex()
