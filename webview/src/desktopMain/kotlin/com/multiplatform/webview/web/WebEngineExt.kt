@@ -129,7 +129,7 @@ internal fun CefBrowser.addLoadListener(
                 KLogger.d { "Load End ${browser?.url}" }
                 state.loadingState = LoadingState.Finished
                 navigator.canGoBack = canGoBack()
-                navigator.canGoBack = canGoForward()
+                navigator.canGoForward = canGoForward()
                 state.lastLoadedUrl = getCurrentUrl()
             }
 
