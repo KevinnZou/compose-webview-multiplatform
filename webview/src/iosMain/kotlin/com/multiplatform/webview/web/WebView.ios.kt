@@ -133,9 +133,9 @@ fun IOSWebView(
                             (it.iOSWebSettings.backgroundColor ?: it.backgroundColor).toUIColor()
                         val scrollViewColor =
                             (
-                                it.iOSWebSettings.underPageBackgroundColor
-                                    ?: it.backgroundColor
-                            ).toUIColor()
+                                    it.iOSWebSettings.underPageBackgroundColor
+                                        ?: it.backgroundColor
+                                    ).toUIColor()
                         setOpaque(it.iOSWebSettings.opaque)
                         if (!it.iOSWebSettings.opaque) {
                             setBackgroundColor(backgroundColor)
@@ -159,11 +159,12 @@ fun IOSWebView(
                      * Enabling this allows Safari Web Inspector to debug the content of the WebView.
                      * The value is determined by `state.webSettings.iOSWebSettings.isInspectable`.
                      */
-                    val minSetInspectableVersion = cValue<NSOperatingSystemVersion> {
-                        majorVersion = 16
-                        minorVersion = 4
-                        patchVersion = 0
-                    }
+                    val minSetInspectableVersion =
+                        cValue<NSOperatingSystemVersion> {
+                            majorVersion = 16
+                            minorVersion = 4
+                            patchVersion = 0
+                        }
                     if (NSProcessInfo.processInfo.isOperatingSystemAtLeastVersion(minSetInspectableVersion)) {
                         this.setInspectable(state.webSettings.iOSWebSettings.isInspectable)
                     }
