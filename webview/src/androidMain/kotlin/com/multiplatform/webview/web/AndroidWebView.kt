@@ -105,9 +105,7 @@ class AndroidWebView(
         KLogger.d {
             "evaluateJavaScript: $androidScript"
         }
-        webView.post {
-            webView.evaluateJavascript(androidScript, callback)
-        }
+        webView.evaluateJavascript(androidScript, callback)
     }
 
     override fun injectJsBridge() {
