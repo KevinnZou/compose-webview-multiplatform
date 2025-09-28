@@ -1,5 +1,6 @@
 package com.multiplatform.webview.web
 
+import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.WKJsMessageHandler
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
@@ -273,6 +274,8 @@ class IOSWebView(
             return Pair(x.toInt(), y.toInt())
         }
     }
+
+    override val consoleBridge: ConsoleBridge? = null
 
     private class BundleMarker : NSObject() {
         companion object : NSObjectMeta()

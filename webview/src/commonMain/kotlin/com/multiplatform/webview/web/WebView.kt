@@ -5,6 +5,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
+import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.merge
@@ -35,6 +36,7 @@ fun WebView(
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
     webViewJsBridge: WebViewJsBridge? = null,
+    consoleBridge: ConsoleBridge? = null,
     onCreated: () -> Unit = {},
     onDispose: () -> Unit = {},
     platformWebViewParams: PlatformWebViewParams? = null,
@@ -45,6 +47,7 @@ fun WebView(
         captureBackPresses = captureBackPresses,
         navigator = navigator,
         webViewJsBridge = webViewJsBridge,
+        consoleBridge = consoleBridge,
         onCreated = { _ -> onCreated() },
         onDispose = { _ -> onDispose() },
         platformWebViewParams = platformWebViewParams,
@@ -72,6 +75,7 @@ fun WebView(
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
     webViewJsBridge: WebViewJsBridge? = null,
+    consoleBridge: ConsoleBridge? = null,
     onCreated: (NativeWebView) -> Unit = {},
     onDispose: (NativeWebView) -> Unit = {},
     platformWebViewParams: PlatformWebViewParams? = null,
@@ -118,6 +122,7 @@ fun WebView(
         captureBackPresses = captureBackPresses,
         navigator = navigator,
         webViewJsBridge = webViewJsBridge,
+        consoleBridge = consoleBridge,
         onCreated = onCreated,
         onDispose = onDispose,
         platformWebViewParams = platformWebViewParams,
@@ -167,6 +172,7 @@ expect fun ActualWebView(
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
     webViewJsBridge: WebViewJsBridge? = null,
+    consoleBridge: ConsoleBridge? = null,
     onCreated: (NativeWebView) -> Unit = {},
     onDispose: (NativeWebView) -> Unit = {},
     platformWebViewParams: PlatformWebViewParams? = null,

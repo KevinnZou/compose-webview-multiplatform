@@ -1,6 +1,5 @@
 package com.multiplatform.webview.util
 
-import android.util.Log
 import android.webkit.WebResourceResponse
 import androidx.webkit.WebViewAssetLoader
 import java.io.File
@@ -8,7 +7,6 @@ import java.io.FileInputStream
 
 class InternalStoragePathHandler : WebViewAssetLoader.PathHandler {
     override fun handle(path: String): WebResourceResponse? {
-        Log.d("InternalStorageHandler", "Intercepted: $path")
         val file = File(path.removePrefix("/"))
         if (!file.exists() || !file.isFile) return null
 

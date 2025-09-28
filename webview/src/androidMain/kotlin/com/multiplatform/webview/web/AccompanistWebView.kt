@@ -5,7 +5,9 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.os.Build
+import android.view.View
 import android.view.ViewGroup
+import android.webkit.ConsoleMessage
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -27,9 +29,11 @@ import androidx.core.graphics.createBitmap
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewFeature
+import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.request.WebRequestInterceptResult
+import com.multiplatform.webview.setting.PlatformWebSettings
 import com.multiplatform.webview.util.InternalStoragePathHandler
 import com.multiplatform.webview.util.KLogger
 
@@ -69,6 +73,7 @@ fun AccompanistWebView(
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
     webViewJsBridge: WebViewJsBridge? = null,
+    consoleBridge: ConsoleBridge? = null,
     onCreated: (WebView) -> Unit = {},
     onDispose: (WebView) -> Unit = {},
     client: AccompanistWebViewClient = remember { AccompanistWebViewClient() },
@@ -105,6 +110,7 @@ fun AccompanistWebView(
             captureBackPresses,
             navigator,
             webViewJsBridge,
+            consoleBridge,
             onCreated,
             onDispose,
             client,
@@ -147,6 +153,7 @@ fun AccompanistWebView(
     captureBackPresses: Boolean = true,
     navigator: WebViewNavigator = rememberWebViewNavigator(),
     webViewJsBridge: WebViewJsBridge? = null,
+    consoleBridge: ConsoleBridge? = null,
     onCreated: (WebView) -> Unit = {},
     onDispose: (WebView) -> Unit = {},
     client: AccompanistWebViewClient = remember { AccompanistWebViewClient() },
@@ -183,8 +190,15 @@ fun AccompanistWebView(
                     webChromeClient = chromeClient
                     webViewClient = client
 
-                    // Avoid covering other components
-                    this.setLayerType(state.webSettings.androidWebSettings.layerType, null)
+                    // Avoid covering other components - map to Android View constants explicitly
+                    val desiredLayerType =
+                        when (state.webSettings.androidWebSettings.layerType) {
+                            PlatformWebSettings.AndroidWebSettings.LayerType.NONE -> View.LAYER_TYPE_NONE
+                            PlatformWebSettings.AndroidWebSettings.LayerType.SOFTWARE -> View.LAYER_TYPE_SOFTWARE
+                            PlatformWebSettings.AndroidWebSettings.LayerType.HARDWARE -> View.LAYER_TYPE_HARDWARE
+                            else -> View.LAYER_TYPE_HARDWARE
+                        }
+                    this.setLayerType(desiredLayerType, null)
 
                     settings.apply {
                         state.webSettings.let {
@@ -245,7 +259,7 @@ fun AccompanistWebView(
                         }
                     }
                 }.also {
-                    val androidWebView = AndroidWebView(it, scope, webViewJsBridge)
+                    val androidWebView = AndroidWebView(it, scope, webViewJsBridge, consoleBridge)
                     state.webView = androidWebView
                     webViewJsBridge?.webView = androidWebView
                 }
@@ -295,6 +309,15 @@ open class AccompanistWebViewClient : WebViewClient() {
         val script =
             "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=${state.webSettings.zoomLevel}, maximum-scale=10.0, minimum-scale=0.1,user-scalable=$supportZoom');document.getElementsByTagName('head')[0].appendChild(meta);"
         navigator.evaluateJavaScript(script)
+
+        // Remove tap highlight color
+        val removeHighlightScript =
+            """
+            var style = document.createElement('style');
+            style.innerHTML = '* { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; -webkit-user-select: none; }';
+            document.head.appendChild(style);
+            """.trimIndent()
+        navigator.evaluateJavaScript(removeHighlightScript)
     }
 
     override fun shouldInterceptRequest(
@@ -425,6 +448,41 @@ open class AccompanistWebChromeClient : WebChromeClient() {
     lateinit var context: Context
         internal set
     private var lastLoadedUrl = ""
+
+    override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
+        try {
+            val msg = consoleMessage ?: return super.onConsoleMessage(consoleMessage)
+            val level =
+                when (msg.messageLevel()) {
+                    ConsoleMessage.MessageLevel.ERROR -> "error"
+                    ConsoleMessage.MessageLevel.WARNING -> "warn"
+                    ConsoleMessage.MessageLevel.LOG -> "log"
+                    ConsoleMessage.MessageLevel.TIP -> "info"
+                    ConsoleMessage.MessageLevel.DEBUG -> "debug"
+                    else -> "log"
+                }
+            val timestamp =
+                try {
+                    val sdf =
+                        java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.US)
+                    sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
+                    sdf.format(java.util.Date())
+                } catch (_: Throwable) {
+                    System.currentTimeMillis().toString()
+                }
+            val iwv = state.webView
+            val bridge = iwv?.consoleBridge
+            bridge?.emitFromPlatform(
+                level = level,
+                content = msg.message(),
+                sourceId = msg.sourceId(),
+                lineNumber = msg.lineNumber(),
+                timestamp = timestamp,
+            )
+        } catch (_: Exception) {
+        }
+        return super.onConsoleMessage(consoleMessage)
+    }
 
     override fun onReceivedTitle(
         view: WebView,
