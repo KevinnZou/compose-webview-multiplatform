@@ -1,5 +1,6 @@
 package com.multiplatform.webview.web
 
+import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
@@ -213,6 +214,8 @@ class WasmJsWebView(
     override fun initJsBridge(webViewJsBridge: WebViewJsBridge) {
         // Bridge initialization is handled externally
     }
+
+    override val consoleBridge: ConsoleBridge? = null
 
     override fun saveState(): WebViewBundle? = null
 

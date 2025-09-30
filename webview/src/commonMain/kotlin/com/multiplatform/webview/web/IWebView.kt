@@ -1,5 +1,6 @@
 package com.multiplatform.webview.web
 
+import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
 import compose_webview_multiplatform.webview.generated.resources.Res
@@ -25,6 +26,8 @@ interface IWebView {
     val scope: CoroutineScope
 
     val webViewJsBridge: WebViewJsBridge?
+
+    val consoleBridge: ConsoleBridge?
 
     /**
      * True when the web view is able to navigate backwards, false otherwise.
@@ -187,13 +190,11 @@ interface IWebView {
                     };
                     if (callback) {
                         window.$jsBridgeName.callbacks[message.callbackId] = callback;
-                        console.log('add callback: ' + message.callbackId + ', ' + callback);
                     }
                     window.$jsBridgeName.postMessage(JSON.stringify(message));
                 },
                 onCallback: function (callbackId, data) {
                     var callback = window.$jsBridgeName.callbacks[callbackId];
-                    console.log('onCallback: ' + callbackId + ', ' + data + ', ' + callback);
                     if (callback) {
                         callback(data);
                         delete window.$jsBridgeName.callbacks[callbackId];

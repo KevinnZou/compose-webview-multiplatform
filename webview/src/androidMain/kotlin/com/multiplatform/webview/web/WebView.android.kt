@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 
 /**
@@ -17,6 +18,7 @@ actual fun ActualWebView(
     captureBackPresses: Boolean,
     navigator: WebViewNavigator,
     webViewJsBridge: WebViewJsBridge?,
+    consoleBridge: ConsoleBridge?,
     onCreated: (NativeWebView) -> Unit,
     onDispose: (NativeWebView) -> Unit,
     platformWebViewParams: PlatformWebViewParams?,
@@ -28,6 +30,7 @@ actual fun ActualWebView(
         captureBackPresses,
         navigator,
         webViewJsBridge,
+        consoleBridge,
         onCreated = onCreated,
         onDispose = onDispose,
         client = platformWebViewParams?.client ?: remember { AccompanistWebViewClient() },

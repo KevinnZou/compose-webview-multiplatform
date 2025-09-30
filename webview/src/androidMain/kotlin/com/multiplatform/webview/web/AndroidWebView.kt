@@ -2,6 +2,7 @@ package com.multiplatform.webview.web
 
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
@@ -21,6 +22,7 @@ class AndroidWebView(
     override val webView: WebView,
     override val scope: CoroutineScope,
     override val webViewJsBridge: WebViewJsBridge?,
+    override val consoleBridge: ConsoleBridge?,
 ) : IWebView {
     init {
         initWebView()

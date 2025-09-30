@@ -1,5 +1,6 @@
 package com.multiplatform.webview.web
 
+import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.JsMessage
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.util.KLogger
@@ -358,6 +359,8 @@ class DesktopWebView(
 
         return modifiedHtml
     }
+
+    override val consoleBridge: ConsoleBridge? = null
 
     override fun saveState(): WebViewBundle? = null
 
