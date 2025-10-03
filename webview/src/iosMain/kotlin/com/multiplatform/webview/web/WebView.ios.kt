@@ -151,6 +151,12 @@ fun IOSWebView(
                             scrollEnabled = it.scrollEnabled
                             showsHorizontalScrollIndicator = it.showHorizontalScrollIndicator
                             showsVerticalScrollIndicator = it.showVerticalScrollIndicator
+                            if (
+                                platform.UIKit.UIDevice.currentDevice.systemVersion
+                                    .toDouble() >= 11.0
+                            ) {
+                                contentInsetAdjustmentBehavior = platform.UIKit.UIScrollViewContentInsetAdjustmentBehavior.UIScrollViewContentInsetAdjustmentNever
+                            }
                         }
                     }
 
