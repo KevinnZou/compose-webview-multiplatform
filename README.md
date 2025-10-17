@@ -14,8 +14,7 @@
 
 > **Note**
 > This library is built using
->
-the [compose multiplatform library template](https://github.com/KevinnZou/compose-multiplatform-library-template).
+> the [compose multiplatform library template](https://github.com/KevinnZou/compose-multiplatform-library-template).
 > It supports automatic package publishing, documentation, and code style checking.
 
 This library can be considered as the Multiplatform version
