@@ -179,28 +179,30 @@ interface IWebView {
         }
         val initJs =
             """
-            window.$jsBridgeName = {
-                callbacks: {},
-                callbackId: 0,
-                callNative: function (methodName, params, callback) {
-                    var message = {
-                        methodName: methodName,
-                        params: params,
-                        callbackId: callback ? window.$jsBridgeName.callbackId++ : -1
-                    };
-                    if (callback) {
-                        window.$jsBridgeName.callbacks[message.callbackId] = callback;
+            if (typeof window.$jsBridgeName === 'undefined') {
+                window.$jsBridgeName = {
+                    callbacks: {},
+                    callbackId: 0,
+                    callNative: function (methodName, params, callback) {
+                        var message = {
+                            methodName: methodName,
+                            params: params,
+                            callbackId: callback ? window.$jsBridgeName.callbackId++ : -1
+                        };
+                        if (callback) {
+                            window.$jsBridgeName.callbacks[message.callbackId] = callback;
+                        }
+                        window.$jsBridgeName.postMessage(JSON.stringify(message));
+                    },
+                    onCallback: function (callbackId, data) {
+                        var callback = window.$jsBridgeName.callbacks[callbackId];
+                        if (callback) {
+                            callback(data);
+                            delete window.$jsBridgeName.callbacks[callbackId];
+                        }
                     }
-                    window.$jsBridgeName.postMessage(JSON.stringify(message));
-                },
-                onCallback: function (callbackId, data) {
-                    var callback = window.$jsBridgeName.callbacks[callbackId];
-                    if (callback) {
-                        callback(data);
-                        delete window.$jsBridgeName.callbacks[callbackId];
-                    }
-                }
-            };
+                };
+            }
             """.trimIndent()
         evaluateJavaScript(initJs)
     }
