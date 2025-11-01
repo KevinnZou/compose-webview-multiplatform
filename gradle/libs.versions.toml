@@ -1,7 +1,7 @@
 [versions]
 agp = "8.9.3"
 compose = "1.8.0"
-kotlin = "2.1.20"
+kotlin = "2.2.20"
 coroutines = "1.10.2"
 voyager = "1.1.0-beta01"
 
