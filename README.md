@@ -420,6 +420,36 @@ val navigator =
     )
 ```
 
+### Intercepting Error Responses
+
+You can intercept failed navigations and decide whether to suppress the default platform error UI or continue with normal handling. This is useful for showing a custom error screen, logging, or redirecting.
+
+![ErrorResponse Interceptor Demo](media/error-response-interceptor.gif)
+
+#### API
+- `ErrorResponse`: encapsulates platform-agnostic error details (`errorCode`, `description`, and the failing `url` when available).
+- `ErrorResponseInterceptor`: callback invoked when a page/resource load fails.
+- `ShouldStopLoading`: return `true` to stop default handling; return `false` to allow it.
+
+#### Quick start
+```kotlin
+val webViewNavigator = rememberWebViewNavigator(
+    errorResponseInterceptor = object : ErrorResponseInterceptor {
+        override fun onInterceptErrorResponse(
+            response: ErrorResponse,
+            navigator: WebViewNavigator
+        ): ShouldStopLoading {
+            // Show a custom UI or navigate elsewhere
+            return true // suppress default error handling
+        }
+    }
+)
+
+WebView(
+    state = webViewState,
+    navigator = webViewNavigator,
+)
+```
 ## WebSettings
 
 Starting from version 1.3.0, this library allows users to customize web settings.
