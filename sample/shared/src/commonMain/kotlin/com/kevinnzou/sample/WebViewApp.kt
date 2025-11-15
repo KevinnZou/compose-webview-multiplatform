@@ -60,6 +60,9 @@ internal fun WebViewApp() {
         composable("file") {
             FileChooseWebViewSample(controller)
         }
+        composable("error") {
+            ErrorResponseSample(controller)
+        }
     }
 }
 
@@ -115,6 +118,12 @@ fun MainScreen(controller: NavController) {
                 controller.navigate("file")
             }) {
                 Text("File Choose Sample", fontSize = 18.sp)
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            Button(onClick = {
+                controller.navigate("error")
+            }) {
+                Text("Error Response Sample", fontSize = 18.sp)
             }
         }
     }

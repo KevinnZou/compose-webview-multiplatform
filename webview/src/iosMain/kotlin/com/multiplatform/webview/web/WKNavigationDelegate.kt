@@ -2,6 +2,7 @@ package com.multiplatform.webview.web
 
 import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.request.WebRequestInterceptResult
+import com.multiplatform.webview.response.ErrorResponse
 import com.multiplatform.webview.util.KLogger
 import com.multiplatform.webview.util.getPlatformVersionDouble
 import com.multiplatform.webview.util.notZero
@@ -116,6 +117,15 @@ class WKNavigationDelegate(
         )
         KLogger.e {
             "didFailNavigation"
+        }
+        if (navigator.errorResponseInterceptor?.let { errorResponseInterceptor ->
+                errorResponseInterceptor.onInterceptErrorResponse(
+                    ErrorResponse(withError.description, withError.code, webView.URL.toString()),
+                    navigator
+                )
+            } ?: false) {
+            webView.stopLoading()
+            navigator.stopLoading()
         }
     }
 
