@@ -1,5 +1,7 @@
 package com.multiplatform.webview.web
 
+import com.multiplatform.webview.basicauth.BasicAuthChallenge
+import com.multiplatform.webview.basicauth.BasicAuthHandler
 import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.request.WebRequestInterceptResult
 import com.multiplatform.webview.util.KLogger
@@ -10,7 +12,10 @@ import kotlinx.cinterop.ObjCSignatureOverride
 import platform.CoreGraphics.CGPointMake
 import platform.Foundation.HTTPMethod
 import platform.Foundation.NSError
+import platform.Foundation.NSURLCredentialPersistence
+import platform.Foundation.NSURLSessionAuthChallengeUseCredential
 import platform.Foundation.allHTTPHeaderFields
+import platform.Foundation.credentialWithUser
 import platform.WebKit.WKNavigation
 import platform.WebKit.WKNavigationAction
 import platform.WebKit.WKNavigationActionPolicy
@@ -178,6 +183,57 @@ class WKNavigationDelegate(
         } else {
             isRedirect = false
             decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
+        }
+    }
+
+    // HTTP Auth (Basic/Digest) handling forwarded to interceptor if provided
+    @ObjCSignatureOverride
+    override fun webView(
+        webView: WKWebView,
+        didReceiveAuthenticationChallenge: platform.Foundation.NSURLAuthenticationChallenge,
+        completionHandler: (platform.Foundation.NSURLSessionAuthChallengeDisposition, platform.Foundation.NSURLCredential?) -> Unit,
+    ) {
+        val interceptor = navigator.basicAuthInterceptor
+        val protectionSpace = didReceiveAuthenticationChallenge.protectionSpace
+        val method = protectionSpace.authenticationMethod
+        // Handle both HTTP Basic and HTTP Digest challenges.
+        val isSupported = method == platform.Foundation.NSURLAuthenticationMethodHTTPBasic ||
+            method == platform.Foundation.NSURLAuthenticationMethodHTTPDigest
+        if (interceptor == null || !isSupported) {
+            completionHandler(platform.Foundation.NSURLSessionAuthChallengePerformDefaultHandling, null)
+            return
+        }
+        val host = protectionSpace.host
+        val realm = protectionSpace.realm
+        val challenge = BasicAuthChallenge(
+            host = host,
+            realm = realm,
+            isProxy = protectionSpace.isProxy()
+        )
+        val handled = try {
+            interceptor.onHttpAuthRequest(
+                challenge,
+                object : BasicAuthHandler {
+                    private var used = false
+                    override fun proceed(username: String, password: String) {
+                        if (used) return; used = true
+                        val cred = platform.Foundation.NSURLCredential.credentialWithUser(
+                            user = username,
+                            password = password,
+                            persistence = NSURLCredentialPersistence.NSURLCredentialPersistenceForSession,
+                        )
+                        completionHandler(NSURLSessionAuthChallengeUseCredential, cred)
+                    }
+                    override fun cancel() {
+                        if (used) return; used = true
+                        completionHandler(platform.Foundation.NSURLSessionAuthChallengeCancelAuthenticationChallenge, null)
+                    }
+                },
+                navigator,
+            )
+        } catch (_: Throwable) { false }
+        if (!handled) {
+            completionHandler(platform.Foundation.NSURLSessionAuthChallengePerformDefaultHandling, null)
         }
     }
 }

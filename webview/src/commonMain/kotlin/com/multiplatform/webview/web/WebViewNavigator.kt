@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import com.multiplatform.webview.basicauth.BasicAuthInterceptor
 import com.multiplatform.webview.request.RequestInterceptor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,6 +29,7 @@ import kotlinx.coroutines.withContext
 class WebViewNavigator(
     val coroutineScope: CoroutineScope,
     val requestInterceptor: RequestInterceptor? = null,
+    val basicAuthInterceptor: BasicAuthInterceptor? = null,
 ) {
     /**
      * Sealed class for constraining possible navigation events.
@@ -310,4 +312,5 @@ class WebViewNavigator(
 fun rememberWebViewNavigator(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     requestInterceptor: RequestInterceptor? = null,
-): WebViewNavigator = remember(coroutineScope) { WebViewNavigator(coroutineScope, requestInterceptor) }
+    basicAuthInterceptor: BasicAuthInterceptor? = null,
+): WebViewNavigator = remember(coroutineScope) { WebViewNavigator(coroutineScope, requestInterceptor, basicAuthInterceptor) }
