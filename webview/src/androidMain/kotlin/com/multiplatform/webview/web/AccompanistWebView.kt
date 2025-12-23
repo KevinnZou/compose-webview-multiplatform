@@ -29,6 +29,8 @@ import androidx.core.graphics.createBitmap
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewFeature
+import com.multiplatform.webview.basicauth.BasicAuthChallenge
+import com.multiplatform.webview.basicauth.BasicAuthHandler
 import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.request.WebRequest
@@ -430,6 +432,44 @@ open class AccompanistWebViewClient : WebViewClient() {
                 }
                 true
             }
+        }
+    }
+
+    override fun onReceivedHttpAuthRequest(
+        view: WebView?,
+        handler: android.webkit.HttpAuthHandler?,
+        host: String?,
+        realm: String?
+    ) {
+        val interceptor = navigator.basicAuthInterceptor
+        if (interceptor == null || handler == null || host == null) {
+            super.onReceivedHttpAuthRequest(view, handler, host, realm)
+            return
+        }
+        val challenge = BasicAuthChallenge(
+            host = host,
+            realm = realm,
+            isProxy = false,
+            previousFailureCount = try {
+                handler.useHttpAuthUsernamePassword(); 0
+            } catch (_: Throwable) {
+                0
+            }
+        )
+        val wrapped = object : BasicAuthHandler {
+            private var used = false
+            override fun proceed(username: String, password: String) {
+                if (used) return; used = true
+                handler.proceed(username, password)
+            }
+            override fun cancel() {
+                if (used) return; used = true
+                handler.cancel()
+            }
+        }
+        val stop = try { interceptor.onHttpAuthRequest(challenge, wrapped, navigator) } catch (_: Throwable) { false }
+        if (!stop) {
+            super.onReceivedHttpAuthRequest(view, handler, host, realm)
         }
     }
 }

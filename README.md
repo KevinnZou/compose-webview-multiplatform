@@ -354,7 +354,7 @@ It receives three parameters:
 
 ```javascript
 window.kmpJsBridge.callNative = function (methodName, params, callback) {
-    ...
+    // implementation omitted
 }
 ```
 
@@ -419,6 +419,54 @@ val navigator =
             },
     )
 ```
+
+## HTTP Authentication (Basic and Digest)
+
+This library allows you to handle HTTP authentication challenges by providing a `BasicAuthInterceptor`.
+
+When a website issues an HTTP authentication challenge (Basic or Digest), the platform WebView will call into your interceptor so you can supply credentials (or cancel). The library then forwards those credentials back to the platform to complete the authentication flow. The underlying platform (Android/iOS) negotiates the exact scheme with the server.
+
+### Usage
+
+1) Create an implementation of `BasicAuthInterceptor` and prompt/fetch credentials as needed:
+
+```kotlin
+class MyBasicAuthInterceptor : BasicAuthInterceptor {
+    override fun onHttpAuthRequest(
+        challenge: BasicAuthChallenge,
+        handler: BasicAuthHandler,
+        navigator: WebViewNavigator,
+    ): Boolean {
+        // Decide if you want to handle this challenge (host/realm-based, etc.)
+        // Return true if you will handle it, false to let default platform handling proceed.
+
+        // Example: Provide stored or prompted credentials
+        val username = "user"
+        val password = "pass"
+
+        // Exactly one of proceed or cancel should be called.
+        handler.proceed(username, password)
+        return true
+    }
+}
+```
+
+2) Provide the interceptor when creating your `WebViewNavigator`:
+
+```kotlin
+@Composable
+fun MyScreen() {
+    val navigator = rememberWebViewNavigator(
+        basicAuthInterceptor = MyBasicAuthInterceptor()
+    )
+    // pass navigator to your WebView as you normally do
+}
+```
+
+Notes:
+- Call `handler.proceed(username, password)` to continue with the provided credentials or `handler.cancel()` to abort.
+- You can use `challenge.host`, `challenge.realm`, and `challenge.previousFailureCount` to decide how to respond (e.g., avoid repeated prompts on failures).
+- The platform handles the specifics of Basic vs Digest; your interceptor only supplies credentials or cancels.
 
 ## WebSettings
 
