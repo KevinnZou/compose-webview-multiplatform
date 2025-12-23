@@ -9,7 +9,6 @@ import dev.datlag.kcef.KCEF
 import dev.datlag.kcef.KCEFBrowser
 import dev.datlag.kcef.KCEFClient
 import org.cef.browser.CefRendering
-import org.cef.browser.CefRequestContext
 import java.util.concurrent.TimeUnit
 
 /**
@@ -53,7 +52,6 @@ actual class WebViewFactoryParam(
             CefRendering.DEFAULT
         }
     inline val transparent: Boolean get() = webSettings.desktopWebSettings.transparent
-    val requestContext: CefRequestContext get() = createModifiedRequestContext(webSettings)
 }
 
 actual class PlatformWebViewParams
@@ -62,12 +60,14 @@ actual class PlatformWebViewParams
 actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
     when (val content = param.state.content) {
         is WebContent.Url ->
-            param.client.createBrowser(
-                content.url,
-                param.rendering,
-                param.transparent,
-                param.requestContext,
-            )
+            param.client
+                .also {
+                    it.addRequestHandler(createModifiedRequestHandler(param.webSettings))
+                }.createBrowser(
+                    content.url,
+                    param.rendering,
+                    param.transparent,
+                )
         is WebContent.Data ->
             param.client.createBrowser(
                 KCEFBrowser.BLANK_URI,
@@ -75,20 +75,24 @@ actual fun defaultWebViewFactory(param: WebViewFactoryParam): NativeWebView =
                 param.transparent,
             )
         is WebContent.File -> {
-            param.client.createBrowser(
-                KCEFBrowser.BLANK_URI,
-                param.rendering,
-                param.transparent,
-                param.requestContext,
-            )
+            param.client
+                .also {
+                    it.addRequestHandler(createModifiedRequestHandler(param.webSettings))
+                }.createBrowser(
+                    KCEFBrowser.BLANK_URI,
+                    param.rendering,
+                    param.transparent,
+                )
         }
         else ->
-            param.client.createBrowser(
-                KCEFBrowser.BLANK_URI,
-                param.rendering,
-                param.transparent,
-                param.requestContext,
-            )
+            param.client
+                .also {
+                    it.addRequestHandler(createModifiedRequestHandler(param.webSettings))
+                }.createBrowser(
+                    KCEFBrowser.BLANK_URI,
+                    param.rendering,
+                    param.transparent,
+                )
     }
 
 /**
