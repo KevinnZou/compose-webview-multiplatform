@@ -33,6 +33,7 @@ import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.request.WebRequestInterceptResult
+import com.multiplatform.webview.response.ErrorResponse
 import com.multiplatform.webview.setting.PlatformWebSettings
 import com.multiplatform.webview.util.InternalStoragePathHandler
 import com.multiplatform.webview.util.KLogger
@@ -357,6 +358,31 @@ open class AccompanistWebViewClient : WebViewClient() {
         navigator.canGoForward = view.canGoForward()
     }
 
+    override fun onReceivedHttpError(
+        view: WebView?,
+        request: WebResourceRequest?,
+        errorResponse: WebResourceResponse?
+    ) {
+        super.onReceivedHttpError(view, request, errorResponse)
+        KLogger.e {
+            "onReceivedHttpError: $errorResponse"
+        }
+
+
+        if (navigator.errorResponseInterceptor?.onInterceptErrorResponse(
+                ErrorResponse(
+                    url = request?.url.toString(),
+                    errorCode = errorResponse?.statusCode?.toLong(),
+                    description = errorResponse?.reasonPhrase
+                ),
+                navigator
+            ) ?: false
+        ) {
+            view?.stopLoading()
+            navigator.stopLoading()
+        }
+    }
+
     override fun onReceivedError(
         view: WebView,
         request: WebResourceRequest?,
@@ -380,6 +406,17 @@ open class AccompanistWebViewClient : WebViewClient() {
                     isFromMainFrame = request?.isForMainFrame ?: false,
                 ),
             )
+        }
+        if (navigator.errorResponseInterceptor?.onInterceptErrorResponse(
+                ErrorResponse(
+                    url = request?.url.toString(),
+                    errorCode = error?.errorCode?.toLong(),
+                    description = error?.description.toString()),
+                navigator
+            ) ?: false
+        ) {
+            view.stopLoading()
+            navigator.stopLoading()
         }
     }
 
