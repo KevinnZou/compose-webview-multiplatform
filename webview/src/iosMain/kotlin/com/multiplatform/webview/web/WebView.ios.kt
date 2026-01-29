@@ -10,6 +10,7 @@ import androidx.compose.ui.viewinterop.UIKitInteropProperties
 import androidx.compose.ui.viewinterop.UIKitView
 import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
+import com.multiplatform.webview.request.WKSchemeHandler
 import com.multiplatform.webview.util.toUIColor
 import kotlinx.cinterop.ExperimentalForeignApi
 import kotlinx.cinterop.cValue
@@ -48,6 +49,7 @@ actual fun ActualWebView(
         webViewJsBridge = webViewJsBridge,
         onCreated = onCreated,
         onDispose = onDispose,
+        platformWebViewParams = platformWebViewParams,
         factory = factory,
     )
 }
@@ -57,7 +59,26 @@ actual data class WebViewFactoryParam(
     val config: WKWebViewConfiguration,
 )
 
-actual class PlatformWebViewParams
+/**
+ * iOS-specific WebView parameters.
+ *
+ * @param customSchemes List of custom URL schemes to register at WebView creation time
+ *                      (for example, "app", "local"). These schemes are added to the
+ *                      underlying [WKWebViewConfiguration] when the WebView is created
+ *                      and cannot be added to or removed from an existing WebView instance.
+ *
+ *                      Requests to these schemes will be handled by the RequestInterceptor,
+ *                      which should return [WebRequestInterceptResult.Respond] with the
+ *                      response data.
+ *
+ *                      Note: WKWebView does not allow certain built-in schemes such as
+ *                      "http", "https", "file", "ftp", "about", "data", or "javascript"
+ *                      to be used as custom schemes. These reserved schemes will be
+ *                      automatically filtered out and not registered.
+ */
+actual class PlatformWebViewParams(
+    val customSchemes: List<String> = emptyList(),
+)
 
 /** Default WebView factory for iOS. */
 @OptIn(ExperimentalForeignApi::class)
@@ -80,6 +101,7 @@ fun IOSWebView(
     webViewJsBridge: WebViewJsBridge?,
     onCreated: (NativeWebView) -> Unit,
     onDispose: (NativeWebView) -> Unit,
+    platformWebViewParams: PlatformWebViewParams?,
     factory: (WebViewFactoryParam) -> NativeWebView,
 ) {
     val observer =
@@ -90,6 +112,8 @@ fun IOSWebView(
             )
         }
     val navigationDelegate = remember { WKNavigationDelegate(state, navigator) }
+    // Recreate scheme handler if navigator changes to avoid stale state
+    val schemeHandler = remember(navigator) { WKSchemeHandler(navigator) }
     val scope = rememberCoroutineScope()
 
     UIKitView(
@@ -116,6 +140,31 @@ fun IOSWebView(
                         value = state.webSettings.allowUniversalAccessFromFileURLs,
                         forKey = "allowUniversalAccessFromFileURLs",
                     )
+
+                    // Register custom URL scheme handlers
+                    // Filter out reserved schemes that WKWebView doesn't allow
+                    val reservedSchemes =
+                        setOf(
+                            "http",
+                            "https",
+                            "file",
+                            "ftp",
+                            "about",
+                            "data",
+                            "javascript",
+                        )
+                    platformWebViewParams
+                        ?.customSchemes
+                        ?.filter { scheme ->
+                            val normalized = scheme.lowercase()
+                            val isReserved = normalized in reservedSchemes
+                            if (isReserved) {
+                                println("WKWebView: Skipping registration of reserved URL scheme: $scheme")
+                            }
+                            !isReserved
+                        }?.forEach { scheme ->
+                            setURLSchemeHandler(schemeHandler, forURLScheme = scheme)
+                        }
                 }
             factory(WebViewFactoryParam(config))
                 .apply {

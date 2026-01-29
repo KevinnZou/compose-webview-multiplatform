@@ -430,6 +430,12 @@ open class AccompanistWebViewClient : WebViewClient() {
                 }
                 true
             }
+
+            is WebRequestInterceptResult.Respond -> {
+                // Respond is handled in shouldInterceptRequest, not here
+                KLogger.w { "Respond interceptResult not supported in shouldOverrideUrlLoading" }
+                true
+            }
         }
     }
 }

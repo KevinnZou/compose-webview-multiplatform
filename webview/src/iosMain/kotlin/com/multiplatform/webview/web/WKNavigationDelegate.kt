@@ -173,6 +173,13 @@ class WKNavigationDelegate(
                         }
                         decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyCancel)
                     }
+
+                    is WebRequestInterceptResult.Respond -> {
+                        // Respond is handled by WKSchemeHandler for custom schemes.
+                        // For navigation requests, treat as reject since we can't provide custom response here.
+                        KLogger.w { "Respond interceptResult not supported in navigation delegate, use custom scheme" }
+                        decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyCancel)
+                    }
                 }
             }
         } else {

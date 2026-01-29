@@ -202,6 +202,12 @@ internal fun KCEFBrowser.addRequestHandler(
                             }
                             true
                         }
+
+                        is WebRequestInterceptResult.Respond -> {
+                            // Respond is not supported on Desktop
+                            KLogger.w { "Respond interceptResult not supported on Desktop" }
+                            true
+                        }
                     }
                 }
                 return super.onBeforeBrowse(browser, frame, request, userGesture, isRedirect)
