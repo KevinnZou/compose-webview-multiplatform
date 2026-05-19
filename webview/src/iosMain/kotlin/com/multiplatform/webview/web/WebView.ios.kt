@@ -20,6 +20,7 @@ import platform.Foundation.NSProcessInfo
 import platform.Foundation.setValue
 import platform.WebKit.WKAudiovisualMediaTypeAll
 import platform.WebKit.WKAudiovisualMediaTypeNone
+import platform.WebKit.WKNavigationDelegateProtocol
 import platform.WebKit.WKWebView
 import platform.WebKit.WKWebViewConfiguration
 import platform.WebKit.javaScriptEnabled
@@ -49,6 +50,7 @@ actual fun ActualWebView(
         onCreated = onCreated,
         onDispose = onDispose,
         factory = factory,
+        platformWebViewParams = platformWebViewParams,
     )
 }
 
@@ -57,7 +59,9 @@ actual data class WebViewFactoryParam(
     val config: WKWebViewConfiguration,
 )
 
-actual class PlatformWebViewParams
+actual data class PlatformWebViewParams(
+    val delegate: WKNavigationDelegateProtocol? = null,
+)
 
 /** Default WebView factory for iOS. */
 @OptIn(ExperimentalForeignApi::class)
@@ -81,6 +85,7 @@ fun IOSWebView(
     onCreated: (NativeWebView) -> Unit,
     onDispose: (NativeWebView) -> Unit,
     factory: (WebViewFactoryParam) -> NativeWebView,
+    platformWebViewParams: PlatformWebViewParams?,
 ) {
     val observer =
         remember {
@@ -89,7 +94,7 @@ fun IOSWebView(
                 navigator = navigator,
             )
         }
-    val navigationDelegate = remember { WKNavigationDelegate(state, navigator) }
+    val navigationDelegate = remember { WKNavigationDelegate(state, navigator, platformWebViewParams) }
     val scope = rememberCoroutineScope()
 
     UIKitView(

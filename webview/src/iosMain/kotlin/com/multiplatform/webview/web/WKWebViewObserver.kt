@@ -16,7 +16,7 @@ import platform.darwin.NSObject
  * Observer for the WKWebView's loading state
  */
 @ExperimentalForeignApi
-class WKWebViewObserver(
+final class WKWebViewObserver(
     private val state: WebViewState,
     private val navigator: WebViewNavigator,
 ) : NSObject(),
