@@ -151,7 +151,7 @@ expect class WebViewFactoryParam
 /**
  * Platform specific parameters given to the WebView composable function:
  *   - On Android, this contains an optional `AccompanistWebViewClient` and `AccompanistWebChromeClient`
- *   - On iOS, this contains an optional `WKNavigationDelegate`
+ *   - On iOS, this contains an optional `WKNavigationDelegateProtocol`
  *   - On Desktop, this is currently unused
  */
 expect class PlatformWebViewParams
