@@ -10,6 +10,7 @@ import kotlinx.cinterop.ObjCSignatureOverride
 import platform.CoreGraphics.CGPointMake
 import platform.Foundation.HTTPMethod
 import platform.Foundation.NSError
+import platform.Foundation.NSSelectorFromString
 import platform.Foundation.allHTTPHeaderFields
 import platform.WebKit.WKNavigation
 import platform.WebKit.WKNavigationAction
@@ -26,9 +27,10 @@ import platform.darwin.NSObject
  * Navigation delegate for the WKWebView
  */
 @Suppress("CONFLICTING_OVERLOADS")
-class WKNavigationDelegate(
+final class WKNavigationDelegate(
     private val state: WebViewState,
     private val navigator: WebViewNavigator,
+    private val params: PlatformWebViewParams?,
 ) : NSObject(),
     WKNavigationDelegateProtocol {
     private var isRedirect = false
@@ -36,6 +38,7 @@ class WKNavigationDelegate(
     /**
      * Called when the web view begins to receive web content.
      */
+    @OptIn(ExperimentalForeignApi::class)
     @ObjCSignatureOverride
     override fun webView(
         webView: WKWebView,
@@ -47,11 +50,44 @@ class WKNavigationDelegate(
         KLogger.info {
             "didStartProvisionalNavigation"
         }
+        val delegate = params?.delegate
+        if (delegate != null &&
+            (delegate as NSObject).respondsToSelector(
+                NSSelectorFromString("webView:didStartProvisionalNavigation:"),
+            )
+        ) {
+            delegate.webView(webView, didStartProvisionalNavigation = didStartProvisionalNavigation)
+        }
     }
 
     /**
      * Called when the web view receives a server redirect.
      */
+    @OptIn(ExperimentalForeignApi::class)
+    @ObjCSignatureOverride
+    override fun webView(
+        webView: WKWebView,
+        didReceiveServerRedirectForProvisionalNavigation: WKNavigation?,
+    ) {
+        isRedirect = true
+        KLogger.info { "didReceiveServerRedirectForProvisionalNavigation" }
+        val delegate = params?.delegate
+        if (delegate != null &&
+            (delegate as NSObject).respondsToSelector(
+                NSSelectorFromString("webView:didReceiveServerRedirectForProvisionalNavigation:"),
+            )
+        ) {
+            delegate.webView(
+                webView,
+                didReceiveServerRedirectForProvisionalNavigation = didReceiveServerRedirectForProvisionalNavigation,
+            )
+        }
+    }
+
+    /**
+     * Called when the web view receives a server redirect.
+     */
+    @OptIn(ExperimentalForeignApi::class)
     @ObjCSignatureOverride
     override fun webView(
         webView: WKWebView,
@@ -64,6 +100,14 @@ class WKNavigationDelegate(
             "var meta = document.createElement('meta');meta.setAttribute('name', 'viewport');meta.setAttribute('content', 'width=device-width, initial-scale=${state.webSettings.zoomLevel}, maximum-scale=10.0, minimum-scale=0.1,user-scalable=$supportZoom');document.getElementsByTagName('head')[0].appendChild(meta);"
         webView.evaluateJavaScript(script) { _, _ -> }
         KLogger.info { "didCommitNavigation" }
+        val delegate = params?.delegate
+        if (delegate != null &&
+            (delegate as NSObject).respondsToSelector(
+                NSSelectorFromString("webView:didCommitNavigation:"),
+            )
+        ) {
+            delegate.webView(webView, didCommitNavigation = didCommitNavigation)
+        }
     }
 
     /**
@@ -93,11 +137,21 @@ class WKNavigationDelegate(
             }
         }
         KLogger.info { "didFinishNavigation ${state.lastLoadedUrl}" }
+        val delegate = params?.delegate
+        if (delegate != null &&
+            (delegate as NSObject).respondsToSelector(
+                NSSelectorFromString("webView:didFinishNavigation:"),
+            )
+        ) {
+            delegate.webView(webView, didFinishNavigation = didFinishNavigation)
+        }
     }
 
     /**
      * Called when the web view fails to load content.
      */
+    @OptIn(ExperimentalForeignApi::class)
+    @ObjCSignatureOverride
     override fun webView(
         webView: WKWebView,
         didFailProvisionalNavigation: WKNavigation?,
@@ -115,10 +169,73 @@ class WKNavigationDelegate(
             ),
         )
         KLogger.e {
-            "didFailNavigation"
+            "didFailProvisionalNavigation"
+        }
+        val delegate = params?.delegate
+        if (delegate != null &&
+            (delegate as NSObject).respondsToSelector(
+                NSSelectorFromString("webView:didFailProvisionalNavigation:withError:"),
+            )
+        ) {
+            delegate.webView(
+                webView,
+                didFailProvisionalNavigation = didFailProvisionalNavigation,
+                withError = withError,
+            )
         }
     }
 
+    @OptIn(ExperimentalForeignApi::class)
+    @ObjCSignatureOverride
+    override fun webView(
+        webView: WKWebView,
+        didFailNavigation: WKNavigation?,
+        withError: NSError,
+    ) {
+        KLogger.e {
+            "WebView Loading Failed with error: ${withError.localizedDescription}"
+        }
+        state.errorsForCurrentRequest.add(
+            WebViewError(
+                code = withError.code.toInt(),
+                description = withError.localizedDescription,
+                // on iOS all errors are from the main frame
+                isFromMainFrame = true,
+            ),
+        )
+        KLogger.e {
+            "didFailNavigation"
+        }
+        val delegate = params?.delegate
+        if (delegate != null &&
+            (delegate as NSObject).respondsToSelector(
+                NSSelectorFromString("webView:didFailNavigation:withError:"),
+            )
+        ) {
+            delegate.webView(
+                webView,
+                didFailNavigation = didFailNavigation,
+                withError = withError,
+            )
+        }
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
+    override fun webViewWebContentProcessDidTerminate(webView: WKWebView) {
+        KLogger.e {
+            "webViewWebContentProcessDidTerminate"
+        }
+        val delegate = params?.delegate
+        if (delegate != null &&
+            (delegate as NSObject).respondsToSelector(
+                NSSelectorFromString("webViewWebContentProcessDidTerminate:"),
+            )
+        ) {
+            delegate.webViewWebContentProcessDidTerminate(webView)
+        }
+    }
+
+    @OptIn(ExperimentalForeignApi::class)
     override fun webView(
         webView: WKWebView,
         decidePolicyForNavigationAction: WKNavigationAction,
@@ -128,6 +245,25 @@ class WKNavigationDelegate(
         KLogger.info {
             "Outer decidePolicyForNavigationAction: $url $isRedirect $decidePolicyForNavigationAction"
         }
+
+        val delegate = params?.delegate
+
+        fun callDelegateOrAllow() {
+            if (delegate != null &&
+                (delegate as NSObject).respondsToSelector(
+                    NSSelectorFromString("webView:decidePolicyForNavigationAction:decisionHandler:"),
+                )
+            ) {
+                delegate.webView(
+                    webView,
+                    decidePolicyForNavigationAction = decidePolicyForNavigationAction,
+                    decisionHandler = decisionHandler,
+                )
+            } else {
+                decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
+            }
+        }
+
         if (
             url != null &&
             !isRedirect &&
@@ -158,7 +294,7 @@ class WKNavigationDelegate(
                     )
                 when (interceptResult) {
                     is WebRequestInterceptResult.Allow -> {
-                        decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
+                        callDelegateOrAllow()
                     }
 
                     is WebRequestInterceptResult.Reject -> {
@@ -177,7 +313,7 @@ class WKNavigationDelegate(
             }
         } else {
             isRedirect = false
-            decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
+            callDelegateOrAllow()
         }
     }
 }
