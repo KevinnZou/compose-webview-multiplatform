@@ -1,5 +1,6 @@
 package com.multiplatform.webview.web
 
+import com.multiplatform.webview.download.DownloadRequest
 import com.multiplatform.webview.request.WebRequest
 import com.multiplatform.webview.request.WebRequestInterceptResult
 import com.multiplatform.webview.util.KLogger
@@ -10,6 +11,7 @@ import kotlinx.cinterop.ObjCSignatureOverride
 import platform.CoreGraphics.CGPointMake
 import platform.Foundation.HTTPMethod
 import platform.Foundation.NSError
+import platform.Foundation.NSURLRequest
 import platform.Foundation.allHTTPHeaderFields
 import platform.WebKit.WKNavigation
 import platform.WebKit.WKNavigationAction
@@ -151,6 +153,23 @@ class WKNavigationDelegate(
                         isRedirect,
                         request.HTTPMethod ?: "GET",
                     )
+
+                val isContentTypeForDownload = checkIsContentTypeForDownload( request )
+                if( isContentTypeForDownload ){
+                    if( state.webSettings.allowDownloadFilefromURL ){
+                        val downloadRequest = DownloadRequest(
+                            request.URL?.absoluteString ?: "",
+                            headerMap
+                        )
+                        navigator.downloadInterceptor?.onInterceptDownloadRequest(
+                            downloadRequest,
+                            navigator,
+                        )
+                        decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyCancel)
+                        return
+                    }
+                }
+
                 val interceptResult =
                     navigator.requestInterceptor.onInterceptUrlRequest(
                         webRequest,
@@ -179,5 +198,29 @@ class WKNavigationDelegate(
             isRedirect = false
             decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyAllow)
         }
+    }
+
+    fun checkIsContentTypeForDownload( request  : NSURLRequest ) : Boolean {
+        val contentTypes : List<String> = listOf(
+            "application/octet-stream",
+            "application/pdf",
+            "application/xml"
+        )
+        request.allHTTPHeaderFields?.forEach { header ->
+            contentTypes.forEach { type ->
+                if (header.key.toString().contains(type ))
+                    return true
+            }
+        }
+
+        // For Download content by URL
+        val url = request.URL?.absoluteString ?: ""
+        contentTypes.forEach { type ->
+            if ( url.startsWith("data:$type" ))
+                return true
+        }
+
+        // Check if Download by Blob in URL
+        return ( url.startsWith("blob:"))
     }
 }

@@ -8,6 +8,7 @@ import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.ConsoleMessage
+import android.webkit.CookieManager
 import android.webkit.PermissionRequest
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
@@ -29,6 +30,7 @@ import androidx.core.graphics.createBitmap
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewFeature
+import com.multiplatform.webview.download.DownloadRequest
 import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
 import com.multiplatform.webview.request.WebRequest
@@ -189,6 +191,26 @@ fun AccompanistWebView(
                     chromeClient.context = context
                     webChromeClient = chromeClient
                     webViewClient = client
+                    
+                    if (state.webSettings.allowDownloadFilefromURL) {
+                        this.setDownloadListener { url, userAgent, contentDisposition, mimeType, contentLength ->
+                            val webRequest =
+                                DownloadRequest(
+                                    url,
+                                    mutableMapOf(
+                                        "Content-Disposition" to contentDisposition,
+                                        "Content-Length" to contentLength.toString(),
+                                        "Content-Type" to mimeType,
+                                        "cookie" to CookieManager.getInstance().getCookie(url),
+                                        "User-Agent" to userAgent
+                                    )
+                                )
+                            navigator.downloadInterceptor?.onInterceptDownloadRequest(
+                                webRequest,
+                                navigator,
+                            )
+                        }
+                    }
 
                     // Avoid covering other components - map to Android View constants explicitly
                     val desiredLayerType =
