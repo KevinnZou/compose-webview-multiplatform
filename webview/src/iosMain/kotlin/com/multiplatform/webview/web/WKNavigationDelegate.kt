@@ -11,7 +11,7 @@ import kotlinx.cinterop.ObjCSignatureOverride
 import platform.CoreGraphics.CGPointMake
 import platform.Foundation.HTTPMethod
 import platform.Foundation.NSError
-import platform.Foundation.NSURLRequest
+import platform.Foundation.NSURL
 import platform.Foundation.allHTTPHeaderFields
 import platform.WebKit.WKNavigation
 import platform.WebKit.WKNavigationAction
@@ -19,6 +19,8 @@ import platform.WebKit.WKNavigationActionPolicy
 import platform.WebKit.WKNavigationDelegateProtocol
 import platform.WebKit.WKWebView
 import platform.darwin.NSObject
+import kotlin.io.encoding.Base64
+import kotlin.io.encoding.ExperimentalEncodingApi
 
 /**
  * Created By Kevin Zou On 2023/9/13
@@ -32,8 +34,9 @@ class WKNavigationDelegate(
     private val state: WebViewState,
     private val navigator: WebViewNavigator,
 ) : NSObject(),
-    WKNavigationDelegateProtocol {
+    WKNavigationDelegateProtocol{
     private var isRedirect = false
+    private var tempUrlForDownload : NSURL? = null
 
     /**
      * Called when the web view begins to receive web content.
@@ -95,6 +98,25 @@ class WKNavigationDelegate(
             }
         }
         KLogger.info { "didFinishNavigation ${state.lastLoadedUrl}" }
+
+        if( state.webSettings.allowDownloadFilefromURL ){
+            val downloadRequest = DownloadRequest(
+                webView.URL.toString(),
+                headers = mutableMapOf()
+            )
+
+            val scriptSetup = "function redirectToBlob( url , params ){ window.location.href = url; }".trimIndent();
+            navigator.evaluateJavaScript( scriptSetup )
+
+            val script = "redirectToBlob"
+            val result = navigator.downloadInterceptor?.onRequiredOverrideJavascriptInterface(
+                request = downloadRequest ,
+                navigator = navigator ,
+                scriptCommand = script )
+            result?.let {
+                navigator.evaluateJavaScript( it )
+            }
+        }
     }
 
     /**
@@ -154,18 +176,16 @@ class WKNavigationDelegate(
                         request.HTTPMethod ?: "GET",
                     )
 
-                val isContentTypeForDownload = checkIsContentTypeForDownload( request )
-                if( isContentTypeForDownload ){
-                    if( state.webSettings.allowDownloadFilefromURL ){
-                        val downloadRequest = DownloadRequest(
-                            request.URL?.absoluteString ?: "",
-                            headerMap
-                        )
-                        navigator.downloadInterceptor?.onInterceptDownloadRequest(
-                            downloadRequest,
-                            navigator,
-                        )
-                        decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyCancel)
+                if( state.webSettings.allowDownloadFilefromURL ){
+                    val canDownloadByUrl = checkCanDownloadFromBase64( url )
+                    val shouldDownload = decidePolicyForNavigationAction.shouldPerformDownload
+                    if( canDownloadByUrl ){
+                        downloadStringBase64( url )
+                        decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyDownload)
+                        return
+                    }
+                    if( shouldDownload ){
+                        decisionHandler(WKNavigationActionPolicy.WKNavigationActionPolicyDownload)
                         return
                     }
                 }
@@ -200,27 +220,38 @@ class WKNavigationDelegate(
         }
     }
 
-    fun checkIsContentTypeForDownload( request  : NSURLRequest ) : Boolean {
+    fun checkIsContentTypeForDownload( value : String , posFix : String = "" ) : Boolean {
         val contentTypes : List<String> = listOf(
             "application/octet-stream",
             "application/pdf",
             "application/xml"
         )
-        request.allHTTPHeaderFields?.forEach { header ->
-            contentTypes.forEach { type ->
-                if (header.key.toString().contains(type ))
-                    return true
-            }
-        }
 
         // For Download content by URL
-        val url = request.URL?.absoluteString ?: ""
         contentTypes.forEach { type ->
-            if ( url.startsWith("data:$type" ))
+            if ( value.startsWith("data:$type$posFix" ))
                 return true
         }
+        return false
+    }
 
-        // Check if Download by Blob in URL
-        return ( url.startsWith("blob:"))
+    fun checkCanDownloadFromBase64( value : String ) : Boolean {
+        return checkIsContentTypeForDownload( value , ";base64,")
+    }
+
+    fun downloadStringBase64( value : String ){
+        value.split(",").lastOrNull()?.let {
+            val bytes = base64ToByteArray( it )
+            navigator.downloadInterceptor?.onInterceptDownloadResponse(
+                request = DownloadRequest(url = "" , headers = mutableMapOf()),
+                navigator = navigator,
+                byteArray = bytes ,
+                json = null)
+        }
+    }
+
+    @OptIn(ExperimentalEncodingApi::class)
+    fun base64ToByteArray(base64String: String): ByteArray {
+        return Base64.decode(base64String)
     }
 }
