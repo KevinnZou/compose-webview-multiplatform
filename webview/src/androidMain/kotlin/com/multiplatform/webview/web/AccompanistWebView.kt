@@ -1,5 +1,6 @@
 package com.multiplatform.webview.web
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Configuration
@@ -30,6 +31,7 @@ import androidx.core.graphics.createBitmap
 import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewAssetLoader
 import androidx.webkit.WebViewFeature
+import com.multiplatform.webview.download.BlobDownloadInterface
 import com.multiplatform.webview.download.DownloadRequest
 import com.multiplatform.webview.jsbridge.ConsoleBridge
 import com.multiplatform.webview.jsbridge.WebViewJsBridge
@@ -38,6 +40,7 @@ import com.multiplatform.webview.request.WebRequestInterceptResult
 import com.multiplatform.webview.setting.PlatformWebSettings
 import com.multiplatform.webview.util.InternalStoragePathHandler
 import com.multiplatform.webview.util.KLogger
+import androidx.annotation.RequiresApi
 
 /**
  * Created By Kevin Zou On 2023/9/5
@@ -68,6 +71,7 @@ import com.multiplatform.webview.util.KLogger
  * @param factory An optional WebView factory for using a custom subclass of WebView
  * @sample com.google.accompanist.sample.webview.BasicWebViewSample
  */
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun AccompanistWebView(
     state: WebViewState,
@@ -191,25 +195,9 @@ fun AccompanistWebView(
                     chromeClient.context = context
                     webChromeClient = chromeClient
                     webViewClient = client
-                    
+
                     if (state.webSettings.allowDownloadFilefromURL) {
-                        this.setDownloadListener { url, userAgent, contentDisposition, mimeType, contentLength ->
-                            val webRequest =
-                                DownloadRequest(
-                                    url,
-                                    mutableMapOf(
-                                        "Content-Disposition" to contentDisposition,
-                                        "Content-Length" to contentLength.toString(),
-                                        "Content-Type" to mimeType,
-                                        "cookie" to CookieManager.getInstance().getCookie(url),
-                                        "User-Agent" to userAgent
-                                    )
-                                )
-                            navigator.downloadInterceptor?.onInterceptDownloadRequest(
-                                webRequest,
-                                navigator,
-                            )
-                        }
+                        setupWebView(this, navigator)
                     }
 
                     // Avoid covering other components - map to Android View constants explicitly
@@ -363,6 +351,14 @@ open class AccompanistWebViewClient : WebViewClient() {
         }
         state.loadingState = LoadingState.Finished
         state.lastLoadedUrl = url
+
+        if (state.webSettings.allowDownloadFilefromURL) {
+            overrideJavascriptFunction(
+                navigator = navigator,
+                url = "$url",
+                headers = mutableMapOf()
+            )
+        }
     }
 
     override fun doUpdateVisitedHistory(
@@ -405,6 +401,7 @@ open class AccompanistWebViewClient : WebViewClient() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun shouldOverrideUrlLoading(
         view: WebView?,
         request: WebResourceRequest?,
@@ -417,11 +414,7 @@ open class AccompanistWebViewClient : WebViewClient() {
             return super.shouldOverrideUrlLoading(view, request)
         }
         val isRedirectRequest =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                request.isRedirect
-            } else {
-                false
-            }
+            request.isRedirect
         val webRequest =
             WebRequest(
                 request.url.toString(),
@@ -486,7 +479,10 @@ open class AccompanistWebChromeClient : WebChromeClient() {
             val timestamp =
                 try {
                     val sdf =
-                        java.text.SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", java.util.Locale.US)
+                        java.text.SimpleDateFormat(
+                            "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",
+                            java.util.Locale.US
+                        )
                     sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
                     sdf.format(java.util.Date())
                 } catch (_: Throwable) {
@@ -605,4 +601,30 @@ open class AccompanistWebChromeClient : WebChromeClient() {
             state.webSettings.androidWebSettings.hideDefaultVideoPoster -> createBitmap(50, 50)
             else -> super.getDefaultVideoPoster()
         }
+}
+
+@SuppressLint("SetJavaScriptEnabled")
+fun setupWebView(webView: WebView, navigator: WebViewNavigator) {
+    // 1. Enable JavaScript and Add the Interface
+    webView.settings.javaScriptEnabled = true
+    webView.settings.setSupportMultipleWindows(true);
+    webView.settings.javaScriptCanOpenWindowsAutomatically = true;
+    webView.addJavascriptInterface(BlobDownloadInterface(navigator), "AndroidBlobDownloader")
+}
+
+/**
+ * Setup JavaScript for to intercept the custom code for download blod
+ */
+fun overrideJavascriptFunction(
+    navigator: WebViewNavigator,
+    url: String,
+    headers: MutableMap<String, String>
+) {
+    val jsCode = navigator.downloadInterceptor?.onRequiredOverrideJavascriptInterface(
+        request = DownloadRequest( url = url, headers = headers, ) ,
+        scriptCommand = "AndroidBlobDownloader.downloadBlob",
+        navigator = navigator
+    )
+    if (jsCode != null)
+        navigator.evaluateJavaScript(jsCode.trimIndent(), null)
 }

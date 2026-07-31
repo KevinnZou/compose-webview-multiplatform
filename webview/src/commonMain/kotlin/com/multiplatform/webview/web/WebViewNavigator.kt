@@ -312,4 +312,11 @@ class WebViewNavigator(
 fun rememberWebViewNavigator(
     coroutineScope: CoroutineScope = rememberCoroutineScope(),
     requestInterceptor: RequestInterceptor? = null,
-): WebViewNavigator = remember(coroutineScope) { WebViewNavigator(coroutineScope, requestInterceptor) }
+    downloadRequest: DownloadInterceptor? = null,
+): WebViewNavigator = remember(coroutineScope) {
+    WebViewNavigator(
+        coroutineScope,
+        requestInterceptor,
+        downloadRequest
+    )
+}
